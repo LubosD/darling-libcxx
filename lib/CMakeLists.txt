@@ -70,11 +70,11 @@ if (APPLE AND LLVM_USE_SANITIZER)
 endif()
 
 # Generate library list.
-add_library_flags_if(LIBCXX_HAS_PTHREAD_LIB pthread)
-add_library_flags_if(LIBCXX_HAS_C_LIB c)
-add_library_flags_if(LIBCXX_HAS_M_LIB m)
-add_library_flags_if(LIBCXX_HAS_RT_LIB rt)
-add_library_flags_if(LIBCXX_HAS_GCC_S_LIB gcc_s)
+#add_library_flags_if(LIBCXX_HAS_PTHREAD_LIB pthread)
+#add_library_flags_if(LIBCXX_HAS_C_LIB c)
+#add_library_flags_if(LIBCXX_HAS_M_LIB m)
+#add_library_flags_if(LIBCXX_HAS_RT_LIB rt)
+#add_library_flags_if(LIBCXX_HAS_GCC_S_LIB gcc_s)
 
 # Setup flags.
 add_flags_if_supported(-fPIC)
@@ -120,7 +120,7 @@ if ( APPLE AND (LIBCXX_CXX_ABI_LIBNAME STREQUAL "libcxxabi" OR
   endif()
 endif()
 
-target_link_libraries(cxx ${LIBCXX_LIBRARIES})
+target_link_libraries(cxx ${LIBCXX_LIBRARIES} system)
 split_list(LIBCXX_COMPILE_FLAGS)
 split_list(LIBCXX_LINK_FLAGS)
 

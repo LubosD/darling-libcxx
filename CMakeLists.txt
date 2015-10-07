@@ -166,7 +166,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LIBCXX_LIBRARY_DIR})
 # LIBCXX_CXX_FLAGS: General flags for both the compiler and linker.
 # LIBCXX_COMPILE_FLAGS: Compile only flags.
 # LIBCXX_LINK_FLAGS: Linker only flags.
-set(LIBCXX_COMPILE_FLAGS "")
+set(LIBCXX_COMPILE_FLAGS "-nostdinc -nostdlib")
 set(LIBCXX_LINK_FLAGS "")
 set(LIBCXX_LIBRARIES "")
 
@@ -195,10 +195,10 @@ remove_flags(-DNDEBUG -UNDEBUG -D_DEBUG
              -stdlib=libc++ -stdlib=libstdc++ -lc++abi -m32)
 
 # Required flags ==============================================================
-add_compile_flags_if_supported(-std=c++11)
-if (NOT MSVC AND NOT LIBCXX_SUPPORTS_STD_EQ_CXX11_FLAG)
-  message(FATAL_ERROR "C++11 is required but the compiler does not support -std=c++11")
-endif()
+#add_compile_flags_if_supported(-std=c++11)
+#if (NOT MSVC AND NOT LIBCXX_SUPPORTS_STD_EQ_CXX11_FLAG)
+#  message(FATAL_ERROR "C++11 is required but the compiler does not support -std=c++11")
+#endif()
 
 # On all systems the system c++ standard library headers need to be excluded.
 # MSVC only has -X, which disables all default includes; including the crt.
