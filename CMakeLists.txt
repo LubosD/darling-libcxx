@@ -169,6 +169,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LIBCXX_LIBRARY_DIR})
 set(LIBCXX_COMPILE_FLAGS "-nostdinc -nostdlib")
 set(LIBCXX_LINK_FLAGS "")
 set(LIBCXX_LIBRARIES "")
+set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--version-script=${DARLING_TOP_DIRECTORY}/darwin.map -nostdlib")
 
 # Configure compiler.
 include(config-ix)
