@@ -80,6 +80,10 @@ endif()
 add_flags_if_supported(-fPIC)
 add_link_flags_if_supported(-nodefaultlibs)
 
+SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib${SUFFIX}/darling")
+SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE) 
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
 if ( APPLE AND (LIBCXX_CXX_ABI_LIBNAME STREQUAL "libcxxabi" OR
                 LIBCXX_CXX_ABI_LIBNAME STREQUAL "none"))
   if (NOT DEFINED LIBCXX_LIBCPPABI_VERSION)
@@ -123,6 +127,8 @@ endif()
 target_link_libraries(cxx ${LIBCXX_LIBRARIES} system)
 split_list(LIBCXX_COMPILE_FLAGS)
 split_list(LIBCXX_LINK_FLAGS)
+
+install(TARGETS cxx DESTINATION lib${SUFFIX}/darling)
 
 set_target_properties(cxx
   PROPERTIES

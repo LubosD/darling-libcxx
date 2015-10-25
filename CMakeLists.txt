@@ -55,9 +55,9 @@ option(LIBCXX_INCLUDE_TESTS "Build the libc++ tests." ${LLVM_INCLUDE_TESTS})
 option(LIBCXX_INCLUDE_DOCS "Build the libc++ documentation." ${LLVM_INCLUDE_DOCS})
 set(LIBCXX_LIBDIR_SUFFIX "${LLVM_LIBDIR_SUFFIX}" CACHE STRING
     "Define suffix of library directory name (32/64)")
-option(LIBCXX_INSTALL_HEADERS "Install the libc++ headers." ON)
-option(LIBCXX_INSTALL_LIBRARY "Install the libc++ library." ON)
-option(LIBCXX_INSTALL_SUPPORT_HEADERS "Install libc++ support headers." ON)
+option(LIBCXX_INSTALL_HEADERS "Install the libc++ headers." OFF)
+option(LIBCXX_INSTALL_LIBRARY "Install the libc++ library." OFF)
+option(LIBCXX_INSTALL_SUPPORT_HEADERS "Install libc++ support headers." OFF)
 
 # ABI Library options ---------------------------------------------------------
 set(LIBCXX_CXX_ABI "${LIBCXX_CXX_ABI}" CACHE STRING
