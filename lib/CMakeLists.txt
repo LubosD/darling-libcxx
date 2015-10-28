@@ -128,7 +128,7 @@ if ( APPLE AND (LIBCXX_CXX_ABI_LIBNAME STREQUAL "libcxxabi" OR
   endif()
 endif()
 
-target_link_libraries(cxx ${LIBCXX_LIBRARIES} system cxxabi_shared)
+target_link_libraries(cxx ${LIBCXX_LIBRARIES} system_c system_kernel cxxabi_shared)
 split_list(LIBCXX_COMPILE_FLAGS)
 split_list(LIBCXX_LINK_FLAGS)
 
