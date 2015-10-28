@@ -166,7 +166,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LIBCXX_LIBRARY_DIR})
 # LIBCXX_CXX_FLAGS: General flags for both the compiler and linker.
 # LIBCXX_COMPILE_FLAGS: Compile only flags.
 # LIBCXX_LINK_FLAGS: Linker only flags.
-set(LIBCXX_COMPILE_FLAGS "-nostdinc -nostdlib")
+set(LIBCXX_COMPILE_FLAGS "-nostdinc -nostdlib -ggdb")
 set(LIBCXX_LINK_FLAGS "")
 set(LIBCXX_LIBRARIES "")
 set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--version-script=${DARLING_TOP_DIRECTORY}/darwin.map -nostdlib")

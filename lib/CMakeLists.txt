@@ -1,7 +1,7 @@
 set(LIBCXX_LIB_CMAKEFILES_DIR "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}"  PARENT_SCOPE)
 
 # Get sources
-file(GLOB LIBCXX_SOURCES ../src/*.cpp)
+file(GLOB LIBCXX_SOURCES ../src/*.cpp ../src/*.c)
 if(WIN32)
   file(GLOB LIBCXX_WIN32_SOURCES ../src/support/win32/*.cpp)
   list(APPEND LIBCXX_SOURCES ${LIBCXX_WIN32_SOURCES})
@@ -23,6 +23,10 @@ if (MSVC_IDE OR XCODE)
     source_group("Header Files" FILES ${LIBCXX_HEADERS})
   endif()
 endif()
+
+SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib${SUFFIX}/darling")
+SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE) 
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 if (LIBCXX_ENABLE_SHARED)
   add_library(cxx SHARED ${LIBCXX_SOURCES} ${LIBCXX_HEADERS})
@@ -124,7 +128,7 @@ if ( APPLE AND (LIBCXX_CXX_ABI_LIBNAME STREQUAL "libcxxabi" OR
   endif()
 endif()
 
-target_link_libraries(cxx ${LIBCXX_LIBRARIES} system)
+target_link_libraries(cxx ${LIBCXX_LIBRARIES} system cxxabi_shared)
 split_list(LIBCXX_COMPILE_FLAGS)
 split_list(LIBCXX_LINK_FLAGS)
 
