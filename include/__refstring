@@ -49,7 +49,7 @@ private:
         return data + sizeof(*rep);
     }
 
-#ifdef __APPLE__ && !defined(DARLING)
+#if defined(__APPLE__) && !defined(DARLING)
     static
     const char*
     compute_gcc_empty_string_storage() _NOEXCEPT
