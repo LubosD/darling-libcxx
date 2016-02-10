@@ -24,7 +24,7 @@ if (MSVC_IDE OR XCODE)
   endif()
 endif()
 
-SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib${SUFFIX}/darling")
+SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/darling")
 SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE) 
 SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
@@ -84,7 +84,7 @@ endif()
 add_flags_if_supported(-fPIC)
 add_link_flags_if_supported(-nodefaultlibs)
 
-SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib${SUFFIX}/darling")
+SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/darling")
 SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE) 
 SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
@@ -128,11 +128,11 @@ if ( APPLE AND (LIBCXX_CXX_ABI_LIBNAME STREQUAL "libcxxabi" OR
   endif()
 endif()
 
-target_link_libraries(cxx ${LIBCXX_LIBRARIES} system_c system_kernel cxxabi_shared)
+target_link_libraries(cxx ${LIBCXX_LIBRARIES} system cxxabi_shared)
 split_list(LIBCXX_COMPILE_FLAGS)
 split_list(LIBCXX_LINK_FLAGS)
 
-install(TARGETS cxx DESTINATION lib${SUFFIX}/darling)
+install(TARGETS cxx DESTINATION ${CMAKE_INSTALL_LIBDIR}/darling)
 
 set_target_properties(cxx
   PROPERTIES
