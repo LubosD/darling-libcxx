@@ -169,11 +169,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LIBCXX_LIBRARY_DIR})
 set(LIBCXX_COMPILE_FLAGS "-nostdinc -nostdlib -ggdb -m${BITS}")
 set(LIBCXX_LINK_FLAGS "-m${BITS}")
 set(LIBCXX_LIBRARIES "")
-set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--version-script=${DARLING_TOP_DIRECTORY}/darwin.map -nostdlib -Wl,-Bsymbolic -m${BITS}")
-
-if (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "i686")
-	set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,${CMAKE_CURRENT_SOURCE_DIR}/i386-aliases")
-endif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "i686")
 
 # Configure compiler.
 include(config-ix)
