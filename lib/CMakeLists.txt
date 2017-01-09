@@ -128,7 +128,7 @@ if ( APPLE AND (LIBCXX_CXX_ABI_LIBNAME STREQUAL "libcxxabi" OR
   endif()
 endif()
 
-target_link_libraries(cxx ${LIBCXX_LIBRARIES} system cxxabi_shared)
+target_link_libraries(cxx PRIVATE ${LIBCXX_LIBRARIES} system cxxabi_shared)
 split_list(LIBCXX_COMPILE_FLAGS)
 split_list(LIBCXX_LINK_FLAGS)
 
@@ -142,6 +142,8 @@ set_target_properties(cxx
     VERSION       "1.0"
     SOVERSION     "1"
   )
+
+set_property(TARGET cxx APPEND_STRING PROPERTY LINK_FLAGS    "${LIBCXX_LINK_FLAGS} -Wl,-reexport_library,${CMAKE_BINARY_DIR}/src/external/libcxxabi/src/libc++abi.dylib ")
 
 if (LIBCXX_INSTALL_LIBRARY)
   install(TARGETS cxx
