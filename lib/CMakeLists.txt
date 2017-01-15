@@ -132,7 +132,7 @@ target_link_libraries(cxx PRIVATE ${LIBCXX_LIBRARIES} system cxxabi_shared)
 split_list(LIBCXX_COMPILE_FLAGS)
 split_list(LIBCXX_LINK_FLAGS)
 
-install(TARGETS cxx DESTINATION ${CMAKE_INSTALL_LIBDIR}/darling)
+install(TARGETS cxx DESTINATION libexec/darling/usr/lib)
 
 set_target_properties(cxx
   PROPERTIES
