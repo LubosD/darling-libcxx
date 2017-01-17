@@ -29,7 +29,9 @@ SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 if (LIBCXX_ENABLE_SHARED)
+  set(APPLE TRUE)
   add_darling_library(cxx SHARED ${LIBCXX_SOURCES} ${LIBCXX_HEADERS})
+  set_target_properties(cxx PROPERTIES OUTPUT_NAME "c++.1")
 else()
   add_library(cxx STATIC ${LIBCXX_SOURCES} ${LIBCXX_HEADERS})
 endif()
@@ -84,10 +86,6 @@ endif()
 add_flags_if_supported(-fPIC)
 add_link_flags_if_supported(-nodefaultlibs)
 
-SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/darling")
-SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE) 
-SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-
 if ( APPLE AND (LIBCXX_CXX_ABI_LIBNAME STREQUAL "libcxxabi" OR
                 LIBCXX_CXX_ABI_LIBNAME STREQUAL "none"))
   if (NOT DEFINED LIBCXX_LIBCPPABI_VERSION)
@@ -115,7 +113,7 @@ if ( APPLE AND (LIBCXX_CXX_ABI_LIBNAME STREQUAL "libcxxabi" OR
           "-Wl,-reexport_library,${CMAKE_OSX_SYSROOT}/usr/lib/libc++abi.dylib")
       endif()
     else()
-      set(OSX_RE_EXPORT_LINE "/usr/lib/libc++abi.dylib -Wl,-reexported_symbols_list,${CMAKE_CURRENT_SOURCE_DIR}/libc++abi${LIBCXX_LIBCPPABI_VERSION}.exp")
+      set(OSX_RE_EXPORT_LINE "-Wl,-reexported_symbols_list,${CMAKE_CURRENT_SOURCE_DIR}/libc++abi${LIBCXX_LIBCPPABI_VERSION}.exp")
     endif()
 
     add_link_flags(
@@ -133,12 +131,13 @@ split_list(LIBCXX_COMPILE_FLAGS)
 split_list(LIBCXX_LINK_FLAGS)
 
 install(TARGETS cxx DESTINATION libexec/darling/usr/lib)
+InstallSymlink("libc++.1.dylib" "${CMAKE_INSTALL_PREFIX}/libexec/darling/usr/lib/libc++.dylib")
 
 set_target_properties(cxx
   PROPERTIES
     COMPILE_FLAGS "${LIBCXX_COMPILE_FLAGS}"
 #    LINK_FLAGS    "${LIBCXX_LINK_FLAGS}"
-    OUTPUT_NAME   "c++"
+#    OUTPUT_NAME   "c++"
     VERSION       "1.0"
     SOVERSION     "1"
   )
