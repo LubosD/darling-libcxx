@@ -24,10 +24,6 @@ if (MSVC_IDE OR XCODE)
   endif()
 endif()
 
-SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/darling")
-SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE) 
-SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-
 if (LIBCXX_ENABLE_SHARED)
   set(APPLE TRUE)
   add_darling_library(cxx SHARED ${LIBCXX_SOURCES} ${LIBCXX_HEADERS})
@@ -135,14 +131,16 @@ InstallSymlink("libc++.1.dylib" "${CMAKE_INSTALL_PREFIX}/libexec/darling/usr/lib
 
 set_target_properties(cxx
   PROPERTIES
-    COMPILE_FLAGS "${LIBCXX_COMPILE_FLAGS}"
+  #    COMPILE_FLAGS "${LIBCXX_COMPILE_FLAGS}"
 #    LINK_FLAGS    "${LIBCXX_LINK_FLAGS}"
 #    OUTPUT_NAME   "c++"
     VERSION       "1.0"
     SOVERSION     "1"
   )
 
-set_property(TARGET cxx APPEND_STRING PROPERTY LINK_FLAGS    " ${LIBCXX_LINK_FLAGS} -Wl,-reexport_library,${CMAKE_BINARY_DIR}/src/external/libcxxabi/src/libc++abi.dylib ")
+set_property(TARGET cxx APPEND_STRING PROPERTY LINK_FLAGS    " ${LIBCXX_LINK_FLAGS} -Wl,-no_arch_warnings -Wl,-reexport_library,${CMAKE_BINARY_DIR}/src/external/libcxxabi/src/libc++abi.dylib ")
+set_property(TARGET cxx APPEND_STRING PROPERTY COMPILE_FLAGS " ${LIBCXX_COMPILE_FLAGS}")
+make_fat(cxx)
 
 if (LIBCXX_INSTALL_LIBRARY)
   install(TARGETS cxx

@@ -305,6 +305,8 @@ endif()
 # Setup Source Code And Tests
 #===============================================================================
 include_directories(include)
+include_directories(${CMAKE_SOURCE_DIR}/src/libc/darwin)
+include_directories(${CMAKE_SOURCE_DIR}/src/kernel/libsyscall/wrappers)
 add_subdirectory(include)
 add_subdirectory(lib)
 
