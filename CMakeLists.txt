@@ -166,8 +166,8 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LIBCXX_LIBRARY_DIR})
 # LIBCXX_CXX_FLAGS: General flags for both the compiler and linker.
 # LIBCXX_COMPILE_FLAGS: Compile only flags.
 # LIBCXX_LINK_FLAGS: Linker only flags.
-set(LIBCXX_COMPILE_FLAGS "-nostdinc -nostdlib -ggdb -m${BITS}")
-set(LIBCXX_LINK_FLAGS "-m${BITS}")
+set(LIBCXX_COMPILE_FLAGS "-nostdinc -nostdlib")
+set(LIBCXX_LINK_FLAGS "")
 set(LIBCXX_LIBRARIES "")
 
 # Configure compiler.
