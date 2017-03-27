@@ -7,8 +7,8 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// XFAIL: with_system_cxx_lib=x86_64-apple-darwin11
-// XFAIL: with_system_cxx_lib=x86_64-apple-darwin12
+// XFAIL: with_system_cxx_lib=x86_64-apple-macosx10.7
+// XFAIL: with_system_cxx_lib=x86_64-apple-macosx10.8
 
 // <locale>
 
@@ -206,6 +206,30 @@ int main()
         assert(iter.base() == str+1);
         assert(err == ios.goodbit);
         assert(v == 2);
+    }
+    {
+        v = -1;
+        const char str[] = "1.79779e+309"; // unrepresentable
+        std::ios_base::iostate err = ios.goodbit;
+        input_iterator<const char*> iter =
+            f.get(input_iterator<const char*>(str),
+                  input_iterator<const char*>(str+sizeof(str)),
+                  ios, err, v);
+        assert(iter.base() == str+sizeof(str)-1);
+        assert(err == ios.failbit);
+        assert(v == HUGE_VAL);
+    }
+    {
+        v = -1;
+        const char str[] = "-1.79779e+308"; // unrepresentable
+        std::ios_base::iostate err = ios.goodbit;
+        input_iterator<const char*> iter =
+            f.get(input_iterator<const char*>(str),
+                  input_iterator<const char*>(str+sizeof(str)),
+                  ios, err, v);
+        assert(iter.base() == str+sizeof(str)-1);
+        assert(err == ios.failbit);
+        assert(v == -HUGE_VAL);
     }
     ios.imbue(std::locale(std::locale(), new my_numpunct));
     {

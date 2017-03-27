@@ -7,8 +7,8 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// XFAIL: with_system_cxx_lib=x86_64-apple-darwin11
-// XFAIL: with_system_cxx_lib=x86_64-apple-darwin12
+// XFAIL: with_system_cxx_lib=x86_64-apple-macosx10.7
+// XFAIL: with_system_cxx_lib=x86_64-apple-macosx10.8
 
 // <string>
 
@@ -17,6 +17,8 @@
 
 #include <string>
 #include <cassert>
+
+#include "test_macros.h"
 
 int main()
 {
@@ -34,6 +36,7 @@ int main()
     idx = 0;
     assert(std::stol(L"10g", &idx, 16) == 16);
     assert(idx == 2);
+#ifndef TEST_HAS_NO_EXCEPTIONS
     idx = 0;
     try
     {
@@ -108,4 +111,5 @@ int main()
     {
         assert(idx == 0);
     }
+#endif
 }
