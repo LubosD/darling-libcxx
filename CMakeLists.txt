@@ -62,6 +62,7 @@ set_target_properties(cxx PROPERTIES OUTPUT_NAME "c++.1")
 set_property(TARGET cxx APPEND_STRING PROPERTY LINK_FLAGS " -Wl,-reexport_library,${CMAKE_BINARY_DIR}/src/external/libcxxabi/libc++abi.dylib \
       -Wl,-unexported_symbols_list,${CMAKE_CURRENT_SOURCE_DIR}/lib/libc++unexp.exp ")
 
+install(TARGETS cxx DESTINATION libexec/darling/usr/lib)
 InstallSymlink("libc++.1.dylib" "${CMAKE_INSTALL_PREFIX}/libexec/darling/usr/lib/libc++.dylib")
 
 # For dyld only
