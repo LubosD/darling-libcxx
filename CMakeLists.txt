@@ -48,7 +48,7 @@ set(cxx_sources
 	src/variant.cpp
 )
 
-add_library(cxx_obj OBJECT ${cxx_sources})
+add_darling_object_library(cxx_obj ${cxx_sources})
 make_fat(cxx_obj)
 
 set(DYLIB_INSTALL_NAME "/usr/lib/libc++.1.dylib")
