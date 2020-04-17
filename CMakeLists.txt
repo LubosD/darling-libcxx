@@ -1,6 +1,6 @@
 project(libcxx)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -nostdinc -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -nostdinc -std=c++11 -mmacosx-version-min=10.10")
 
 include_directories(
 	BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/include
@@ -21,17 +21,21 @@ set(cxx_sources
 	src/algorithm.cpp
 	src/any.cpp
 	src/bind.cpp
+	src/charconv.cpp
+	src/chrono.cpp
 	src/condition_variable.cpp
+	src/condition_variable_destructor.cpp
 	src/debug.cpp
 	src/exception.cpp
+	src/functional.cpp
 	src/future.cpp
 	src/hash.cpp
-	src/chrono.cpp
 	src/ios.cpp
 	src/iostream.cpp
 	src/locale.cpp
 	src/memory.cpp
 	src/mutex.cpp
+	src/mutex_destructor.cpp
 	src/new.cpp
 	src/optional.cpp
 	src/random.cpp
@@ -46,6 +50,7 @@ set(cxx_sources
 	src/utility.cpp
 	src/valarray.cpp
 	src/variant.cpp
+	src/vector.cpp
 )
 
 add_darling_object_library(cxx_obj ${cxx_sources})
