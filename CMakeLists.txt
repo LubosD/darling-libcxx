@@ -71,9 +71,6 @@ install(TARGETS cxx DESTINATION libexec/darling/usr/lib)
 InstallSymlink("libc++.1.dylib" "${CMAKE_INSTALL_PREFIX}/libexec/darling/usr/lib/libc++.dylib")
 
 # For dyld only
-set(CMAKE_AR "${CMAKE_BINARY_DIR}/src/external/cctools-port/cctools/ar/x86_64-apple-darwin11-ar")
-set(CMAKE_RANLIB "${CMAKE_BINARY_DIR}/src/external/cctools-port/cctools/misc/ranlib")
-add_library(cxx_static STATIC src/stdexcept.cpp)
+add_darling_static_library(cxx_static SOURCES src/stdexcept.cpp)
 make_fat(cxx_static)
-add_dependencies(cxxabi_static ranlib x86_64-apple-darwin11-ar)
 
