@@ -1,9 +1,8 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -16,9 +15,13 @@
 
 #include "test_macros.h"
 
+// NOTE: On Windows the function `test_is_function<void()>` and
+// `test_is_function<void() noexcept> has the same mangled despite being
+// a distinct instantiation. This causes Clang to emit an error. However
+// structs do not have this problem.
+
 template <class T>
-void test_is_function()
-{
+struct test_is_function {
     static_assert( std::is_function<T>::value, "");
     static_assert( std::is_function<const T>::value, "");
     static_assert( std::is_function<volatile T>::value, "");
@@ -29,11 +32,10 @@ void test_is_function()
     static_assert( std::is_function_v<volatile T>, "");
     static_assert( std::is_function_v<const volatile T>, "");
 #endif
-}
+};
 
 template <class T>
-void test_is_not_function()
-{
+struct test_is_not_function {
     static_assert(!std::is_function<T>::value, "");
     static_assert(!std::is_function<const T>::value, "");
     static_assert(!std::is_function<volatile T>::value, "");
@@ -44,7 +46,7 @@ void test_is_not_function()
     static_assert(!std::is_function_v<volatile T>, "");
     static_assert(!std::is_function_v<const volatile T>, "");
 #endif
-}
+};
 
 class Empty
 {
@@ -72,13 +74,13 @@ struct incomplete_type;
 
 typedef void (*FunctionPtr)();
 
-int main()
+int main(int, char**)
 {
-	test_is_function<void(void)>();
-	test_is_function<int(int)>();
-	test_is_function<int(int, double)>();
-	test_is_function<int(Abstract *)>();
-	test_is_function<void(...)>();
+    test_is_function<void(void)>();
+    test_is_function<int(int)>();
+    test_is_function<int(int, double)>();
+    test_is_function<int(Abstract *)>();
+    test_is_function<void(...)>();
 
   test_is_not_function<std::nullptr_t>();
   test_is_not_function<void>();
@@ -103,4 +105,6 @@ int main()
   test_is_function<void() noexcept>();
   test_is_function<void() const && noexcept>();
 #endif
+
+  return 0;
 }

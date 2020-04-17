@@ -1,9 +1,8 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -19,7 +18,7 @@
 #include "test_macros.h"
 #include "min_allocator.h"
 
-int main()
+int main(int, char**)
 {
     {
         typedef std::vector<bool> C;
@@ -48,7 +47,7 @@ int main()
         assert(c.front() == false);
         assert(c.back() == true);
 #endif
-        c.emplace_back(1 == 1);
+        c.emplace_back(true);
         assert(c.size() == 3);
         assert(c.front() == false);
         assert(c[1] == true);
@@ -82,10 +81,12 @@ int main()
         assert(c.front() == false);
         assert(c.back() == true);
 #endif
-        c.emplace_back(1 == 1);
+        c.emplace_back(true);
         assert(c.size() == 3);
         assert(c.front() == false);
         assert(c[1] == true);
         assert(c.back() == true);
     }
+
+  return 0;
 }

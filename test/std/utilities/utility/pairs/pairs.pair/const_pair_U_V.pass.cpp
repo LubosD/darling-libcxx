@@ -1,9 +1,8 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -18,8 +17,10 @@
 #include <utility>
 #include <cassert>
 
-#include "archetypes.hpp"
-#include "test_convertible.hpp"
+#include "archetypes.h"
+#include "test_convertible.h"
+
+#include "test_macros.h"
 using namespace ImplicitTypes; // Get implicitly archetypes
 
 template <class T1, class U1,
@@ -54,10 +55,10 @@ struct ImplicitT {
   int value;
 };
 
-int main()
+int main(int, char**)
 {
     {
-        typedef std::pair<int, short> P1;
+        typedef std::pair<int, int> P1;
         typedef std::pair<double, long> P2;
         const P1 p1(3, 4);
         const P2 p2 = p1;
@@ -71,7 +72,7 @@ int main()
         P1 p1(42, 101);
         P2 p2(p1);
         assert(p2.first == 42);
-        assert(p2.second = 101);
+        assert(p2.second == 101);
     }
     {
         test_pair_const<AllCtors, AllCtors>(); // copy construction
@@ -154,7 +155,7 @@ int main()
     }
 #if TEST_STD_VER > 11
     {
-        typedef std::pair<int, short> P1;
+        typedef std::pair<int, int> P1;
         typedef std::pair<double, long> P2;
         constexpr P1 p1(3, 4);
         constexpr P2 p2 = p1;
@@ -178,4 +179,6 @@ int main()
         static_assert(p2.second.value == 101, "");
     }
 #endif
+
+  return 0;
 }

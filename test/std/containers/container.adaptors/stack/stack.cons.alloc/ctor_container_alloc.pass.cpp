@@ -1,9 +1,8 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -16,6 +15,7 @@
 #include <cassert>
 #include <cstddef>
 
+#include "test_macros.h"
 #include "test_allocator.h"
 
 template <class C>
@@ -37,14 +37,14 @@ struct test
 
     explicit test(const test_allocator<int>& a) : base(a) {}
     test(const container_type& c, const test_allocator<int>& a) : base(c, a) {}
-#ifndef _LIBCPP_HAS_NO_RVALUE_REFERENCES
+#if TEST_STD_VER >= 11
     test(container_type&& c, const test_allocator<int>& a) : base(std::move(c), a) {}
     test(test&& q, const test_allocator<int>& a) : base(std::move(q), a) {}
-#endif  // _LIBCPP_HAS_NO_RVALUE_REFERENCES
+#endif
     test_allocator<int> get_allocator() {return c.get_allocator();}
 };
 
-int main()
+int main(int, char**)
 {
     C d = make<C>(5);
     test q(d, test_allocator<int>(4));
@@ -55,4 +55,6 @@ int main()
         assert(q.top() == d[d.size() - i - 1]);
         q.pop();
     }
+
+  return 0;
 }

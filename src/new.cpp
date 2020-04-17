@@ -1,40 +1,36 @@
 //===--------------------------- new.cpp ----------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
-
-#define _LIBCPP_BUILDING_NEW
 
 #include <stdlib.h>
 
 #include "new"
+#include "include/atomic_support.h"
 
 #if defined(_LIBCPP_ABI_MICROSOFT)
-// nothing todo
+#   if !defined(_LIBCPP_ABI_VCRUNTIME)
+#       include "support/runtime/new_handler_fallback.ipp"
+#   endif
 #elif defined(LIBCXX_BUILDING_LIBCXXABI)
-#include <cxxabi.h>
+#   include <cxxabi.h>
 #elif defined(LIBCXXRT)
-#include <cxxabi.h>
-#include "support/runtime/new_handler_fallback.ipp"
-#elif defined(__GLIBCXX__)
-// nothing todo
-#else
-# if defined(__APPLE__) && !defined(_LIBCPP_BUILDING_HAS_NO_ABI_LIBRARY)
-#   include <cxxabi.h> // FIXME: remove this once buildit is gone.
-# else
+#   include <cxxabi.h>
 #   include "support/runtime/new_handler_fallback.ipp"
-# endif
+#elif defined(__GLIBCXX__)
+    // nothing to do
+#else
+#   include "support/runtime/new_handler_fallback.ipp"
 #endif
 
 namespace std
 {
 
 #ifndef __GLIBCXX__
-const nothrow_t nothrow = {};
+const nothrow_t nothrow{};
 #endif
 
 #ifndef LIBSTDCXX
@@ -53,7 +49,8 @@ __throw_bad_alloc()
 
 }  // std
 
-#if !defined(__GLIBCXX__) && !defined(_LIBCPP_ABI_MICROSOFT) && \
+#if !defined(__GLIBCXX__) &&                                                   \
+    !defined(_LIBCPP_ABI_VCRUNTIME) &&      \
     !defined(_LIBCPP_DISABLE_NEW_DELETE_DEFINITIONS)
 
 // Implement all new and delete operators as weak definitions
@@ -133,8 +130,7 @@ _LIBCPP_WEAK
 void
 operator delete(void* ptr) _NOEXCEPT
 {
-    if (ptr)
-        ::free(ptr);
+    ::free(ptr);
 }
 
 _LIBCPP_WEAK
@@ -172,7 +168,7 @@ operator delete[] (void* ptr, size_t) _NOEXCEPT
     ::operator delete[](ptr);
 }
 
-#if !defined(_LIBCPP_HAS_NO_ALIGNED_ALLOCATION)
+#if !defined(_LIBCPP_HAS_NO_LIBRARY_ALIGNED_ALLOCATION)
 
 _LIBCPP_WEAK
 void *
@@ -183,7 +179,7 @@ operator new(std::size_t size, std::align_val_t alignment) _THROW_BAD_ALLOC
     if (static_cast<size_t>(alignment) < sizeof(void*))
       alignment = std::align_val_t(sizeof(void*));
     void* p;
-#if defined(_LIBCPP_MSVCRT)
+#if defined(_LIBCPP_MSVCRT_LIKE)
     while ((p = _aligned_malloc(size, static_cast<size_t>(alignment))) == nullptr)
 #else
     while (::posix_memalign(&p, static_cast<size_t>(alignment), size) != 0)
@@ -255,11 +251,10 @@ _LIBCPP_WEAK
 void
 operator delete(void* ptr, std::align_val_t) _NOEXCEPT
 {
-    if (ptr)
-#if defined(_LIBCPP_MSVCRT)
-        ::_aligned_free(ptr);
+#if defined(_LIBCPP_MSVCRT_LIKE)
+    ::_aligned_free(ptr);
 #else
-        ::free(ptr);
+    ::free(ptr);
 #endif
 }
 
@@ -298,5 +293,5 @@ operator delete[] (void* ptr, size_t, std::align_val_t alignment) _NOEXCEPT
     ::operator delete[](ptr, alignment);
 }
 
-#endif // !_LIBCPP_HAS_NO_ALIGNED_ALLOCATION
-#endif // !__GLIBCXX__ && !_LIBCPP_ABI_MICROSOFT && !_LIBCPP_DISABLE_NEW_DELETE_DEFINITIONS
+#endif // !_LIBCPP_HAS_NO_LIBRARY_ALIGNED_ALLOCATION
+#endif // !__GLIBCXX__ && !_LIBCPP_ABI_VCRUNTIME && !_LIBCPP_DISABLE_NEW_DELETE_DEFINITIONS

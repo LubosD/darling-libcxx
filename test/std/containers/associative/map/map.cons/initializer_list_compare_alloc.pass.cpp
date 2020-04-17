@@ -1,11 +1,12 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
+
+// UNSUPPORTED: c++98, c++03
 
 // <map>
 
@@ -15,13 +16,13 @@
 
 #include <map>
 #include <cassert>
+#include "test_macros.h"
 #include "../../../test_compare.h"
 #include "test_allocator.h"
 #include "min_allocator.h"
 
-int main()
+int main(int, char**)
 {
-#ifndef _LIBCPP_HAS_NO_GENERALIZED_INITIALIZERS
     {
     typedef std::pair<const int, double> V;
     typedef test_compare<std::less<int> > C;
@@ -45,7 +46,6 @@ int main()
     assert(m.key_comp() == C(3));
     assert(m.get_allocator() == A(6));
     }
-#if TEST_STD_VER >= 11
     {
     typedef std::pair<const int, double> V;
     typedef test_compare<std::less<int> > C;
@@ -69,7 +69,6 @@ int main()
     assert(m.key_comp() == C(3));
     assert(m.get_allocator() == A());
     }
-#if TEST_STD_VER > 11
     {
     typedef std::pair<const int, double> V;
     typedef min_allocator<V> A;
@@ -94,7 +93,6 @@ int main()
     assert(*next(m.begin(), 2) == V(3, 1));
     assert(m.get_allocator() == a);
     }
-#endif
     {
     typedef std::pair<const int, double> V;
     typedef explicit_allocator<V> A;
@@ -119,6 +117,6 @@ int main()
     assert(m.key_comp() == C(3));
     assert(m.get_allocator() == a);
     }
-#endif
-#endif  // _LIBCPP_HAS_NO_GENERALIZED_INITIALIZERS
+
+  return 0;
 }

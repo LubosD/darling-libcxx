@@ -1,9 +1,8 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -14,6 +13,8 @@
 
 #include <exception>
 #include <cassert>
+
+#include "test_macros.h"
 
 struct A
 {
@@ -27,7 +28,7 @@ struct A
 
 int A::constructed = 0;
 
-int main()
+int main(int, char**)
 {
     {
         std::exception_ptr p;
@@ -46,7 +47,12 @@ int main()
         }
         catch (const A& a)
         {
+#ifndef _LIBCPP_ABI_MICROSOFT
             assert(A::constructed == 1);
+#else
+            // On Windows the exception_ptr copies the exception
+            assert(A::constructed == 2);
+#endif
             assert(p != nullptr);
             p = nullptr;
             assert(p == nullptr);
@@ -55,4 +61,7 @@ int main()
         }
         assert(A::constructed == 0);
     }
+    assert(A::constructed == 0);
+
+  return 0;
 }

@@ -1,16 +1,15 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 //
 // This test uses new symbols that were not defined in the libc++ shipped on
 // darwin11 and darwin12:
-// XFAIL: with_system_cxx_lib=x86_64-apple-macosx10.7
-// XFAIL: with_system_cxx_lib=x86_64-apple-macosx10.8
+// XFAIL: with_system_cxx_lib=macosx10.7
+// XFAIL: with_system_cxx_lib=macosx10.8
 
 // <locale>
 
@@ -27,10 +26,12 @@
 #include <locale>
 #include <type_traits>
 
-template <class _Tp>
-void test(const _Tp &) {}
+#include "test_macros.h"
 
-int main()
+template <class T>
+void test(const T &) {}
+
+int main(int, char**)
 {
     static_assert((std::is_base_of<std::locale::facet, std::moneypunct<char> >::value), "");
     static_assert((std::is_base_of<std::locale::facet, std::moneypunct<wchar_t> >::value), "");
@@ -45,4 +46,6 @@ int main()
     test(std::moneypunct<char, true>::intl);
     test(std::moneypunct<wchar_t, false>::intl);
     test(std::moneypunct<wchar_t, true>::intl);
+
+  return 0;
 }

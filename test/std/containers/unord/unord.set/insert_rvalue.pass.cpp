@@ -1,9 +1,8 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -18,10 +17,11 @@
 #include <unordered_set>
 #include <cassert>
 
+#include "test_macros.h"
 #include "MoveOnly.h"
 #include "min_allocator.h"
 
-int main()
+int main(int, char**)
 {
     {
         typedef std::unordered_set<double> C;
@@ -48,7 +48,7 @@ int main()
         assert(*r.first == 5.5);
         assert(r.second);
     }
-#ifndef _LIBCPP_HAS_NO_RVALUE_REFERENCES
+#if TEST_STD_VER >= 11
     {
         typedef std::unordered_set<MoveOnly> C;
         typedef std::pair<C::iterator, bool> R;
@@ -74,8 +74,6 @@ int main()
         assert(*r.first == 5);
         assert(r.second);
     }
-#endif  // _LIBCPP_HAS_NO_RVALUE_REFERENCES
-#if TEST_STD_VER >= 11
     {
         typedef std::unordered_set<double, std::hash<double>,
                                 std::equal_to<double>, min_allocator<double>> C;
@@ -102,7 +100,6 @@ int main()
         assert(*r.first == 5.5);
         assert(r.second);
     }
-#ifndef _LIBCPP_HAS_NO_RVALUE_REFERENCES
     {
         typedef std::unordered_set<MoveOnly, std::hash<MoveOnly>,
                             std::equal_to<MoveOnly>, min_allocator<MoveOnly>> C;
@@ -129,6 +126,7 @@ int main()
         assert(*r.first == 5);
         assert(r.second);
     }
-#endif  // _LIBCPP_HAS_NO_RVALUE_REFERENCES
-#endif
+#endif // TEST_STD_VER >= 11
+
+  return 0;
 }

@@ -1,9 +1,8 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -11,11 +10,12 @@
 
 // template<class T>
 //   complex<T>
-//   polar(const T& rho, const T& theta = 0);
+//   polar(const T& rho, const T& theta = T());  // changed from '0' by LWG#2870
 
 #include <complex>
 #include <cassert>
 
+#include "test_macros.h"
 #include "../cases.h"
 
 template <class T>
@@ -103,10 +103,12 @@ void test_edges()
     }
 }
 
-int main()
+int main(int, char**)
 {
     test<float>();
     test<double>();
     test<long double>();
     test_edges();
+
+  return 0;
 }

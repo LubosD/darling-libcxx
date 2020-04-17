@@ -1,13 +1,14 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 //
 // UNSUPPORTED: c++98, c++03, c++11, c++14
+
+// XFAIL: dylib-has-no-bad_optional_access && !libcpp-no-exceptions
 
 // <optional>
 
@@ -19,8 +20,8 @@
 #include <cassert>
 
 #include "test_macros.h"
-#include "archetypes.hpp"
-#include "test_convertible.hpp"
+#include "archetypes.h"
+#include "test_convertible.h"
 
 
 using std::optional;
@@ -33,6 +34,11 @@ struct ImplicitThrow
 struct ExplicitThrow
 {
     constexpr explicit ExplicitThrow(int x) { if (x != -1) TEST_THROW(6);}
+};
+
+struct ImplicitAny {
+  template <class U>
+  constexpr ImplicitAny(U&&) {}
 };
 
 
@@ -79,6 +85,15 @@ void test_implicit()
         using T = TestTypes::TestType;
         assert(implicit_conversion<T>(3, T(3)));
     }
+  {
+    using O = optional<ImplicitAny>;
+    static_assert(!test_convertible<O, std::in_place_t>(), "");
+    static_assert(!test_convertible<O, std::in_place_t&>(), "");
+    static_assert(!test_convertible<O, const std::in_place_t&>(), "");
+    static_assert(!test_convertible<O, std::in_place_t&&>(), "");
+    static_assert(!test_convertible<O, const std::in_place_t&&>(), "");
+
+  }
 #ifndef TEST_HAS_NO_EXCEPTIONS
     {
         try {
@@ -132,7 +147,9 @@ void test_explicit() {
 #endif
 }
 
-int main() {
+int main(int, char**) {
     test_implicit();
     test_explicit();
+
+  return 0;
 }

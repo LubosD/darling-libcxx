@@ -1,9 +1,8 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -17,6 +16,8 @@
 #include <type_traits>
 #include <cassert>
 
+#include "test_macros.h"
+
 using std::optional;
 
 struct X
@@ -27,7 +28,7 @@ struct X
 
 bool X::dtor_called = false;
 
-int main()
+int main(int, char**)
 {
     {
         optional<int> opt;
@@ -48,7 +49,6 @@ int main()
         assert(X::dtor_called == false);
         assert(static_cast<bool>(opt) == false);
     }
-    assert(X::dtor_called == false); // TRANSITION, Clang/C2 VSO#239997
     {
         optional<X> opt(X{});
         X::dtor_called = false;
@@ -57,5 +57,6 @@ int main()
         assert(static_cast<bool>(opt) == false);
         X::dtor_called = false;
     }
-    assert(X::dtor_called == false); // TRANSITION, Clang/C2 VSO#239997
+
+  return 0;
 }

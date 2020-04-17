@@ -1,9 +1,8 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -26,7 +25,7 @@
 #include <cassert>
 
 #include "test_macros.h"
-#include "count_new.hpp"
+#include "count_new.h"
 
 struct T
     : public std::enable_shared_from_this<T>
@@ -41,7 +40,7 @@ void nullDeleter(void*) {}
 
 struct Foo : virtual public std::enable_shared_from_this<Foo>
 {
-	virtual ~Foo() {}
+    virtual ~Foo() {}
 };
 
 struct Bar : public Foo {
@@ -49,7 +48,11 @@ struct Bar : public Foo {
 };
 
 
-int main()
+struct PrivateBase : private std::enable_shared_from_this<PrivateBase> {
+};
+
+
+int main(int, char**)
 {
     {  // https://bugs.llvm.org/show_bug.cgi?id=18843
     std::shared_ptr<T const> t1(new T);
@@ -74,8 +77,13 @@ int main()
     assert(p == q);
     assert(!p.owner_before(q) && !q.owner_before(p)); // p and q share ownership
     }
+    {
+      typedef std::shared_ptr<PrivateBase> APtr;
+      APtr a1 = std::make_shared<PrivateBase>();
+      assert(a1.use_count() == 1);
+    }
     // Test LWG issue 2529. Only reset '__weak_ptr_' when it's already expired.
-    // http://cplusplus.github.io/LWG/lwg-active.html#2529.
+    // https://cplusplus.github.io/LWG/lwg-defects.html#2529
     // Test two different ways:
     // * Using 'weak_from_this().expired()' in C++17.
     // * Using 'shared_from_this()' in all dialects.
@@ -125,7 +133,7 @@ int main()
 
 #ifndef TEST_HAS_NO_EXCEPTIONS
         try {
-            ptr->shared_from_this();
+            TEST_IGNORE_NODISCARD ptr->shared_from_this();
             assert(false);
         } catch (std::bad_weak_ptr const&) {
         } catch (...) { assert(false); }
@@ -159,4 +167,6 @@ int main()
         assert(my_weak.lock().get() == ptr);
     }
 #endif
+
+  return 0;
 }

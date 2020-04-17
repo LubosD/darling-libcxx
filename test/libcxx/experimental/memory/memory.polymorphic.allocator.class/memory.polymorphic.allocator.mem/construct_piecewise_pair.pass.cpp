@@ -1,9 +1,8 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -46,7 +45,9 @@
 #include <tuple>
 #include <cassert>
 #include <cstdlib>
-#include "test_memory_resource.hpp"
+#include "test_memory_resource.h"
+
+#include "test_macros.h"
 
 namespace ex = std::experimental::pmr;
 
@@ -79,12 +80,12 @@ struct CountCopies {
 };
 
 struct CountCopiesAllocV1 {
-  typedef ex::memory_resource* allocator_type;
-  allocator_type alloc;
+  typedef ex::polymorphic_allocator<char> allocator_type;
+  ex::memory_resource *alloc;
   int count;
   CountCopiesAllocV1() : alloc(nullptr), count(0) {}
   CountCopiesAllocV1(std::allocator_arg_t, allocator_type const& a,
-                     CountCopiesAllocV1 const& o) : alloc(a), count(o.count + 1)
+                     CountCopiesAllocV1 const& o) : alloc(a.resource()), count(o.count + 1)
   {}
 
   CountCopiesAllocV1(CountCopiesAllocV1 const& o) : count(o.count + 1) {}
@@ -92,28 +93,24 @@ struct CountCopiesAllocV1 {
 
 
 struct CountCopiesAllocV2 {
-  typedef ex::memory_resource* allocator_type;
-  allocator_type alloc;
+  typedef ex::polymorphic_allocator<char> allocator_type;
+  ex::memory_resource *alloc;
   int count;
   CountCopiesAllocV2() : alloc(nullptr), count(0) {}
   CountCopiesAllocV2(CountCopiesAllocV2 const& o, allocator_type const& a)
-    : alloc(a), count(o.count + 1)
+    : alloc(a.resource()), count(o.count + 1)
   { }
 
   CountCopiesAllocV2(CountCopiesAllocV2 const& o) : count(o.count + 1) {}
 };
 
 
-int main()
+int main(int, char**)
 {
-    using PMR = ex::memory_resource*;
-    using PMA = ex::polymorphic_allocator<char>;
-
     {
         using T = CountCopies;
         using U = CountCopiesAllocV1;
         using P = std::pair<T, U>;
-        using TH = TestHarness<P>;
 
         std::tuple<T> t1;
         std::tuple<U> t2;
@@ -129,7 +126,6 @@ int main()
         using T = CountCopiesAllocV1;
         using U = CountCopiesAllocV2;
         using P = std::pair<T, U>;
-        using TH = TestHarness<P>;
 
         std::tuple<T> t1;
         std::tuple<U> t2;
@@ -146,7 +142,6 @@ int main()
         using T = CountCopiesAllocV2;
         using U = CountCopiesAllocV1;
         using P = std::pair<T, U>;
-        using TH = TestHarness<P>;
 
         std::tuple<T> t1;
         std::tuple<U> t2;
@@ -163,7 +158,6 @@ int main()
         using T = CountCopiesAllocV2;
         using U = CountCopies;
         using P = std::pair<T, U>;
-        using TH = TestHarness<P>;
 
         std::tuple<T> t1;
         std::tuple<U> t2;
@@ -175,4 +169,6 @@ int main()
         assert(p.first.alloc == h.M);
         assert(p.second.count == 2);
     }
+
+  return 0;
 }

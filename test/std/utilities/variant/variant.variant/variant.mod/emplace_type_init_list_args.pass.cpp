@@ -1,29 +1,30 @@
 // -*- C++ -*-
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
 // UNSUPPORTED: c++98, c++03, c++11, c++14
+
+// XFAIL: dylib-has-no-bad_variant_access && !libcpp-no-exceptions
 
 // <variant>
 
 // template <class ...Types> class variant;
 
 // template <class T, class U, class ...Args>
-// void emplace(initializer_list<U> il,Args&&... args);
+//   T& emplace(initializer_list<U> il,Args&&... args);
 
 #include <cassert>
 #include <string>
 #include <type_traits>
 #include <variant>
 
-#include "archetypes.hpp"
-#include "test_convertible.hpp"
+#include "archetypes.h"
+#include "test_convertible.h"
 #include "test_macros.h"
 
 struct InitList {
@@ -70,16 +71,24 @@ void test_emplace_sfinae() {
 void test_basic() {
   using V = std::variant<int, InitList, InitListArg, TestTypes::NoCtors>;
   V v;
-  v.emplace<InitList>({1, 2, 3});
+  auto& ref1 = v.emplace<InitList>({1, 2, 3});
+  static_assert(std::is_same_v<InitList&,decltype(ref1)>, "");
   assert(std::get<InitList>(v).size == 3);
-  v.emplace<InitListArg>({1, 2, 3, 4}, 42);
+  assert(&ref1 == &std::get<InitList>(v));
+  auto& ref2 = v.emplace<InitListArg>({1, 2, 3, 4}, 42);
+  static_assert(std::is_same_v<InitListArg&,decltype(ref2)>, "");
   assert(std::get<InitListArg>(v).size == 4);
   assert(std::get<InitListArg>(v).value == 42);
-  v.emplace<InitList>({1});
+  assert(&ref2 == &std::get<InitListArg>(v));
+  auto& ref3 = v.emplace<InitList>({1});
+  static_assert(std::is_same_v<InitList&,decltype(ref3)>, "");
   assert(std::get<InitList>(v).size == 1);
+  assert(&ref3 == &std::get<InitList>(v));
 }
 
-int main() {
+int main(int, char**) {
   test_basic();
   test_emplace_sfinae();
+
+  return 0;
 }

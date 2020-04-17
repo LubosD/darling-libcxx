@@ -1,11 +1,12 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
+
+// UNSUPPORTED: c++98, c++03
 
 // <set>
 
@@ -16,13 +17,13 @@
 #include <set>
 #include <cassert>
 
+#include "test_macros.h"
 #include "../../../test_compare.h"
 #include "test_allocator.h"
 #include "min_allocator.h"
 
-int main()
+int main(int, char**)
 {
-#ifndef _LIBCPP_HAS_NO_RVALUE_REFERENCES
     {
         typedef int V;
         typedef test_compare<std::less<int> > C;
@@ -34,7 +35,7 @@ int main()
         assert(m.size() == 0);
         assert(distance(m.begin(), m.end()) == 0);
 
-        assert(mo.get_allocator() == A(7));
+        assert(mo.get_allocator() == A(test_alloc_base::moved_value));
         assert(mo.key_comp() == C(5));
         assert(mo.size() == 0);
         assert(distance(mo.begin(), mo.end()) == 0);
@@ -71,13 +72,11 @@ int main()
         assert(*next(m.begin(), 7) == 3);
         assert(*next(m.begin(), 8) == 3);
 
-        assert(mo.get_allocator() == A(7));
+        assert(mo.get_allocator() == A(test_alloc_base::moved_value));
         assert(mo.key_comp() == C(5));
         assert(mo.size() == 0);
         assert(distance(mo.begin(), mo.end()) == 0);
     }
-#endif  // _LIBCPP_HAS_NO_RVALUE_REFERENCES
-#if TEST_STD_VER >= 11
     {
         typedef int V;
         V ar[] =
@@ -115,5 +114,6 @@ int main()
         assert(mo.size() == 0);
         assert(distance(mo.begin(), mo.end()) == 0);
     }
-#endif
+
+  return 0;
 }

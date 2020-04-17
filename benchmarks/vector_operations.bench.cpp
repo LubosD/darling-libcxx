@@ -4,14 +4,22 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "benchmark/benchmark_api.h"
+#include "benchmark/benchmark.h"
 
-#include "ContainerBenchmarks.hpp"
-#include "GenerateInput.hpp"
+#include "ContainerBenchmarks.h"
+#include "GenerateInput.h"
 
 using namespace ContainerBenchmarks;
 
 constexpr std::size_t TestNumInputs = 1024;
+
+BENCHMARK_CAPTURE(BM_ConstructSize,
+    vector_byte,
+    std::vector<unsigned char>{})->Arg(5140480);
+
+BENCHMARK_CAPTURE(BM_ConstructSizeValue,
+    vector_byte,
+    std::vector<unsigned char>{}, 0)->Arg(5140480);
 
 BENCHMARK_CAPTURE(BM_ConstructIterIter,
   vector_char,
@@ -29,4 +37,4 @@ BENCHMARK_CAPTURE(BM_ConstructIterIter,
   getRandomStringInputs)->Arg(TestNumInputs);
 
 
-BENCHMARK_MAIN()
+BENCHMARK_MAIN();

@@ -1,13 +1,15 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
 // UNSUPPORTED: c++98, c++03, c++11, c++14
+
+// XFAIL: dylib-has-no-bad_optional_access && !libcpp-no-exceptions
+
 // <optional>
 
 // constexpr T& optional<T>::value() &;
@@ -44,7 +46,7 @@ test()
 }
 
 
-int main()
+int main(int, char**)
 {
     {
         optional<X> opt; ((void)opt);
@@ -61,7 +63,7 @@ int main()
         optional<X> opt;
         try
         {
-            opt.value();
+            (void)opt.value();
             assert(false);
         }
         catch (const bad_optional_access&)
@@ -70,4 +72,6 @@ int main()
     }
 #endif
     static_assert(test() == 7, "");
+
+  return 0;
 }

@@ -1,9 +1,8 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -15,13 +14,34 @@
 // void swap(basic_fstream& rhs);
 
 #include <fstream>
+#include <utility>
 #include <cassert>
+#include "test_macros.h"
 #include "platform_support.h"
 
-int main()
+std::pair<std::string, std::string> get_temp_file_names() {
+  std::pair<std::string, std::string> names;
+  names.first = get_temp_file_name();
+
+  // Create the file so the next call to `get_temp_file_name()` doesn't
+  // return the same file.
+  std::FILE *fd1 = std::fopen(names.first.c_str(), "w");
+
+  names.second = get_temp_file_name();
+  assert(names.first != names.second);
+
+  std::fclose(fd1);
+  std::remove(names.first.c_str());
+
+  return names;
+}
+
+int main(int, char**)
 {
-    std::string temp1 = get_temp_file_name();
-    std::string temp2 = get_temp_file_name();
+    std::pair<std::string, std::string> temp_files = get_temp_file_names();
+    std::string& temp1 = temp_files.first;
+    std::string& temp2 = temp_files.second;
+    assert(temp1 != temp2);
     {
         std::fstream fs1(temp1.c_str(), std::ios_base::in | std::ios_base::out
                                                   | std::ios_base::trunc);
@@ -68,4 +88,6 @@ int main()
     }
     std::remove(temp1.c_str());
     std::remove(temp2.c_str());
+
+  return 0;
 }

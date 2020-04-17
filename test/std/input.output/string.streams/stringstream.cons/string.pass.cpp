@@ -1,9 +1,8 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -18,7 +17,19 @@
 #include <sstream>
 #include <cassert>
 
-int main()
+#include "test_macros.h"
+
+template<typename T>
+struct NoDefaultAllocator : std::allocator<T>
+{
+  template<typename U> struct rebind { using other = NoDefaultAllocator<U>; };
+  NoDefaultAllocator(int id_) : id(id_) { }
+  template<typename U> NoDefaultAllocator(const NoDefaultAllocator<U>& a) : id(a.id) { }
+  int id;
+};
+
+
+int main(int, char**)
 {
     {
         std::stringstream ss(" 123 456 ");
@@ -46,4 +57,15 @@ int main()
         ss << i << ' ' << 123;
         assert(ss.str() == L"456 1236 ");
     }
+    { // This is https://bugs.llvm.org/show_bug.cgi?id=33727
+        typedef std::basic_string   <char, std::char_traits<char>, NoDefaultAllocator<char> > S;
+        typedef std::basic_stringbuf<char, std::char_traits<char>, NoDefaultAllocator<char> > SB;
+
+        S s(NoDefaultAllocator<char>(1));
+        SB sb(s);
+    //  This test is not required by the standard, but *where else* could it get the allocator?
+        assert(sb.str().get_allocator() == s.get_allocator());
+    }
+
+  return 0;
 }

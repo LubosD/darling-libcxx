@@ -1,17 +1,18 @@
 //===------------------------ memory.cpp ----------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
-#define _LIBCPP_BUILDING_MEMORY
 #include "memory"
 #ifndef _LIBCPP_HAS_NO_THREADS
 #include "mutex"
 #include "thread"
+#if defined(__unix__) && !defined(__ANDROID__) && defined(__ELF__) && defined(_LIBCPP_HAS_COMMENT_LIB_PRAGMA)
+#pragma comment(lib, "pthread")
+#endif
 #endif
 #include "include/atomic_support.h"
 
@@ -120,7 +121,7 @@ __shared_weak_count::lock() _NOEXCEPT
                                              object_owners+1))
             return this;
     }
-    return 0;
+    return nullptr;
 }
 
 #if !defined(_LIBCPP_NO_RTTI) || !defined(_LIBCPP_BUILD_STATIC)
@@ -128,7 +129,7 @@ __shared_weak_count::lock() _NOEXCEPT
 const void*
 __shared_weak_count::__get_deleter(const type_info&) const _NOEXCEPT
 {
-    return 0;
+    return nullptr;
 }
 
 #endif  // _LIBCPP_NO_RTTI
@@ -154,7 +155,7 @@ __sp_mut::lock() _NOEXCEPT
 {
     auto m = static_cast<__libcpp_mutex_t*>(__lx);
     unsigned count = 0;
-    while (__libcpp_mutex_trylock(m) != 0)
+    while (!__libcpp_mutex_trylock(m))
     {
         if (++count > 16)
         {

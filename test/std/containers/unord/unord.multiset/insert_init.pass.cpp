@@ -1,11 +1,12 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
+
+// UNSUPPORTED: c++98, c++03
 
 // <unordered_set>
 
@@ -18,12 +19,12 @@
 #include <unordered_set>
 #include <cassert>
 
+#include "test_macros.h"
 #include "test_iterators.h"
 #include "min_allocator.h"
 
-int main()
+int main(int, char**)
 {
-#ifndef _LIBCPP_HAS_NO_GENERALIZED_INITIALIZERS
     {
         typedef std::unordered_multiset<int> C;
         typedef int P;
@@ -44,7 +45,6 @@ int main()
         assert(c.count(3) == 1);
         assert(c.count(4) == 1);
     }
-#if TEST_STD_VER >= 11
     {
         typedef std::unordered_multiset<int, std::hash<int>,
                                       std::equal_to<int>, min_allocator<int>> C;
@@ -66,6 +66,6 @@ int main()
         assert(c.count(3) == 1);
         assert(c.count(4) == 1);
     }
-#endif
-#endif  // _LIBCPP_HAS_NO_GENERALIZED_INITIALIZERS
+
+  return 0;
 }

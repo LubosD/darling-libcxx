@@ -1,9 +1,8 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -16,10 +15,9 @@
 
 #include <algorithm>
 #include <cassert>
-#ifndef _LIBCPP_HAS_NO_RVALUE_REFERENCES
 #include <memory>
-#endif
 
+#include "test_macros.h"
 #include "test_iterators.h"
 
 template<class Iter1, class Iter2>
@@ -38,8 +36,7 @@ test()
     assert(j[2] == 3);
 }
 
-#ifndef _LIBCPP_HAS_NO_RVALUE_REFERENCES
-
+#if TEST_STD_VER >= 11
 template<class Iter1, class Iter2>
 void
 test1()
@@ -59,8 +56,7 @@ test1()
     assert(*j[1] == 2);
     assert(*j[2] == 3);
 }
-
-#endif  // _LIBCPP_HAS_NO_RVALUE_REFERENCES
+#endif // TEST_STD_VER >= 11
 
 void test2()
 {
@@ -109,7 +105,22 @@ void test2()
     }
 }
 
-int main()
+#if TEST_STD_VER > 17
+constexpr bool test_swap_constexpr()
+{
+    int i[3] = {1, 2, 3};
+    int j[3] = {4, 5, 6};
+    std::swap_ranges(i, i+3, j);
+    return i[0] == 4 &&
+           i[1] == 5 &&
+           i[2] == 6 &&
+           j[0] == 1 &&
+           j[1] == 2 &&
+           j[2] == 3;
+}
+#endif // TEST_STD_VER > 17
+
+int main(int, char**)
 {
     test<forward_iterator<int*>, forward_iterator<int*> >();
     test<forward_iterator<int*>, bidirectional_iterator<int*> >();
@@ -131,8 +142,7 @@ int main()
     test<int*, random_access_iterator<int*> >();
     test<int*, int*>();
 
-#ifndef _LIBCPP_HAS_NO_RVALUE_REFERENCES
-
+#if TEST_STD_VER >= 11
     test1<forward_iterator<std::unique_ptr<int>*>, forward_iterator<std::unique_ptr<int>*> >();
     test1<forward_iterator<std::unique_ptr<int>*>, bidirectional_iterator<std::unique_ptr<int>*> >();
     test1<forward_iterator<std::unique_ptr<int>*>, random_access_iterator<std::unique_ptr<int>*> >();
@@ -152,8 +162,13 @@ int main()
     test1<std::unique_ptr<int>*, bidirectional_iterator<std::unique_ptr<int>*> >();
     test1<std::unique_ptr<int>*, random_access_iterator<std::unique_ptr<int>*> >();
     test1<std::unique_ptr<int>*, std::unique_ptr<int>*>();
+#endif // TEST_STD_VER >= 11
 
-#endif  // _LIBCPP_HAS_NO_RVALUE_REFERENCES
+#if TEST_STD_VER > 17
+    static_assert(test_swap_constexpr());
+#endif // TEST_STD_VER > 17
 
     test2();
+
+  return 0;
 }

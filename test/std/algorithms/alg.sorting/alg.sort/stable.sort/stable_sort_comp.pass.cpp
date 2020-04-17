@@ -1,9 +1,8 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -21,8 +20,9 @@
 #include <random>
 #include <cassert>
 #include <cstddef>
-#ifndef _LIBCPP_HAS_NO_RVALUE_REFERENCES
 #include <memory>
+
+#include "test_macros.h"
 
 struct indirect_less
 {
@@ -30,8 +30,6 @@ struct indirect_less
     bool operator()(const P& x, const P& y)
         {return *x < *y;}
 };
-
-#endif  // _LIBCPP_HAS_NO_RVALUE_REFERENCES
 
 std::mt19937 randomness;
 
@@ -68,11 +66,11 @@ void test()
     assert(std::is_sorted(v.begin(), v.end()));
 }
 
-int main()
+int main(int, char**)
 {
     test();
 
-#ifndef _LIBCPP_HAS_NO_RVALUE_REFERENCES
+#if TEST_STD_VER >= 11
     {
     std::vector<std::unique_ptr<int> > v(1000);
     for (int i = 0; static_cast<std::size_t>(i) < v.size(); ++i)
@@ -83,5 +81,7 @@ int main()
     assert(*v[1] == 1);
     assert(*v[2] == 2);
     }
-#endif  // _LIBCPP_HAS_NO_RVALUE_REFERENCES
+#endif
+
+  return 0;
 }

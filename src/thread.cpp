@@ -1,9 +1,8 @@
 //===------------------------- thread.cpp----------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -19,14 +18,14 @@
 
 #if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
 # include <sys/param.h>
-# if defined(BSD)
+# if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__DragonFly__) || defined(__APPLE__)
 #   include <sys/sysctl.h>
-# endif // defined(BSD)
+# endif
 #endif // defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
 
-#if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__)) || defined(__CloudABI__) || defined(__Fuchsia__)
+#if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__)) || defined(__CloudABI__) || defined(__Fuchsia__) || defined(__wasi__)
 # include <unistd.h>
-#endif // defined(__unix__) || (defined(__APPLE__) && defined(__MACH__)) || defined(__CloudABI__) || defined(__Fuchsia__)
+#endif // defined(__unix__) || (defined(__APPLE__) && defined(__MACH__)) || defined(__CloudABI__) || defined(__Fuchsia__) || defined(__wasi__)
 
 #if defined(__NetBSD__)
 #pragma weak pthread_create // Do not create libpthread dependency
@@ -34,7 +33,11 @@
 
 #if defined(_LIBCPP_WIN32API)
 #include <windows.h>
-#endif // defined(_LIBCPP_WIN32API)
+#endif
+
+#if defined(__unix__) && !defined(__ANDROID__) && defined(__ELF__) && defined(_LIBCPP_HAS_COMMENT_LIB_PRAGMA)
+#pragma comment(lib, "pthread")
+#endif
 
 _LIBCPP_BEGIN_NAMESPACE_STD
 
@@ -99,7 +102,7 @@ thread::hardware_concurrency() _NOEXCEPT
 #else  // defined(CTL_HW) && defined(HW_NCPU)
     // TODO: grovel through /proc or check cpuid on x86 and similar
     // instructions on other architectures.
-#   if defined(_LIBCPP_MSVC)
+#   if defined(_LIBCPP_WARNING)
         _LIBCPP_WARNING("hardware_concurrency not yet implemented")
 #   else
 #       warning hardware_concurrency not yet implemented

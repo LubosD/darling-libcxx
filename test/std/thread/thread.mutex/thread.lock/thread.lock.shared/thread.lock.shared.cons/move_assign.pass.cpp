@@ -1,14 +1,14 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 //
 // UNSUPPORTED: libcpp-has-no-threads
 // UNSUPPORTED: c++98, c++03, c++11
+// XFAIL: dylib-has-no-shared_mutex
 
 // <shared_mutex>
 
@@ -18,15 +18,17 @@
 
 #include <shared_mutex>
 #include <cassert>
-#include "nasty_containers.hpp"
+#include "nasty_containers.h"
+
+#include "test_macros.h"
 
 
-int main()
+int main(int, char**)
 {
     {
     typedef std::shared_timed_mutex M;
-	M m0;
-	M m1;
+    M m0;
+    M m1;
     std::shared_lock<M> lk0(m0);
     std::shared_lock<M> lk1(m1);
     lk1 = std::move(lk0);
@@ -37,8 +39,8 @@ int main()
     }
     {
     typedef nasty_mutex M;
-	M m0;
-	M m1;
+    M m0;
+    M m1;
     std::shared_lock<M> lk0(m0);
     std::shared_lock<M> lk1(m1);
     lk1 = std::move(lk0);
@@ -47,4 +49,6 @@ int main()
     assert(lk0.mutex() == nullptr);
     assert(lk0.owns_lock() == false);
     }
+
+  return 0;
 }

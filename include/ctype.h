@@ -1,10 +1,9 @@
 // -*- C++ -*-
 //===---------------------------- ctype.h ---------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -39,15 +38,6 @@ int toupper(int c);
 #include_next <ctype.h>
 
 #ifdef __cplusplus
-
-#if defined(_LIBCPP_MSVCRT)
-// We support including .h headers inside 'extern "C"' contexts, so switch
-// back to C++ linkage before including these C++ headers.
-extern "C++" {
-  #include "support/win32/support.h"
-  #include "support/win32/locale_win32.h"
-}
-#endif // _LIBCPP_MSVCRT
 
 #undef isalnum
 #undef isalpha

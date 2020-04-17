@@ -1,23 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
 // UNSUPPORTED: c++98, c++03, c++11, c++14
 // <optional>
 
-// optional(const optional<T>& rhs);
+// constexpr optional(const optional<T>& rhs);
 
 #include <optional>
 #include <type_traits>
 #include <cassert>
 
 #include "test_macros.h"
-#include "archetypes.hpp"
+#include "archetypes.h"
 
 using std::optional;
 
@@ -32,13 +31,23 @@ void test(InitArgs&&... args)
         assert(*lhs == *rhs);
 }
 
+template <class T, class ...InitArgs>
+constexpr bool constexpr_test(InitArgs&&... args)
+{
+    static_assert( std::is_trivially_copy_constructible_v<T>, ""); // requirement
+    const optional<T> rhs(std::forward<InitArgs>(args)...);
+    optional<T> lhs = rhs;
+    return (lhs.has_value() == rhs.has_value()) &&
+           (lhs.has_value() ? *lhs == *rhs : true);
+}
+
 void test_throwing_ctor() {
 #ifndef TEST_HAS_NO_EXCEPTIONS
     struct Z {
-      Z() : count(0) {}
-      Z(Z const& o) : count(o.count + 1)
-      { if (count == 2) throw 6; }
-      int count;
+        Z() : count(0) {}
+        Z(Z const& o) : count(o.count + 1)
+        { if (count == 2) throw 6; }
+        int count;
     };
     const Z z;
     const optional<Z> rhs(z);
@@ -104,10 +113,13 @@ void test_reference_extension()
 #endif
 }
 
-int main()
+int main(int, char**)
 {
     test<int>();
     test<int>(3);
+    static_assert(constexpr_test<int>(), "" );
+    static_assert(constexpr_test<int>(3), "" );
+
     {
         const optional<const int> o(42);
         optional<const int> o2(o);
@@ -152,4 +164,11 @@ int main()
     {
         test_reference_extension();
     }
+    {
+        constexpr std::optional<int> o1{4};
+        constexpr std::optional<int> o2 = o1;
+        static_assert( *o2 == 4, "" );
+    }
+
+  return 0;
 }

@@ -1,9 +1,8 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -23,7 +22,7 @@
 #include "test_macros.h"
 
 #if TEST_STD_VER >= 11
-#include "poisoned_hash_helper.hpp"
+#include "poisoned_hash_helper.h"
 #include "deleter_types.h"
 #include "min_allocator.h"
 
@@ -50,7 +49,7 @@ namespace std {
 
 template <class T>
 struct hash<::min_pointer<T, std::integral_constant<size_t, 1>>> {
-  size_t operator()(::min_pointer<T, std::integral_constant<size_t, 1>> p) const {
+  size_t operator()(::min_pointer<T, std::integral_constant<size_t, 1>> p) const TEST_NOEXCEPT_FALSE {
     if (!p) return 0;
     return std::hash<T*>{}(std::addressof(*p));
   }
@@ -61,17 +60,21 @@ struct A {};
 
 #endif // TEST_STD_VER >= 11
 
-int main()
+int main(int, char**)
 {
   {
     int* ptr = new int;
     std::unique_ptr<int> p(ptr);
     std::hash<std::unique_ptr<int> > f;
-    ASSERT_NOT_NOEXCEPT(f(p));
     std::size_t h = f(p);
     assert(h == std::hash<int*>()(ptr));
   }
 #if TEST_STD_VER >= 11
+  {
+    std::unique_ptr<int, PointerDeleter<int, 1>> pThrowingHash;
+    std::hash<std::unique_ptr<int, PointerDeleter<int, 1>>> fThrowingHash;
+    ASSERT_NOT_NOEXCEPT(fThrowingHash(pThrowingHash));
+  }
   {
     test_enabled_with_deleter<int, Deleter<int>>();
     test_enabled_with_deleter<int[], Deleter<int[]>>();
@@ -96,4 +99,6 @@ int main()
 #endif
   }
 #endif
+
+  return 0;
 }

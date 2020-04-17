@@ -1,9 +1,8 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -19,6 +18,9 @@
 #include "test_macros.h"
 #include "test_iterators.h"
 #include "min_allocator.h"
+#if TEST_STD_VER >= 11
+#include "emplace_constructible.h"
+#endif
 
 template <class C>
 C
@@ -80,7 +82,7 @@ testNI(int start, int N, int M)
     testI(c1, c2);
 }
 
-int main()
+void basic_test()
 {
     {
     int rng[] = {0, 1, 2, 3, 1023, 1024, 1025, 2047, 2048, 2049};
@@ -102,4 +104,54 @@ int main()
     testNI<std::deque<int, min_allocator<int>> >(1500, 2000, 1000);
     }
 #endif
+}
+
+void test_emplacable_concept() {
+#if TEST_STD_VER >= 11
+  int arr1[] = {42};
+  int arr2[] = {1, 101, 42};
+  {
+    using T = EmplaceConstructibleMoveableAndAssignable<int>;
+    using It = random_access_iterator<int*>;
+    {
+      std::deque<T> v;
+      v.assign(It(arr1), It(std::end(arr1)));
+      assert(v[0].value == 42);
+    }
+    {
+      std::deque<T> v;
+      v.assign(It(arr2), It(std::end(arr2)));
+      assert(v[0].value == 1);
+      assert(v[1].value == 101);
+      assert(v[2].value == 42);
+    }
+  }
+  {
+    using T = EmplaceConstructibleMoveableAndAssignable<int>;
+    using It = input_iterator<int*>;
+    {
+      std::deque<T> v;
+      v.assign(It(arr1), It(std::end(arr1)));
+      assert(v[0].copied == 0);
+      assert(v[0].value == 42);
+    }
+    {
+      std::deque<T> v;
+      v.assign(It(arr2), It(std::end(arr2)));
+      //assert(v[0].copied == 0);
+      assert(v[0].value == 1);
+      //assert(v[1].copied == 0);
+      assert(v[1].value == 101);
+      assert(v[2].copied == 0);
+      assert(v[2].value == 42);
+    }
+  }
+#endif
+}
+
+int main(int, char**) {
+  basic_test();
+  test_emplacable_concept();
+
+  return 0;
 }

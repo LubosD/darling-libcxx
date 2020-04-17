@@ -1,9 +1,8 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -18,6 +17,10 @@
 #include <stdexcept> // for 'invalid_argument'
 
 #include "test_macros.h"
+
+#if defined(TEST_COMPILER_C1XX)
+#pragma warning(disable: 6294) // Ill-defined for-loop:  initial condition does not satisfy test.  Loop body not executed.
+#endif
 
 template <std::size_t N>
 void test_char_pointer_ctor()
@@ -43,7 +46,7 @@ void test_char_pointer_ctor()
     }
 }
 
-int main()
+int main(int, char**)
 {
     test_char_pointer_ctor<0>();
     test_char_pointer_ctor<1>();
@@ -54,4 +57,6 @@ int main()
     test_char_pointer_ctor<64>();
     test_char_pointer_ctor<65>();
     test_char_pointer_ctor<1000>();
+
+  return 0;
 }

@@ -1,9 +1,8 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -19,8 +18,10 @@
 #include <functional>
 #include <random>
 #include <cassert>
-#ifndef _LIBCPP_HAS_NO_RVALUE_REFERENCES
 #include <memory>
+
+#include "test_macros.h"
+#include "test_iterators.h"
 
 struct indirect_less
 {
@@ -28,8 +29,6 @@ struct indirect_less
     bool operator()(const P& x, const P& y)
         {return *x < *y;}
 };
-
-#endif  // _LIBCPP_HAS_NO_RVALUE_REFERENCES
 
 std::mt19937 randomness;
 
@@ -44,14 +43,23 @@ void test(int N)
         std::push_heap(ia, ia+i, std::greater<int>());
         assert(std::is_heap(ia, ia+i, std::greater<int>()));
     }
+
+    typedef random_access_iterator<int *> RI;
+    std::shuffle(RI(ia), RI(ia+N), randomness);
+    for (int i = 0; i <= N; ++i)
+    {
+        std::push_heap(RI(ia), RI(ia+i), std::greater<int>());
+        assert(std::is_heap(RI(ia), RI(ia+i), std::greater<int>()));
+    }
+
     delete [] ia;
 }
 
-int main()
+int main(int, char**)
 {
     test(1000);
 
-#ifndef _LIBCPP_HAS_NO_RVALUE_REFERENCES
+#if TEST_STD_VER >= 11
     {
     const int N = 1000;
     std::unique_ptr<int>* ia = new std::unique_ptr<int> [N];
@@ -65,5 +73,7 @@ int main()
     }
     delete [] ia;
     }
-#endif  // _LIBCPP_HAS_NO_RVALUE_REFERENCES
+#endif
+
+  return 0;
 }

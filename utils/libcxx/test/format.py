@@ -1,9 +1,8 @@
 #===----------------------------------------------------------------------===##
 #
-#                     The LLVM Compiler Infrastructure
-#
-# This file is dual licensed under the MIT and the University of Illinois Open
-# Source Licenses. See LICENSE.TXT for details.
+# Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+# See https://llvm.org/LICENSE.txt for license information.
+# SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 #
 #===----------------------------------------------------------------------===##
 
@@ -87,13 +86,21 @@ class LibcxxTestFormat(object):
         name_root, name_ext = os.path.splitext(name)
         is_libcxx_test = test.path_in_suite[0] == 'libcxx'
         is_sh_test = name_root.endswith('.sh')
-        is_pass_test = name.endswith('.pass.cpp')
-        is_fail_test = name.endswith('.fail.cpp')
-        assert is_sh_test or name_ext == '.cpp', 'non-cpp file must be sh test'
+        is_pass_test = name.endswith('.pass.cpp') or name.endswith('.pass.mm')
+        is_fail_test = name.endswith('.fail.cpp') or name.endswith('.fail.mm')
+        is_objcxx_test = name.endswith('.mm')
+        is_objcxx_arc_test = name.endswith('.arc.pass.mm') or \
+                             name.endswith('.arc.fail.mm')
+        assert is_sh_test or name_ext == '.cpp' or name_ext == '.mm', \
+            'non-cpp file must be sh test'
 
         if test.config.unsupported:
             return (lit.Test.UNSUPPORTED,
                     "A lit.local.cfg marked this unsupported")
+
+        if is_objcxx_test and not \
+           'objective-c++' in test.config.available_features:
+            return (lit.Test.UNSUPPORTED, "Objective-C++ is not supported")
 
         parsers = self._make_custom_parsers()
         script = lit.TestRunner.parseIntegratedTestScript(
@@ -128,10 +135,18 @@ class LibcxxTestFormat(object):
             # If we see this we need to build the test against uniquely built
             # modules.
             if is_libcxx_test:
-                with open(test.getSourcePath(), 'r') as f:
+                with open(test.getSourcePath(), 'rb') as f:
                     contents = f.read()
-                if '#define _LIBCPP_ASSERT' in contents:
+                if b'#define _LIBCPP_ASSERT' in contents:
                     test_cxx.useModules(False)
+
+        if is_objcxx_test:
+            test_cxx.source_lang = 'objective-c++'
+            if is_objcxx_arc_test:
+                test_cxx.compile_flags += ['-fobjc-arc']
+            else:
+                test_cxx.compile_flags += ['-fno-objc-arc']
+            test_cxx.link_flags += ['-framework', 'Foundation']
 
         # Dispatch the test based on its suffix.
         if is_sh_test:
@@ -139,7 +154,7 @@ class LibcxxTestFormat(object):
                 # We can't run ShTest tests with a executor yet.
                 # For now, bail on trying to run them
                 return lit.Test.UNSUPPORTED, 'ShTest format not yet supported'
-            test.config.enviroment = dict(self.exec_env)
+            test.config.environment = dict(self.exec_env)
             return lit.TestRunner._runShTest(test, lit_config,
                                              self.execute_external, script,
                                              tmpBase)
@@ -172,7 +187,7 @@ class LibcxxTestFormat(object):
             if rc != 0:
                 report = libcxx.util.makeReport(cmd, out, err, rc)
                 report += "Compilation failed unexpectedly!"
-                return lit.Test.FAIL, report
+                return lit.Test.Result(lit.Test.FAIL, report)
             # Run the test
             local_cwd = os.path.dirname(source_path)
             env = None
@@ -190,14 +205,14 @@ class LibcxxTestFormat(object):
                 cmd, out, err, rc = self.executor.run(exec_path, [exec_path],
                                                       local_cwd, data_files,
                                                       env)
+                report = "Compiled With: '%s'\n" % ' '.join(compile_cmd)
+                report += libcxx.util.makeReport(cmd, out, err, rc)
                 if rc == 0:
                     res = lit.Test.PASS if retry_count == 0 else lit.Test.FLAKYPASS
-                    return res, ''
+                    return lit.Test.Result(res, report)
                 elif rc != 0 and retry_count + 1 == max_retry:
-                    report = libcxx.util.makeReport(cmd, out, err, rc)
-                    report = "Compiled With: %s\n%s" % (compile_cmd, report)
                     report += "Compiled test failed unexpectedly!"
-                    return lit.Test.FAIL, report
+                    return lit.Test.Result(lit.Test.FAIL, report)
 
             assert False # Unreachable
         finally:
@@ -209,10 +224,11 @@ class LibcxxTestFormat(object):
     def _evaluate_fail_test(self, test, test_cxx, parsers):
         source_path = test.getSourcePath()
         # FIXME: lift this detection into LLVM/LIT.
-        with open(source_path, 'r') as f:
+        with open(source_path, 'rb') as f:
             contents = f.read()
-        verify_tags = ['expected-note', 'expected-remark', 'expected-warning',
-                       'expected-error', 'expected-no-diagnostics']
+        verify_tags = [b'expected-note', b'expected-remark',
+                       b'expected-warning', b'expected-error',
+                       b'expected-no-diagnostics']
         use_verify = self.use_verify_for_fail and \
                      any([tag in contents for tag in verify_tags])
         # FIXME(EricWF): GCC 5 does not evaluate static assertions that
@@ -226,13 +242,24 @@ class LibcxxTestFormat(object):
             test_cxx.useWarnings()
             if '-Wuser-defined-warnings' in test_cxx.warning_flags:
                 test_cxx.warning_flags += ['-Wno-error=user-defined-warnings']
-
-        cmd, out, err, rc = test_cxx.compile(source_path, out=os.devnull)
-        expected_rc = 0 if use_verify else 1
-        if rc == expected_rc:
-            return lit.Test.PASS, ''
         else:
-            report = libcxx.util.makeReport(cmd, out, err, rc)
-            report_msg = ('Expected compilation to fail!' if not use_verify else
-                          'Expected compilation using verify to pass!')
-            return lit.Test.FAIL, report + report_msg + '\n'
+            # We still need to enable certain warnings on .fail.cpp test when
+            # -verify isn't enabled. Such as -Werror=unused-result. However,
+            # we don't want it enabled too liberally, which might incorrectly
+            # allow unrelated failure tests to 'pass'.
+            #
+            # Therefore, we check if the test was expected to fail because of
+            # nodiscard before enabling it
+            test_str_list = [b'ignoring return value', b'nodiscard',
+                             b'NODISCARD']
+            if any(test_str in contents for test_str in test_str_list):
+                test_cxx.flags += ['-Werror=unused-result']
+        cmd, out, err, rc = test_cxx.compile(source_path, out=os.devnull)
+        check_rc = lambda rc: rc == 0 if use_verify else rc != 0
+        report = libcxx.util.makeReport(cmd, out, err, rc)
+        if check_rc(rc):
+            return lit.Test.Result(lit.Test.PASS, report)
+        else:
+            report += ('Expected compilation to fail!\n' if not use_verify else
+                       'Expected compilation using verify to pass!\n')
+            return lit.Test.Result(lit.Test.FAIL, report)

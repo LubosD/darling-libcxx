@@ -1,11 +1,12 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
+
+// UNSUPPORTED: c++98, c++03
 
 // <unordered_map>
 
@@ -16,9 +17,6 @@
 // template <class... Args>
 //     iterator emplace_hint(const_iterator p, Args&&... args);
 
-#if _LIBCPP_DEBUG >= 1
-#define _LIBCPP_ASSERT(x, m) ((x) ? (void)0 : std::exit(0))
-#endif
 
 #include <unordered_map>
 #include <cassert>
@@ -27,9 +25,8 @@
 #include "min_allocator.h"
 #include "test_macros.h"
 
-int main()
+int main(int, char**)
 {
-#ifndef _LIBCPP_HAS_NO_RVALUE_REFERENCES
     {
         typedef std::unordered_multimap<int, Emplaceable> C;
         typedef C::iterator R;
@@ -60,7 +57,6 @@ int main()
         assert(r->first == 3);
         LIBCPP_ASSERT(r->second == Emplaceable(5, 6));
     }
-#if TEST_STD_VER >= 11
     {
         typedef std::unordered_multimap<int, Emplaceable, std::hash<int>, std::equal_to<int>,
                             min_allocator<std::pair<const int, Emplaceable>>> C;
@@ -92,19 +88,6 @@ int main()
         assert(r->first == 3);
         LIBCPP_ASSERT(r->second == Emplaceable(5, 6));
     }
-#endif
-#if _LIBCPP_DEBUG >= 1
-    {
-        typedef std::unordered_multimap<int, Emplaceable> C;
-        typedef C::iterator R;
-        typedef C::value_type P;
-        C c;
-        C c2;
-        R r = c.emplace_hint(c2.end(), std::piecewise_construct,
-                                       std::forward_as_tuple(3),
-                                       std::forward_as_tuple());
-        assert(false);
-    }
-#endif
-#endif  // _LIBCPP_HAS_NO_RVALUE_REFERENCES
+
+  return 0;
 }

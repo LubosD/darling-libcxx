@@ -1,11 +1,12 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
+
+// UNSUPPORTED: c++98, c++03
 
 // template<class E>
 // class initializer_list
@@ -22,16 +23,18 @@
 #include <initializer_list>
 #include <type_traits>
 
+#include "test_macros.h"
+
 struct A {};
 
-int main()
+int main(int, char**)
 {
-#ifndef _LIBCPP_HAS_NO_GENERALIZED_INITIALIZERS
     static_assert((std::is_same<std::initializer_list<A>::value_type, A>::value), "");
     static_assert((std::is_same<std::initializer_list<A>::reference, const A&>::value), "");
     static_assert((std::is_same<std::initializer_list<A>::const_reference, const A&>::value), "");
     static_assert((std::is_same<std::initializer_list<A>::size_type, std::size_t>::value), "");
     static_assert((std::is_same<std::initializer_list<A>::iterator, const A*>::value), "");
     static_assert((std::is_same<std::initializer_list<A>::const_iterator, const A*>::value), "");
-#endif  // _LIBCPP_HAS_NO_GENERALIZED_INITIALIZERS
+
+  return 0;
 }

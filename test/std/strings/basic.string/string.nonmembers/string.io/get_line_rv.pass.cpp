@@ -1,11 +1,12 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
+
+// UNSUPPORTED: c++98, c++03
 
 // <string>
 
@@ -18,11 +19,11 @@
 #include <sstream>
 #include <cassert>
 
+#include "test_macros.h"
 #include "min_allocator.h"
 
-int main()
+int main(int, char**)
 {
-#ifndef _LIBCPP_HAS_NO_RVALUE_REFERENCES
     {
         std::string s("initial text");
         getline(std::istringstream(" abc\n  def\n   ghij"), s);
@@ -33,7 +34,6 @@ int main()
         getline(std::wistringstream(L" abc\n  def\n   ghij"), s);
         assert(s == L" abc");
     }
-#if TEST_STD_VER >= 11
     {
         typedef std::basic_string<char, std::char_traits<char>, min_allocator<char>> S;
         S s("initial text");
@@ -46,6 +46,6 @@ int main()
         getline(std::wistringstream(L" abc\n  def\n   ghij"), s);
         assert(s == L" abc");
     }
-#endif
-#endif  // _LIBCPP_HAS_NO_RVALUE_REFERENCES
+
+  return 0;
 }

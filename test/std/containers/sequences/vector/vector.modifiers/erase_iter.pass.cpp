@@ -1,9 +1,8 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -15,10 +14,26 @@
 #include <iterator>
 #include <cassert>
 
+#include "test_macros.h"
 #include "min_allocator.h"
 #include "asan_testing.h"
 
-int main()
+#ifndef TEST_HAS_NO_EXCEPTIONS
+struct Throws {
+    Throws() : v_(0) {}
+    Throws(int v) : v_(v) {}
+    Throws(const Throws  &rhs) : v_(rhs.v_) { if (sThrows) throw 1; }
+    Throws(      Throws &&rhs) : v_(rhs.v_) { if (sThrows) throw 1; }
+    Throws& operator=(const Throws  &rhs) { v_ = rhs.v_; return *this; }
+    Throws& operator=(      Throws &&rhs) { v_ = rhs.v_; return *this; }
+    int v_;
+    static bool sThrows;
+    };
+
+bool Throws::sThrows = false;
+#endif
+
+int main(int, char**)
 {
     {
     int a1[] = {1, 2, 3};
@@ -72,4 +87,19 @@ int main()
     assert(is_contiguous_container_asan_correct(l1));
     }
 #endif
+#ifndef TEST_HAS_NO_EXCEPTIONS
+// Test for LWG2853:
+// Throws: Nothing unless an exception is thrown by the assignment operator or move assignment operator of T.
+    {
+    Throws arr[] = {1, 2, 3};
+    std::vector<Throws> v(arr, arr+3);
+    Throws::sThrows = true;
+    v.erase(v.begin());
+    v.erase(--v.end());
+    v.erase(v.begin());
+    assert(v.size() == 0);
+    }
+#endif
+
+  return 0;
 }

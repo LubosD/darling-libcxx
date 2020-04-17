@@ -1,22 +1,25 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
+
+// UNSUPPORTED: c++98, c++03
 
 // <utility>
 
 // template <class T1, class T2> struct pair
 
-// struct piecewise_construct_t { };
+// struct piecewise_construct_t { explicit piecewise_construct_t() = default; };
 // constexpr piecewise_construct_t piecewise_construct = piecewise_construct_t();
 
 #include <utility>
 #include <tuple>
 #include <cassert>
+
+#include "test_macros.h"
 
 class A
 {
@@ -40,9 +43,8 @@ public:
     unsigned get_u2() const {return u2_;}
 };
 
-int main()
+int main(int, char**)
 {
-#ifndef _LIBCPP_HAS_NO_VARIADICS
     std::pair<A, B> p(std::piecewise_construct,
                       std::make_tuple(4, 'a'),
                       std::make_tuple(3.5, 6u, 2u));
@@ -51,5 +53,6 @@ int main()
     assert(p.second.get_d() == 3.5);
     assert(p.second.get_u1() == 6u);
     assert(p.second.get_u2() == 2u);
-#endif
+
+  return 0;
 }

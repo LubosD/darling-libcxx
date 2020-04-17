@@ -1,11 +1,12 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
+
+// UNSUPPORTED: c++98, c++03
 
 // <random>
 
@@ -17,9 +18,10 @@
 #include <random>
 #include <cassert>
 
-int main()
+#include "test_macros.h"
+
+int main(int, char**)
 {
-#ifndef _LIBCPP_HAS_NO_GENERALIZED_INITIALIZERS
     {
         typedef std::piecewise_constant_distribution<> D;
         D d;
@@ -31,5 +33,6 @@ int main()
         assert(dn.size() == 1);
         assert(dn[0] == 1);
     }
-#endif  // _LIBCPP_HAS_NO_GENERALIZED_INITIALIZERS
+
+  return 0;
 }

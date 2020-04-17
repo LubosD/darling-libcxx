@@ -1,10 +1,9 @@
 // -*- C++ -*-
 //===--------------------------- thread -----------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -14,8 +13,6 @@
 /*
 
     thread synopsis
-
-#define __STDCPP_THREADS__ __cplusplus
 
 namespace std
 {
@@ -95,7 +92,7 @@ void sleep_for(const chrono::duration<Rep, Period>& rel_time);
 #include <system_error>
 #include <chrono>
 #include <__mutex_base>
-#ifndef _LIBCPP_HAS_NO_VARIADICS
+#ifndef _LIBCPP_CXX03_LANG
 #include <tuple>
 #endif
 #include <__threading_support>
@@ -105,7 +102,8 @@ void sleep_for(const chrono::duration<Rep, Period>& rel_time);
 #pragma GCC system_header
 #endif
 
-#define __STDCPP_THREADS__ __cplusplus
+_LIBCPP_PUSH_MACROS
+#include <__undef_macros>
 
 #ifdef _LIBCPP_HAS_NO_THREADS
 #error <thread> is not supported on this single threaded system
@@ -148,7 +146,7 @@ class __thread_specific_ptr
     __thread_specific_ptr(const __thread_specific_ptr&);
     __thread_specific_ptr& operator=(const __thread_specific_ptr&);
 
-    static void _LIBCPP_TLS_DESTRUCTOR_CC __at_thread_exit(void*);
+    _LIBCPP_HIDDEN static void _LIBCPP_TLS_DESTRUCTOR_CC __at_thread_exit(void*);
 
 public:
     typedef _Tp* pointer;
@@ -198,64 +196,6 @@ __thread_specific_ptr<_Tp>::set_pointer(pointer __p)
     __libcpp_tls_set(__key_, __p);
 }
 
-class _LIBCPP_TYPE_VIS thread;
-class _LIBCPP_TYPE_VIS __thread_id;
-
-namespace this_thread
-{
-
-_LIBCPP_INLINE_VISIBILITY __thread_id get_id() _NOEXCEPT;
-
-}  // this_thread
-
-template<> struct hash<__thread_id>;
-
-class _LIBCPP_TEMPLATE_VIS __thread_id
-{
-    // FIXME: pthread_t is a pointer on Darwin but a long on Linux.
-    // NULL is the no-thread value on Darwin.  Someone needs to check
-    // on other platforms.  We assume 0 works everywhere for now.
-    __libcpp_thread_id __id_;
-
-public:
-    _LIBCPP_INLINE_VISIBILITY
-    __thread_id() _NOEXCEPT : __id_(0) {}
-
-    friend _LIBCPP_INLINE_VISIBILITY
-        bool operator==(__thread_id __x, __thread_id __y) _NOEXCEPT
-        {return __libcpp_thread_id_equal(__x.__id_, __y.__id_);}
-    friend _LIBCPP_INLINE_VISIBILITY
-        bool operator!=(__thread_id __x, __thread_id __y) _NOEXCEPT
-        {return !(__x == __y);}
-    friend _LIBCPP_INLINE_VISIBILITY
-        bool operator< (__thread_id __x, __thread_id __y) _NOEXCEPT
-        {return  __libcpp_thread_id_less(__x.__id_, __y.__id_);}
-    friend _LIBCPP_INLINE_VISIBILITY
-        bool operator<=(__thread_id __x, __thread_id __y) _NOEXCEPT
-        {return !(__y < __x);}
-    friend _LIBCPP_INLINE_VISIBILITY
-        bool operator> (__thread_id __x, __thread_id __y) _NOEXCEPT
-        {return   __y < __x ;}
-    friend _LIBCPP_INLINE_VISIBILITY
-        bool operator>=(__thread_id __x, __thread_id __y) _NOEXCEPT
-        {return !(__x < __y);}
-
-    template<class _CharT, class _Traits>
-    friend
-    _LIBCPP_INLINE_VISIBILITY
-    basic_ostream<_CharT, _Traits>&
-    operator<<(basic_ostream<_CharT, _Traits>& __os, __thread_id __id)
-        {return __os << __id.__id_;}
-
-private:
-    _LIBCPP_INLINE_VISIBILITY
-    __thread_id(__libcpp_thread_id __id) : __id_(__id) {}
-
-    friend __thread_id this_thread::get_id() _NOEXCEPT;
-    friend class _LIBCPP_TYPE_VIS thread;
-    friend struct _LIBCPP_TEMPLATE_VIS hash<__thread_id>;
-};
-
 template<>
 struct _LIBCPP_TEMPLATE_VIS hash<__thread_id>
     : public unary_function<__thread_id, size_t>
@@ -267,17 +207,11 @@ struct _LIBCPP_TEMPLATE_VIS hash<__thread_id>
     }
 };
 
-namespace this_thread
-{
-
-inline _LIBCPP_INLINE_VISIBILITY
-__thread_id
-get_id() _NOEXCEPT
-{
-    return __libcpp_thread_get_current_id();
-}
-
-}  // this_thread
+template<class _CharT, class _Traits>
+_LIBCPP_INLINE_VISIBILITY
+basic_ostream<_CharT, _Traits>&
+operator<<(basic_ostream<_CharT, _Traits>& __os, __thread_id __id)
+{return __os << __id.__id_;}
 
 class _LIBCPP_TYPE_VIS thread
 {
@@ -291,28 +225,28 @@ public:
 
     _LIBCPP_INLINE_VISIBILITY
     thread() _NOEXCEPT : __t_(_LIBCPP_NULL_THREAD) {}
-#ifndef _LIBCPP_HAS_NO_VARIADICS
+#ifndef _LIBCPP_CXX03_LANG
     template <class _Fp, class ..._Args,
               class = typename enable_if
               <
-                   !is_same<typename decay<_Fp>::type, thread>::value
+                   !is_same<typename __uncvref<_Fp>::type, thread>::value
               >::type
              >
         _LIBCPP_METHOD_TEMPLATE_IMPLICIT_INSTANTIATION_VIS
         explicit thread(_Fp&& __f, _Args&&... __args);
-#else  // _LIBCPP_HAS_NO_VARIADICS
+#else  // _LIBCPP_CXX03_LANG
     template <class _Fp>
     _LIBCPP_METHOD_TEMPLATE_IMPLICIT_INSTANTIATION_VIS
     explicit thread(_Fp __f);
 #endif
     ~thread();
 
-#ifndef _LIBCPP_HAS_NO_RVALUE_REFERENCES
+#ifndef _LIBCPP_CXX03_LANG
     _LIBCPP_INLINE_VISIBILITY
     thread(thread&& __t) _NOEXCEPT : __t_(__t.__t_) {__t.__t_ = _LIBCPP_NULL_THREAD;}
     _LIBCPP_INLINE_VISIBILITY
     thread& operator=(thread&& __t) _NOEXCEPT;
-#endif  // _LIBCPP_HAS_NO_RVALUE_REFERENCES
+#endif  // _LIBCPP_CXX03_LANG
 
     _LIBCPP_INLINE_VISIBILITY
     void swap(thread& __t) _NOEXCEPT {_VSTD::swap(__t_, __t.__t_);}
@@ -329,7 +263,7 @@ public:
     static unsigned hardware_concurrency() _NOEXCEPT;
 };
 
-#ifndef _LIBCPP_HAS_NO_VARIADICS
+#ifndef _LIBCPP_CXX03_LANG
 
 template <class _TSp, class _Fp, class ..._Args, size_t ..._Indices>
 inline _LIBCPP_INLINE_VISIBILITY
@@ -369,7 +303,18 @@ thread::thread(_Fp&& __f, _Args&&... __args)
         __throw_system_error(__ec, "thread constructor failed");
 }
 
-#else  // _LIBCPP_HAS_NO_VARIADICS
+inline
+thread&
+thread::operator=(thread&& __t) _NOEXCEPT
+{
+    if (!__libcpp_thread_isnull(&__t_))
+        terminate();
+    __t_ = __t.__t_;
+    __t.__t_ = _LIBCPP_NULL_THREAD;
+    return *this;
+}
+
+#else  // _LIBCPP_CXX03_LANG
 
 template <class _Fp>
 struct __thread_invoke_pair {
@@ -404,22 +349,7 @@ thread::thread(_Fp __f)
         __throw_system_error(__ec, "thread constructor failed");
 }
 
-#endif  // _LIBCPP_HAS_NO_VARIADICS
-
-#ifndef _LIBCPP_HAS_NO_RVALUE_REFERENCES
-
-inline
-thread&
-thread::operator=(thread&& __t) _NOEXCEPT
-{
-    if (!__libcpp_thread_isnull(&__t_))
-        terminate();
-    __t_ = __t.__t_;
-    __t.__t_ = _LIBCPP_NULL_THREAD;
-    return *this;
-}
-
-#endif  // _LIBCPP_HAS_NO_RVALUE_REFERENCES
+#endif  // _LIBCPP_CXX03_LANG
 
 inline _LIBCPP_INLINE_VISIBILITY
 void swap(thread& __x, thread& __y) _NOEXCEPT {__x.swap(__y);}
@@ -436,7 +366,12 @@ sleep_for(const chrono::duration<_Rep, _Period>& __d)
     using namespace chrono;
     if (__d > duration<_Rep, _Period>::zero())
     {
+#if defined(_LIBCPP_COMPILER_GCC) && (__powerpc__ || __POWERPC__)
+    //  GCC's long double const folding is incomplete for IBM128 long doubles.
         _LIBCPP_CONSTEXPR duration<long double> _Max = nanoseconds::max();
+#else
+        _LIBCPP_CONSTEXPR duration<long double> _Max = duration<long double>(ULLONG_MAX/1000000000ULL) ;
+#endif
         nanoseconds __ns;
         if (__d < _Max)
         {
@@ -479,5 +414,7 @@ void yield() _NOEXCEPT {__libcpp_thread_yield();}
 _LIBCPP_END_NAMESPACE_STD
 
 #endif // !_LIBCPP_HAS_NO_THREADS
+
+_LIBCPP_POP_MACROS
 
 #endif  // _LIBCPP_THREAD

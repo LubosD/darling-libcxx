@@ -1,11 +1,12 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
+
+// UNSUPPORTED: c++98, c++03
 
 // <vector>
 
@@ -14,11 +15,11 @@
 #include <vector>
 #include <cassert>
 
+#include "test_macros.h"
 #include "min_allocator.h"
 
-int main()
+int main(int, char**)
 {
-#ifndef _LIBCPP_HAS_NO_GENERALIZED_INITIALIZERS
     {
     std::vector<bool> d(10, true);
     std::vector<bool>::iterator i = d.insert(d.cbegin() + 2, {false, true, true, false});
@@ -39,7 +40,6 @@ int main()
     assert(d[12] == true);
     assert(d[13] == true);
     }
-#if TEST_STD_VER >= 11
     {
     std::vector<bool, min_allocator<bool>> d(10, true);
     std::vector<bool, min_allocator<bool>>::iterator i = d.insert(d.cbegin() + 2, {false, true, true, false});
@@ -60,6 +60,6 @@ int main()
     assert(d[12] == true);
     assert(d[13] == true);
     }
-#endif
-#endif  // _LIBCPP_HAS_NO_GENERALIZED_INITIALIZERS
+
+  return 0;
 }

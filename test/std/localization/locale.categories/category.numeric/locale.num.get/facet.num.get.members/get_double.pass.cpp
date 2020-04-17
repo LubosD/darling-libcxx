@@ -1,14 +1,15 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 //
-// XFAIL: with_system_cxx_lib=x86_64-apple-macosx10.7
-// XFAIL: with_system_cxx_lib=x86_64-apple-macosx10.8
+// PR11871
+// XFAIL: with_system_cxx_lib=macosx10.7
+// PR15445
+// XFAIL: with_system_cxx_lib=macosx10.8
 
 // <locale>
 
@@ -22,6 +23,7 @@
 #include <cassert>
 #include <streambuf>
 #include <cmath>
+#include "test_macros.h"
 #include "test_iterators.h"
 #include "hexfloat.h"
 
@@ -47,7 +49,7 @@ protected:
     virtual std::string do_grouping() const {return std::string("\1\2\3");}
 };
 
-int main()
+int main(int, char**)
 {
     const my_facet f(1);
     std::ios ios(0);
@@ -277,4 +279,6 @@ int main()
         assert(err == ios.goodbit);
         assert(std::abs(v - 3.14159265358979e+10)/3.14159265358979e+10 < 1.e-8);
     }
+
+  return 0;
 }

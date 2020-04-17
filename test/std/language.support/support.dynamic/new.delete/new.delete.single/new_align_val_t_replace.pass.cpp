@@ -1,16 +1,16 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
 // UNSUPPORTED: c++98, c++03, c++11, c++14
 // UNSUPPORTED: sanitizer-new-delete
 
-// XFAIL: no-aligned-allocation
+// NOTE: GCC doesn't provide a -faligned-allocation flag
+// XFAIL: no-aligned-allocation && !gcc
 
 // test operator new replacement
 
@@ -23,7 +23,7 @@
 
 #include "test_macros.h"
 
-constexpr auto OverAligned = alignof(std::max_align_t) * 2;
+constexpr auto OverAligned = __STDCPP_DEFAULT_NEW_ALIGNMENT__ * 2;
 
 bool A_constructed = false;
 
@@ -52,7 +52,9 @@ void* operator new(std::size_t s, std::align_val_t a) TEST_THROW_SPEC(std::bad_a
     assert(s <= sizeof(DummyData));
     assert(static_cast<std::size_t>(a) == OverAligned);
     ++new_called;
-    return DummyData;
+    void *Ret = DummyData;
+    DoNotOptimize(Ret);
+    return Ret;
 }
 
 void  operator delete(void* p, std::align_val_t) TEST_NOEXCEPT
@@ -60,10 +62,11 @@ void  operator delete(void* p, std::align_val_t) TEST_NOEXCEPT
     assert(new_called == 1);
     --new_called;
     assert(p == DummyData);
+    DoNotOptimize(DummyData);
 }
 
 
-int main()
+int main(int, char**)
 {
     {
         A* ap = new A;
@@ -82,4 +85,6 @@ int main()
         delete bp;
         assert(!new_called);
     }
+
+  return 0;
 }

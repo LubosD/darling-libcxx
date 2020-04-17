@@ -1,9 +1,8 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -16,6 +15,9 @@
 
 #include <locale>
 #include <cassert>
+
+#include "test_macros.h"
+#include "platform_support.h"
 
 typedef std::codecvt_byname<char, char, std::mbstate_t> F;
 
@@ -35,15 +37,15 @@ public:
 
 int my_facet::count = 0;
 
-int main()
+int main(int, char**)
 {
     {
-        std::locale l(std::locale::classic(), new my_facet("en_US"));
+        std::locale l(std::locale::classic(), new my_facet(LOCALE_en_US));
         assert(my_facet::count == 1);
     }
     assert(my_facet::count == 0);
     {
-        my_facet f("en_US", 1);
+        my_facet f(LOCALE_en_US, 1);
         assert(my_facet::count == 1);
         {
             std::locale l(std::locale::classic(), &f);
@@ -53,12 +55,12 @@ int main()
     }
     assert(my_facet::count == 0);
     {
-        std::locale l(std::locale::classic(), new my_facet(std::string("en_US")));
+        std::locale l(std::locale::classic(), new my_facet(std::string(LOCALE_en_US)));
         assert(my_facet::count == 1);
     }
     assert(my_facet::count == 0);
     {
-        my_facet f(std::string("en_US"), 1);
+        my_facet f(std::string(LOCALE_en_US), 1);
         assert(my_facet::count == 1);
         {
             std::locale l(std::locale::classic(), &f);
@@ -67,4 +69,6 @@ int main()
         assert(my_facet::count == 1);
     }
     assert(my_facet::count == 0);
+
+  return 0;
 }

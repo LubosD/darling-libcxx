@@ -1,11 +1,12 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
+
+// UNSUPPORTED: c++98, c++03
 
 // <unordered_map>
 
@@ -17,19 +18,21 @@
 
 #include <unordered_map>
 #include <string>
+#include <set>
 #include <cassert>
 #include <cfloat>
+#include <cmath>
 #include <cstddef>
 
 #include "test_macros.h"
+#include "../../../check_consecutive.h"
 #include "../../../test_compare.h"
 #include "../../../test_hash.h"
 #include "test_allocator.h"
 #include "min_allocator.h"
 
-int main()
+int main(int, char**)
 {
-#ifndef _LIBCPP_HAS_NO_RVALUE_REFERENCES
     {
         typedef test_allocator<std::pair<const int, std::string> > A;
         typedef std::unordered_multimap<int, std::string,
@@ -65,24 +68,19 @@ int main()
         typedef std::pair<C::const_iterator, C::const_iterator> Eq;
         Eq eq = c.equal_range(1);
         assert(std::distance(eq.first, eq.second) == 2);
-        C::const_iterator i = eq.first;
-        assert(i->first == 1);
-        assert(i->second == "one");
-        ++i;
-        assert(i->first == 1);
-        assert(i->second == "four");
+        std::multiset<std::string> s;
+        s.insert("one");
+        s.insert("four");
+        CheckConsecutiveKeys<C::const_iterator>(c.find(1), c.end(), 1, s);
         eq = c.equal_range(2);
         assert(std::distance(eq.first, eq.second) == 2);
-        i = eq.first;
-        assert(i->first == 2);
-        assert(i->second == "two");
-        ++i;
-        assert(i->first == 2);
-        assert(i->second == "four");
+        s.insert("two");
+        s.insert("four");
+        CheckConsecutiveKeys<C::const_iterator>(c.find(2), c.end(), 2, s);
 
         eq = c.equal_range(3);
         assert(std::distance(eq.first, eq.second) == 1);
-        i = eq.first;
+        C::const_iterator i = eq.first;
         assert(i->first == 3);
         assert(i->second == "three");
         eq = c.equal_range(4);
@@ -130,24 +128,19 @@ int main()
         typedef std::pair<C::const_iterator, C::const_iterator> Eq;
         Eq eq = c.equal_range(1);
         assert(std::distance(eq.first, eq.second) == 2);
-        C::const_iterator i = eq.first;
-        assert(i->first == 1);
-        assert(i->second == "one");
-        ++i;
-        assert(i->first == 1);
-        assert(i->second == "four");
+        std::multiset<std::string> s;
+        s.insert("one");
+        s.insert("four");
+        CheckConsecutiveKeys<C::const_iterator>(c.find(1), c.end(), 1, s);
         eq = c.equal_range(2);
         assert(std::distance(eq.first, eq.second) == 2);
-        i = eq.first;
-        assert(i->first == 2);
-        assert(i->second == "two");
-        ++i;
-        assert(i->first == 2);
-        assert(i->second == "four");
+        s.insert("two");
+        s.insert("four");
+        CheckConsecutiveKeys<C::const_iterator>(c.find(2), c.end(), 2, s);
 
         eq = c.equal_range(3);
         assert(std::distance(eq.first, eq.second) == 1);
-        i = eq.first;
+        C::const_iterator i = eq.first;
         assert(i->first == 3);
         assert(i->second == "three");
         eq = c.equal_range(4);
@@ -195,24 +188,19 @@ int main()
         typedef std::pair<C::const_iterator, C::const_iterator> Eq;
         Eq eq = c.equal_range(1);
         assert(std::distance(eq.first, eq.second) == 2);
-        C::const_iterator i = eq.first;
-        assert(i->first == 1);
-        assert(i->second == "one");
-        ++i;
-        assert(i->first == 1);
-        assert(i->second == "four");
+        std::multiset<std::string> s;
+        s.insert("one");
+        s.insert("four");
+        CheckConsecutiveKeys<C::const_iterator>(c.find(1), c.end(), 1, s);
         eq = c.equal_range(2);
         assert(std::distance(eq.first, eq.second) == 2);
-        i = eq.first;
-        assert(i->first == 2);
-        assert(i->second == "two");
-        ++i;
-        assert(i->first == 2);
-        assert(i->second == "four");
+        s.insert("two");
+        s.insert("four");
+        CheckConsecutiveKeys<C::const_iterator>(c.find(2), c.end(), 2, s);
 
         eq = c.equal_range(3);
         assert(std::distance(eq.first, eq.second) == 1);
-        i = eq.first;
+        C::const_iterator i = eq.first;
         assert(i->first == 3);
         assert(i->second == "three");
         eq = c.equal_range(4);
@@ -225,7 +213,6 @@ int main()
         assert(fabs(c.load_factor() - (float)c.size()/c.bucket_count()) < FLT_EPSILON);
         assert(c.max_load_factor() == 1);
     }
-#if TEST_STD_VER >= 11
     {
         typedef min_allocator<std::pair<const int, std::string> > A;
         typedef std::unordered_multimap<int, std::string,
@@ -261,24 +248,19 @@ int main()
         typedef std::pair<C::const_iterator, C::const_iterator> Eq;
         Eq eq = c.equal_range(1);
         assert(std::distance(eq.first, eq.second) == 2);
-        C::const_iterator i = eq.first;
-        assert(i->first == 1);
-        assert(i->second == "one");
-        ++i;
-        assert(i->first == 1);
-        assert(i->second == "four");
+        std::multiset<std::string> s;
+        s.insert("one");
+        s.insert("four");
+        CheckConsecutiveKeys<C::const_iterator>(c.find(1), c.end(), 1, s);
         eq = c.equal_range(2);
         assert(std::distance(eq.first, eq.second) == 2);
-        i = eq.first;
-        assert(i->first == 2);
-        assert(i->second == "two");
-        ++i;
-        assert(i->first == 2);
-        assert(i->second == "four");
+        s.insert("two");
+        s.insert("four");
+        CheckConsecutiveKeys<C::const_iterator>(c.find(2), c.end(), 2, s);
 
         eq = c.equal_range(3);
         assert(std::distance(eq.first, eq.second) == 1);
-        i = eq.first;
+        C::const_iterator i = eq.first;
         assert(i->first == 3);
         assert(i->second == "three");
         eq = c.equal_range(4);
@@ -291,18 +273,6 @@ int main()
         assert(fabs(c.load_factor() - (float)c.size()/c.bucket_count()) < FLT_EPSILON);
         assert(c.max_load_factor() == 1);
     }
-#endif
-#if _LIBCPP_DEBUG >= 1
-    {
-        std::unordered_multimap<int, int> s1 = {{1, 1}, {2, 2}, {3, 3}};
-        std::unordered_multimap<int, int>::iterator i = s1.begin();
-        std::pair<const int, int> k = *i;
-        std::unordered_multimap<int, int> s2;
-        s2 = std::move(s1);
-        assert(*i == k);
-        s2.erase(i);
-        assert(s2.size() == 2);
-    }
-#endif
-#endif  // _LIBCPP_HAS_NO_RVALUE_REFERENCES
+
+  return 0;
 }

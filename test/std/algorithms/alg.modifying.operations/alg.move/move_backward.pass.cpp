@@ -1,9 +1,8 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -16,10 +15,9 @@
 
 #include <algorithm>
 #include <cassert>
-#ifndef _LIBCPP_HAS_NO_RVALUE_REFERENCES
 #include <memory>
-#endif
 
+#include "test_macros.h"
 #include "test_iterators.h"
 
 template <class InIter, class OutIter>
@@ -38,8 +36,7 @@ test()
         assert(ia[i] == ib[i]);
 }
 
-#ifndef _LIBCPP_HAS_NO_RVALUE_REFERENCES
-
+#if TEST_STD_VER >= 11
 template <class InIter, class OutIter>
 void
 test1()
@@ -55,10 +52,9 @@ test1()
     for (unsigned i = 0; i < N; ++i)
         assert(*ib[i] == static_cast<int>(i));
 }
+#endif
 
-#endif  // _LIBCPP_HAS_NO_RVALUE_REFERENCES
-
-int main()
+int main(int, char**)
 {
     test<bidirectional_iterator<const int*>, bidirectional_iterator<int*> >();
     test<bidirectional_iterator<const int*>, random_access_iterator<int*> >();
@@ -72,7 +68,7 @@ int main()
     test<const int*, random_access_iterator<int*> >();
     test<const int*, int*>();
 
-#ifndef _LIBCPP_HAS_NO_RVALUE_REFERENCES
+#if TEST_STD_VER >= 11
     test1<bidirectional_iterator<std::unique_ptr<int>*>, bidirectional_iterator<std::unique_ptr<int>*> >();
     test1<bidirectional_iterator<std::unique_ptr<int>*>, random_access_iterator<std::unique_ptr<int>*> >();
     test1<bidirectional_iterator<std::unique_ptr<int>*>, std::unique_ptr<int>*>();
@@ -84,5 +80,7 @@ int main()
     test1<std::unique_ptr<int>*, bidirectional_iterator<std::unique_ptr<int>*> >();
     test1<std::unique_ptr<int>*, random_access_iterator<std::unique_ptr<int>*> >();
     test1<std::unique_ptr<int>*, std::unique_ptr<int>*>();
-#endif  // _LIBCPP_HAS_NO_RVALUE_REFERENCES
+#endif // TEST_STD_VER >= 11
+
+  return 0;
 }

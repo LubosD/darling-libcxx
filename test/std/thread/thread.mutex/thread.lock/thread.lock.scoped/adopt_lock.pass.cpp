@@ -1,9 +1,8 @@
 //===----------------------------------------------------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 //
@@ -14,7 +13,7 @@
 
 // template <class ...Mutex> class scoped_lock;
 
-// scoped_lock(Mutex&..., adopt_lock_t);
+// scoped_lock(adopt_lock_t, Mutex&...);
 
 #include <mutex>
 #include <cassert>
@@ -32,7 +31,7 @@ struct TestMutex {
     TestMutex& operator=(TestMutex const&) = delete;
 };
 
-int main()
+int main(int, char**)
 {
     {
         using LG = std::scoped_lock<>;
@@ -43,7 +42,7 @@ int main()
         using LG = std::scoped_lock<TestMutex>;
         m1.lock();
         {
-            LG lg(m1, std::adopt_lock);
+            LG lg(std::adopt_lock, m1);
             assert(m1.locked);
         }
         assert(!m1.locked);
@@ -53,7 +52,7 @@ int main()
         using LG = std::scoped_lock<TestMutex, TestMutex>;
         m1.lock(); m2.lock();
         {
-            LG lg(m1, m2, std::adopt_lock);
+            LG lg(std::adopt_lock, m1, m2);
             assert(m1.locked && m2.locked);
         }
         assert(!m1.locked && !m2.locked);
@@ -63,10 +62,12 @@ int main()
         using LG = std::scoped_lock<TestMutex, TestMutex, TestMutex>;
         m1.lock(); m2.lock(); m3.lock();
         {
-            LG lg(m1, m2, m3, std::adopt_lock);
+            LG lg(std::adopt_lock, m1, m2, m3);
             assert(m1.locked && m2.locked && m3.locked);
         }
         assert(!m1.locked && !m2.locked && !m3.locked);
     }
 
+
+  return 0;
 }
