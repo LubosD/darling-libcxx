@@ -15,7 +15,7 @@ include_directories(
 	${CMAKE_SOURCE_DIR}/src/libunwind/include
 )
 
-add_definitions(-D_LIBCPP_BUILDING_LIBRARY=1)
+add_definitions(-D_LIBCPP_BUILDING_LIBRARY=1 -D_LIBCPPABI_VERSION=1 -DLIBCXX_BUILDING_LIBCXXABI=1)
 
 set(cxx_sources
 	src/algorithm.cpp
