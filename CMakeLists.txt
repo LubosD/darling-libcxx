@@ -5,15 +5,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -nostdinc -std=c++11 -mmacosx-version-mi
 include_directories(
 	BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
-include_directories(
-	${CMAKE_SOURCE_DIR}/src/libc/locale
-	${CMAKE_SOURCE_DIR}/src/libc/locale/FreeBSD
-	${CMAKE_SOURCE_DIR}/src/libc/stdtime/FreeBSD
-	${CMAKE_SOURCE_DIR}/src/libc/pthreads
-	${CMAKE_SOURCE_DIR}/src/libc/include/FreeBSD
-	${CMAKE_SOURCE_DIR}/src/external/libcxxabi/include
-	${CMAKE_SOURCE_DIR}/src/libunwind/include
-)
 
 add_definitions(-D_LIBCPP_BUILDING_LIBRARY=1 -D_LIBCPPABI_VERSION=1 -DLIBCXX_BUILDING_LIBCXXABI=1)
 
