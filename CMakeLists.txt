@@ -1,6 +1,6 @@
 project(libcxx)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -nostdinc -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -nostdinc -std=c++11 -fvisibility=hidden -fvisibility-inlines-hidden")
 
 include_directories(
 	BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/include
@@ -55,8 +55,11 @@ add_darling_library(cxx SHARED $<TARGET_OBJECTS:cxx_obj>)
 make_fat(cxx)
 target_link_libraries(cxx PRIVATE system cxxabi)
 set_target_properties(cxx PROPERTIES OUTPUT_NAME "c++.1")
-set_property(TARGET cxx APPEND_STRING PROPERTY LINK_FLAGS " -Wl,-reexport_library,${CMAKE_BINARY_DIR}/src/external/libcxxabi/libc++abi.dylib \
-      -Wl,-unexported_symbols_list,${CMAKE_CURRENT_SOURCE_DIR}/lib/libc++unexp.exp ")
+set_property(TARGET cxx APPEND_STRING PROPERTY LINK_FLAGS " \
+      -Wl,-reexport_library,${CMAKE_BINARY_DIR}/src/external/libcxxabi/libc++abi.dylib \
+      -Wl,-unexported_symbols_list,${CMAKE_CURRENT_SOURCE_DIR}/lib/libc++unexp.exp \
+      -Wl,-force_symbols_not_weak_list,${CMAKE_CURRENT_SOURCE_DIR}/lib/notweak.exp \
+      -Wl,-force_symbols_weak_list,${CMAKE_CURRENT_SOURCE_DIR}/lib/weak.exp ")
 
 install(TARGETS cxx DESTINATION libexec/darling/usr/lib)
 InstallSymlink("libc++.1.dylib" "${CMAKE_INSTALL_PREFIX}/libexec/darling/usr/lib/libc++.dylib")
