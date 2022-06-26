@@ -8,11 +8,14 @@
 
 // <forward_list>
 // UNSUPPORTED: c++03, c++11, c++14
+// UNSUPPORTED: libcpp-no-deduction-guides
+
 
 // template <class InputIterator, class Allocator = allocator<typename iterator_traits<InputIterator>::value_type>>
 //    forward_list(InputIterator, InputIterator, Allocator = Allocator())
 //    -> forward_list<typename iterator_traits<InputIterator>::value_type, Allocator>;
 //
+
 
 #include <forward_list>
 #include <iterator>
@@ -20,7 +23,6 @@
 #include <cstddef>
 #include <climits> // INT_MAX
 
-#include "deduction_guides_sfinae_checks.h"
 #include "test_macros.h"
 #include "test_iterators.h"
 #include "test_allocator.h"
@@ -126,8 +128,6 @@ int main(int, char**)
         static_assert(std::is_same_v<decltype(fwl), decltype(source)>);
         }
     }
-
-    SequenceContainerDeductionGuidesSfinaeAway<std::forward_list, std::forward_list<int>>();
 
     return 0;
 }

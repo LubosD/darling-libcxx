@@ -8,7 +8,6 @@
 //
 // NetBSD does not support LC_TIME at the moment
 // XFAIL: netbsd
-// XFAIL: LIBCXX-AIX-FIXME
 
 // XFAIL: LIBCXX-WINDOWS-FIXME
 

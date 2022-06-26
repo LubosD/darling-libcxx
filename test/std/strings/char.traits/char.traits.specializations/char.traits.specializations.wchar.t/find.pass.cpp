@@ -13,8 +13,6 @@
 // static const char_type* find(const char_type* s, size_t n, const char_type& a);
 // constexpr in C++17
 
-// UNSUPPORTED: libcpp-has-no-wide-characters
-
 #include <string>
 #include <cassert>
 

@@ -14,7 +14,7 @@ import sys
 
 
 def is_config_header(h):
-    return os.path.basename(h) in ['__config', '__libcpp_version', '__undef_macros', 'version']
+    return os.path.basename(h) in ['__config', '__libcpp_version', '__undef_macros']
 
 
 def is_experimental_header(h):

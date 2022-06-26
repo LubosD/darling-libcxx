@@ -16,7 +16,6 @@
 #include <type_traits>
 
 #include "arithmetic.h"
-#include "test_macros.h"
 
 template <typename T>
 constexpr bool CheckSignedIntegralQualifiers() {
@@ -74,7 +73,7 @@ static_assert(!CheckSignedIntegralQualifiers<unsigned long>());
 static_assert(!CheckSignedIntegralQualifiers<unsigned long long>());
 
 // extended integers
-#ifndef TEST_HAS_NO_INT128
+#ifndef _LIBCPP_HAS_NO_INT128
 static_assert(CheckSignedIntegralQualifiers<__int128_t>());
 static_assert(!CheckSignedIntegralQualifiers<__uint128_t>());
 #endif

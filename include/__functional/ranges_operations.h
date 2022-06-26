@@ -20,8 +20,7 @@
 
 _LIBCPP_BEGIN_NAMESPACE_STD
 
-#if !defined(_LIBCPP_HAS_NO_CONCEPTS) && !defined(_LIBCPP_HAS_NO_INCOMPLETE_RANGES)
-
+#if !defined(_LIBCPP_HAS_NO_RANGES)
 namespace ranges {
 
 struct equal_to {
@@ -91,7 +90,7 @@ struct greater_equal {
 };
 
 } // namespace ranges
-#endif // !defined(_LIBCPP_HAS_NO_CONCEPTS) && !defined(_LIBCPP_HAS_NO_INCOMPLETE_RANGES)
+#endif // !defined(_LIBCPP_HAS_NO_RANGES)
 
 _LIBCPP_END_NAMESPACE_STD
 

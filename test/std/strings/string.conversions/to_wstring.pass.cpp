@@ -6,8 +6,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-// XFAIL: libcpp-has-no-wide-characters
-
 // <string>
 
 // wstring to_wstring(int val);

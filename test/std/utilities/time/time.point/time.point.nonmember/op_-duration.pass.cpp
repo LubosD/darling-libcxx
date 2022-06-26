@@ -16,7 +16,6 @@
 
 #include <chrono>
 #include <cassert>
-#include <cstdint>
 
 #include "test_macros.h"
 
@@ -48,8 +47,8 @@ int main(int, char**)
     static_assert(t2.time_since_epoch() == Duration2(2995), "");
     }
 #endif
-    test2739<std::int32_t>();
-    test2739<std::uint32_t>();
+    test2739<int32_t>();
+    test2739<uint32_t>();
 
   return 0;
 }

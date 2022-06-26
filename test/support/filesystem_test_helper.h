@@ -14,10 +14,9 @@
 #endif
 
 #include <cassert>
-#include <chrono>
 #include <cstdio> // for printf
 #include <string>
-#include <system_error>
+#include <chrono>
 #include <vector>
 
 #include "make_string.h"
@@ -140,23 +139,11 @@ struct scoped_test_env
         int ret = std::system(cmd.c_str());
         assert(ret == 0);
 #else
-#if defined(__MVS__)
-        // The behaviour of chmod -R on z/OS prevents recursive
-        // permission change for directories that do not have read permission.
-        std::string cmd = "find  " + test_root.string() + " -exec chmod 777 {} \\;";
-#else
         std::string cmd = "chmod -R 777 " + test_root.string();
-#endif // defined(__MVS__)
         int ret = std::system(cmd.c_str());
-#if !defined(_AIX)
-        // On AIX the chmod command will return non-zero when trying to set
-        // the permissions on a directory that contains a bad symlink. This triggers
-        // the assert, despite being able to delete everything with the following
-        // `rm -r` command.
         assert(ret == 0);
-#endif
 
-        cmd = "rm -rf " + test_root.string();
+        cmd = "rm -r " + test_root.string();
         ret = std::system(cmd.c_str());
         assert(ret == 0);
 #endif
@@ -186,7 +173,7 @@ struct scoped_test_env
     // 2GB.
     std::string create_file(fs::path filename_path, uintmax_t size = 0) {
         std::string filename = filename_path.string();
-#if defined(__LP64__) || defined(_WIN32) || defined(__MVS__)
+#if defined(__LP64__) || defined(_WIN32)
         auto large_file_fopen = fopen;
         auto large_file_ftruncate = utils::ftruncate;
         using large_file_offset_t = off_t;
@@ -206,10 +193,10 @@ struct scoped_test_env
             abort();
         }
 
-#if defined(_WIN32) || defined(__MVS__)
-#  define FOPEN_CLOEXEC_FLAG ""
+#ifndef _WIN32
+#define FOPEN_CLOEXEC_FLAG "e"
 #else
-#  define FOPEN_CLOEXEC_FLAG "e"
+#define FOPEN_CLOEXEC_FLAG ""
 #endif
         FILE* file = large_file_fopen(filename.c_str(), "w" FOPEN_CLOEXEC_FLAG);
         if (file == nullptr) {

@@ -8,7 +8,7 @@
 
 // UNSUPPORTED: c++03
 
-// <scoped_allocator>
+// <memory>
 
 // template <class OuterAlloc, class... InnerAllocs>
 //   class scoped_allocator_adaptor

@@ -15,50 +15,28 @@
 
 #include <chrono>
 #include <cassert>
-#include <ratio>
 
 #include "test_macros.h"
 #include "../../rep.h"
 
-#if TEST_STD_VER >= 11
-struct NotValueConvertible {
-    operator int() const&& = delete;
-    constexpr operator int() const& { return 1; }
-};
-#endif
-
 template <class D, class R>
-TEST_CONSTEXPR_CXX14 void check(R r) {
+void
+test(R r)
+{
     D d(r);
     assert(d.count() == r);
+#if TEST_STD_VER >= 11
+    constexpr D d2(R(2));
+    static_assert(d2.count() == 2, "");
+#endif
 }
 
-TEST_CONSTEXPR_CXX14 bool test() {
-    check<std::chrono::duration<int> >(5);
-    check<std::chrono::duration<int, std::ratio<3, 2> > >(5);
-    check<std::chrono::duration<Rep, std::ratio<3, 2> > >(Rep(3));
-    check<std::chrono::duration<double, std::ratio<2, 3> > >(5.5);
+int main(int, char**)
+{
+    test<std::chrono::duration<int> >(5);
+    test<std::chrono::duration<int, std::ratio<3, 2> > >(5);
+    test<std::chrono::duration<Rep, std::ratio<3, 2> > >(Rep(3));
+    test<std::chrono::duration<double, std::ratio<2, 3> > >(5.5);
 
-    // test for [time.duration.cons]/1
-#if TEST_STD_VER >= 11
-    check<std::chrono::duration<int> >(NotValueConvertible());
-#endif
-
-    return true;
-}
-
-int main(int, char**) {
-    test();
-#if TEST_STD_VER > 11
-    static_assert(test(), "");
-#endif
-
-    // Basic test for constexpr-friendliness in C++11
-#if TEST_STD_VER >= 11
-    {
-        constexpr std::chrono::duration<int> d(5);
-        static_assert(d.count() == 5, "");
-    }
-#endif
-    return 0;
+  return 0;
 }

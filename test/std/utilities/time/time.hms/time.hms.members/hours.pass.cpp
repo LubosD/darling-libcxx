@@ -26,8 +26,6 @@
 
 #include <chrono>
 #include <cassert>
-#include <ratio>
-#include <utility>
 
 #include "test_macros.h"
 

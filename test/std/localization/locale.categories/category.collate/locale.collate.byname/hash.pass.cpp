@@ -9,7 +9,7 @@
 // REQUIRES: locale.en_US.UTF-8
 
 // https://llvm.org/PR41018
-// XFAIL: windows-dll && msvc
+// XFAIL: windows-dll
 
 // <locale>
 
@@ -36,7 +36,6 @@ int main(int, char**)
         assert(f.hash(x1.data(), x1.data() + x1.size())
             != f.hash(x2.data(), x2.data() + x2.size()));
     }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         std::wstring x1(L"1234");
         std::wstring x2(L"12345");
@@ -44,7 +43,6 @@ int main(int, char**)
         assert(f.hash(x1.data(), x1.data() + x1.size())
             != f.hash(x2.data(), x2.data() + x2.size()));
     }
-#endif
 
   return 0;
 }

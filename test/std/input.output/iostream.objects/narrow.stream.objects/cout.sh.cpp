@@ -6,11 +6,14 @@
 //
 //===----------------------------------------------------------------------===//
 
+// XFAIL: libcpp-has-no-stdout
+
 // <iostream>
 
 // istream cout;
 
-// UNSUPPORTED: executor-has-no-bash
+// XFAIL: LIBCXX-WINDOWS-FIXME
+
 // FILE_DEPENDENCIES: ../check-stdout.sh
 // RUN: %{build}
 // RUN: %{exec} bash check-stdout.sh "%t.exe" "1234"

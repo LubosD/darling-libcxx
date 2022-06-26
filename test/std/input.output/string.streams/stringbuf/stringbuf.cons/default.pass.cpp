@@ -45,19 +45,17 @@ int main(int, char**)
         assert(buf.str() == "");
     }
     {
-        testbuf<char> buf;
-        buf.check();
-    }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
-    {
         std::wstringbuf buf;
         assert(buf.str() == L"");
+    }
+    {
+        testbuf<char> buf;
+        buf.check();
     }
     {
         testbuf<wchar_t> buf;
         buf.check();
     }
-#endif
 
 #if TEST_STD_VER >= 11
     {

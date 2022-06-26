@@ -16,8 +16,6 @@
 //     // unspecified
 // };
 
-// XFAIL: libcpp-has-no-wide-characters
-
 // Not a portable test
 
 #include <codecvt>

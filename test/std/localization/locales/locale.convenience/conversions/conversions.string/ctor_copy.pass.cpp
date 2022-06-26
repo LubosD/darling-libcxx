@@ -17,8 +17,6 @@
 // wstring_convert(wstring_convert const&) = delete;
 // wstring_convert& operator=(wstring_convert const&) = delete;
 
-// XFAIL: libcpp-has-no-wide-characters
-
 #include <locale>
 #include <codecvt>
 #include <cassert>

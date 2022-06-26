@@ -19,6 +19,9 @@
 // Otherwise the value returned is unspecified.
 // [Example: Sunday - Monday == days{6}. —end example]
 
+
+extern "C" int printf(const char *, ...);
+
 #include <chrono>
 #include <type_traits>
 #include <cassert>
@@ -32,13 +35,12 @@ constexpr bool testConstexpr()
     {
     WD wd{5};
     Ds offset{3};
-    assert(wd - offset == WD{2});
-    assert(wd - WD{2} == offset);
+    if (wd - offset != WD{2}) return false;
+    if (wd - WD{2} != offset) return false;
     }
 
-    //  Check the example
-    assert(WD{0} - WD{1} == Ds{6});
-
+//  Check the example
+    if (WD{0} - WD{1} != Ds{6}) return false;
     return true;
 }
 

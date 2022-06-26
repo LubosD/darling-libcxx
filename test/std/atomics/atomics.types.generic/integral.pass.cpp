@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
+//
+// UNSUPPORTED: libcpp-has-no-threads
 
 // <atomic>
 
@@ -180,10 +182,8 @@ int main(int, char**)
 #ifndef _LIBCPP_HAS_NO_UNICODE_CHARS
     test<std::atomic_char16_t, char16_t>();
     test<std::atomic_char32_t, char32_t>();
-#endif
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
+#endif // _LIBCPP_HAS_NO_UNICODE_CHARS
     test<std::atomic_wchar_t, wchar_t>();
-#endif
 
     test<std::atomic_int8_t,    int8_t>();
     test<std::atomic_uint8_t,  uint8_t>();
@@ -208,10 +208,8 @@ int main(int, char**)
 #ifndef _LIBCPP_HAS_NO_UNICODE_CHARS
     test<volatile std::atomic_char16_t, char16_t>();
     test<volatile std::atomic_char32_t, char32_t>();
-#endif
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
+#endif // _LIBCPP_HAS_NO_UNICODE_CHARS
     test<volatile std::atomic_wchar_t, wchar_t>();
-#endif
 
     test<volatile std::atomic_int8_t,    int8_t>();
     test<volatile std::atomic_uint8_t,  uint8_t>();

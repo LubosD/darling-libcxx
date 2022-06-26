@@ -6,9 +6,9 @@
 //
 //===----------------------------------------------------------------------===//
 
-// FIXME: This test needs to be rewritten for the MSVC exception_ptr semantics
+// This test needs to be rewritten for the Windows exception_ptr semantics
 // which copy the exception each time the exception_ptr is copied.
-// XFAIL: msvc
+// XFAIL: LIBCXX-WINDOWS-FIXME
 
 // UNSUPPORTED: no-exceptions
 // <exception>

@@ -25,32 +25,31 @@
 
 int main(int, char**)
 {
-    test_allocator_statistics alloc_stats;
-    assert(alloc_stats.alloc_count == 0);
+    assert(test_alloc_base::alloc_count == 0);
     {
-        std::promise<int> p(std::allocator_arg, test_allocator<int>(42, &alloc_stats));
-        assert(alloc_stats.alloc_count == 1);
+        std::promise<int> p(std::allocator_arg, test_allocator<int>(42));
+        assert(test_alloc_base::alloc_count == 1);
         std::future<int> f = p.get_future();
-        assert(alloc_stats.alloc_count == 1);
+        assert(test_alloc_base::alloc_count == 1);
         assert(f.valid());
     }
-    assert(alloc_stats.alloc_count == 0);
+    assert(test_alloc_base::alloc_count == 0);
     {
-        std::promise<int&> p(std::allocator_arg, test_allocator<int>(42, &alloc_stats));
-        assert(alloc_stats.alloc_count == 1);
+        std::promise<int&> p(std::allocator_arg, test_allocator<int>(42));
+        assert(test_alloc_base::alloc_count == 1);
         std::future<int&> f = p.get_future();
-        assert(alloc_stats.alloc_count == 1);
+        assert(test_alloc_base::alloc_count == 1);
         assert(f.valid());
     }
-    assert(alloc_stats.alloc_count == 0);
+    assert(test_alloc_base::alloc_count == 0);
     {
-        std::promise<void> p(std::allocator_arg, test_allocator<void>(42, &alloc_stats));
-        assert(alloc_stats.alloc_count == 1);
+        std::promise<void> p(std::allocator_arg, test_allocator<void>(42));
+        assert(test_alloc_base::alloc_count == 1);
         std::future<void> f = p.get_future();
-        assert(alloc_stats.alloc_count == 1);
+        assert(test_alloc_base::alloc_count == 1);
         assert(f.valid());
     }
-    assert(alloc_stats.alloc_count == 0);
+    assert(test_alloc_base::alloc_count == 0);
     // Test with a minimal allocator
     {
         std::promise<int> p(std::allocator_arg, bare_allocator<void>());

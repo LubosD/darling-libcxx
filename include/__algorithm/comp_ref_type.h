@@ -10,15 +10,14 @@
 #define _LIBCPP___ALGORITHM_COMP_REF_TYPE_H
 
 #include <__config>
-
-#ifdef _LIBCPP_DEBUG
-#  include <__debug>
-#  include <__utility/declval.h>
-#endif
+#include <type_traits>
 
 #if !defined(_LIBCPP_HAS_NO_PRAGMA_SYSTEM_HEADER)
 #pragma GCC system_header
 #endif
+
+_LIBCPP_PUSH_MACROS
+#include <__undef_macros>
 
 _LIBCPP_BEGIN_NAMESPACE_STD
 
@@ -28,11 +27,11 @@ template <class _Compare>
 struct __debug_less
 {
     _Compare &__comp_;
-    _LIBCPP_CONSTEXPR_AFTER_CXX11
+    _LIBCPP_CONSTEXPR_AFTER_CXX17
     __debug_less(_Compare& __c) : __comp_(__c) {}
 
     template <class _Tp, class _Up>
-    _LIBCPP_CONSTEXPR_AFTER_CXX11
+    _LIBCPP_CONSTEXPR_AFTER_CXX17
     bool operator()(const _Tp& __x,  const _Up& __y)
     {
         bool __r = __comp_(__x, __y);
@@ -42,7 +41,7 @@ struct __debug_less
     }
 
     template <class _Tp, class _Up>
-    _LIBCPP_CONSTEXPR_AFTER_CXX11
+    _LIBCPP_CONSTEXPR_AFTER_CXX17
     bool operator()(_Tp& __x,  _Up& __y)
     {
         bool __r = __comp_(__x, __y);
@@ -52,7 +51,7 @@ struct __debug_less
     }
 
     template <class _LHS, class _RHS>
-    _LIBCPP_CONSTEXPR_AFTER_CXX11
+    _LIBCPP_CONSTEXPR_AFTER_CXX17
     inline _LIBCPP_INLINE_VISIBILITY
     decltype((void)declval<_Compare&>()(
         declval<_LHS &>(), declval<_RHS &>()))
@@ -62,7 +61,7 @@ struct __debug_less
     }
 
     template <class _LHS, class _RHS>
-    _LIBCPP_CONSTEXPR_AFTER_CXX11
+    _LIBCPP_CONSTEXPR_AFTER_CXX17
     inline _LIBCPP_INLINE_VISIBILITY
     void __do_compare_assert(long, _LHS &, _RHS &) {}
 };
@@ -74,12 +73,15 @@ struct __comp_ref_type {
   // Pass the comparator by lvalue reference. Or in debug mode, using a
   // debugging wrapper that stores a reference.
 #ifndef _LIBCPP_DEBUG
-  typedef _Comp& type;
+  typedef typename add_lvalue_reference<_Comp>::type type;
 #else
   typedef __debug_less<_Comp> type;
 #endif
 };
 
+
 _LIBCPP_END_NAMESPACE_STD
+
+_LIBCPP_POP_MACROS
 
 #endif // _LIBCPP___ALGORITHM_COMP_REF_TYPE_H

@@ -14,11 +14,15 @@
 // - %{exec}
 
 // RUN: %{cxx} %s %{flags} %{compile_flags} %{link_flags} -o %t.exe
-// RUN: %{exec} %t.exe
+// RUN: %{exec} %t.exe "HELLO"
 
 #include <cassert>
+#include <string>
 
-int main(int argc, char**) {
-  assert(argc == 1);
+int main(int argc, char** argv) {
+  assert(argc == 2);
+
+  std::string arg = argv[1];
+  assert(arg == "HELLO");
   return 0;
 }

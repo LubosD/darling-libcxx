@@ -40,7 +40,6 @@ public:
         : std::moneypunct<char, true>(refs) {}
 };
 
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
 class Fwf
     : public std::moneypunct<wchar_t, false>
 {
@@ -56,7 +55,6 @@ public:
     explicit Fwt(std::size_t refs = 0)
         : std::moneypunct<wchar_t, true>(refs) {}
 };
-#endif // TEST_HAS_NO_WIDE_CHARACTERS
 
 int main(int, char**)
 {
@@ -68,7 +66,6 @@ int main(int, char**)
         Fnt f(1);
         assert(f.negative_sign() == "-");
     }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         Fwf f(1);
         assert(f.negative_sign() == L"-");
@@ -77,7 +74,6 @@ int main(int, char**)
         Fwt f(1);
         assert(f.negative_sign() == L"-");
     }
-#endif
 
   return 0;
 }

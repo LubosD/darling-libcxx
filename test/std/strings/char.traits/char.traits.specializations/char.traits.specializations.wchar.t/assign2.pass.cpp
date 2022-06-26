@@ -13,8 +13,6 @@
 // static void assign(char_type& c1, const char_type& c2);
 // constexpr in C++17
 
-// UNSUPPORTED: libcpp-has-no-wide-characters
-
 #include <string>
 #include <cassert>
 

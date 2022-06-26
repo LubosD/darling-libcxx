@@ -6,6 +6,9 @@
 //
 //===----------------------------------------------------------------------===//
 
+// UNSUPPORTED: clang-8
+// UNSUPPORTED: LIBCXX-DEBUG-FIXME
+
 // <string>
 
 // template<> struct char_traits<char>

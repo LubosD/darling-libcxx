@@ -50,7 +50,6 @@ int main(int, char**)
         assert(sb.underflow() == '4');
         assert(sb.underflow() == '4');
     }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         testbuf<wchar_t> sb(L"123");
         sb.pbump(3);
@@ -69,7 +68,6 @@ int main(int, char**)
         assert(sb.underflow() == L'4');
         assert(sb.underflow() == L'4');
     }
-#endif // TEST_HAS_NO_WIDE_CHARACTERS
 
   return 0;
 }

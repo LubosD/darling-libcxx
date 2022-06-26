@@ -63,7 +63,6 @@ int main(int, char**)
         assert(os2.precision() == 6);
         assert(os2.getloc().name() == "C");
     }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         testbuf<wchar_t> sb1;
         testbuf<wchar_t> sb2;
@@ -87,7 +86,6 @@ int main(int, char**)
         assert(os2.precision() == 6);
         assert(os2.getloc().name() == "C");
     }
-#endif
 
   return 0;
 }

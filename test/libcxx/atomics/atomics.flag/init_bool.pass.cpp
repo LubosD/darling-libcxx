@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
+//
+// UNSUPPORTED: libcpp-has-no-threads
 
 // <atomic>
 
@@ -22,7 +24,7 @@
 extern std::atomic_flag global;
 struct X { X() { global.test_and_set(); }};
 X x;
-std::atomic_flag global{false};
+std::atomic_flag global = ATOMIC_FLAG_INIT;
 #endif
 
 int main(int, char**)

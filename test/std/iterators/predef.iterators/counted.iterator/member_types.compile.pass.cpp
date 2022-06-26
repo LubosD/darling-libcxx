@@ -8,6 +8,7 @@
 
 // UNSUPPORTED: c++03, c++11, c++14, c++17
 // UNSUPPORTED: libcpp-no-concepts
+// UNSUPPORTED: gcc-10
 
 // iterator_type, value_type, difference_type, iterator_concept, iterator_category
 

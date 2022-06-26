@@ -12,8 +12,6 @@
 
 // int max_length() const throw();
 
-// XFAIL: libcpp-has-no-wide-characters
-
 #include <locale>
 #include <cassert>
 

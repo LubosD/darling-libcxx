@@ -8,6 +8,7 @@
 
 // UNSUPPORTED: c++03, c++11, c++14, c++17
 // UNSUPPORTED: libcpp-no-concepts
+// UNSUPPORTED: gcc-10
 
 // constexpr const I& base() const &;
 // constexpr I base() &&;
@@ -32,18 +33,17 @@ constexpr bool test() {
 
   {
     std::counted_iterator iter(cpp20_input_iterator<int*>{buffer}, 8);
-    assert(base(iter.base()) == buffer);
-    assert(base(std::move(iter).base()) == buffer);
+    assert(iter.base().base() == buffer);
+    assert(std::move(iter).base().base() == buffer);
 
-    ASSERT_NOEXCEPT(iter.base());
     ASSERT_SAME_TYPE(decltype(iter.base()), const cpp20_input_iterator<int*>&);
     ASSERT_SAME_TYPE(decltype(std::move(iter).base()), cpp20_input_iterator<int*>);
   }
 
   {
     std::counted_iterator iter(forward_iterator<int*>{buffer}, 8);
-    assert(base(iter.base()) == buffer);
-    assert(base(std::move(iter).base()) == buffer);
+    assert(iter.base() == forward_iterator<int*>{buffer});
+    assert(std::move(iter).base() == forward_iterator<int*>{buffer});
 
     ASSERT_SAME_TYPE(decltype(iter.base()), const forward_iterator<int*>&);
     ASSERT_SAME_TYPE(decltype(std::move(iter).base()), forward_iterator<int*>);
@@ -51,8 +51,8 @@ constexpr bool test() {
 
   {
     std::counted_iterator iter(contiguous_iterator<int*>{buffer}, 8);
-    assert(base(iter.base()) == buffer);
-    assert(base(std::move(iter).base()) == buffer);
+    assert(iter.base() == contiguous_iterator<int*>{buffer});
+    assert(std::move(iter).base() == contiguous_iterator<int*>{buffer});
 
     ASSERT_SAME_TYPE(decltype(iter.base()), const contiguous_iterator<int*>&);
     ASSERT_SAME_TYPE(decltype(std::move(iter).base()), contiguous_iterator<int*>);
@@ -69,8 +69,8 @@ constexpr bool test() {
 
   {
     const std::counted_iterator iter(cpp20_input_iterator<int*>{buffer}, 8);
-    assert(base(iter.base()) == buffer);
-    assert(base(std::move(iter).base()) == buffer);
+    assert(iter.base().base() == buffer);
+    assert(std::move(iter).base().base() == buffer);
 
     ASSERT_SAME_TYPE(decltype(iter.base()), const cpp20_input_iterator<int*>&);
     ASSERT_SAME_TYPE(decltype(std::move(iter).base()), const cpp20_input_iterator<int*>&);
@@ -78,8 +78,8 @@ constexpr bool test() {
 
   {
     const std::counted_iterator iter(forward_iterator<int*>{buffer}, 7);
-    assert(base(iter.base()) == buffer);
-    assert(base(std::move(iter).base()) == buffer);
+    assert(iter.base() == forward_iterator<int*>{buffer});
+    assert(std::move(iter).base() == forward_iterator<int*>{buffer});
 
     ASSERT_SAME_TYPE(decltype(iter.base()), const forward_iterator<int*>&);
     ASSERT_SAME_TYPE(decltype(std::move(iter).base()), const forward_iterator<int*>&);
@@ -87,8 +87,8 @@ constexpr bool test() {
 
   {
     const std::counted_iterator iter(contiguous_iterator<int*>{buffer}, 6);
-    assert(base(iter.base()) == buffer);
-    assert(base(std::move(iter).base()) == buffer);
+    assert(iter.base() == contiguous_iterator<int*>{buffer});
+    assert(std::move(iter).base() == contiguous_iterator<int*>{buffer});
 
     ASSERT_SAME_TYPE(decltype(iter.base()), const contiguous_iterator<int*>&);
     ASSERT_SAME_TYPE(decltype(std::move(iter).base()), const contiguous_iterator<int*>&);

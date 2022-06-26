@@ -62,6 +62,14 @@ int main(int, char**)
         assert(sync_called == 0);
     }
     {
+        std::wistream is((testbuf<wchar_t>*)0);
+        std::wistream::sentry sen(is, true);
+        assert(!(bool)sen);
+        assert(!is.good());
+        assert(is.gcount() == 0);
+        assert(sync_called == 0);
+    }
+    {
         testbuf<char> sb("   123");
         std::istream is(&sb);
         std::istream::sentry sen(is, true);
@@ -72,9 +80,28 @@ int main(int, char**)
         assert(sb.gptr() == sb.eback());
     }
     {
+        testbuf<wchar_t> sb(L"   123");
+        std::wistream is(&sb);
+        std::wistream::sentry sen(is, true);
+        assert((bool)sen);
+        assert(is.good());
+        assert(is.gcount() == 0);
+        assert(sync_called == 0);
+        assert(sb.gptr() == sb.eback());
+    }
+    {
         testbuf<char> sb("   123");
         std::istream is(&sb);
         std::istream::sentry sen(is);
+        assert((bool)sen);
+        assert(is.good());
+        assert(sync_called == 0);
+        assert(sb.gptr() == sb.eback() + 3);
+    }
+    {
+        testbuf<wchar_t> sb(L"   123");
+        std::wistream is(&sb);
+        std::wistream::sentry sen(is);
         assert((bool)sen);
         assert(is.good());
         assert(sync_called == 0);
@@ -100,35 +127,5 @@ int main(int, char**)
         assert(sb.gptr() == sb.eback());
     }
 
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
-    {
-        std::wistream is((testbuf<wchar_t>*)0);
-        std::wistream::sentry sen(is, true);
-        assert(!(bool)sen);
-        assert(!is.good());
-        assert(is.gcount() == 0);
-        assert(sync_called == 0);
-    }
-    {
-        testbuf<wchar_t> sb(L"   123");
-        std::wistream is(&sb);
-        std::wistream::sentry sen(is, true);
-        assert((bool)sen);
-        assert(is.good());
-        assert(is.gcount() == 0);
-        assert(sync_called == 0);
-        assert(sb.gptr() == sb.eback());
-    }
-    {
-        testbuf<wchar_t> sb(L"   123");
-        std::wistream is(&sb);
-        std::wistream::sentry sen(is);
-        assert((bool)sen);
-        assert(is.good());
-        assert(sync_called == 0);
-        assert(sb.gptr() == sb.eback() + 3);
-    }
-#endif
-
-    return 0;
+  return 0;
 }

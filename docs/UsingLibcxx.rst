@@ -338,7 +338,6 @@ which no dialect declares as such (See the second form described above).
 * ``upper_bound``
 * ``lock_guard``'s constructors
 * ``as_const``
-* ``bit_cast``
 * ``forward``
 * ``move``
 * ``move_if_noexcept``

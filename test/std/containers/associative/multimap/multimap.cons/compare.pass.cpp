@@ -12,6 +12,8 @@
 
 // explicit multimap(const key_compare& comp);
 
+// key_compare key_comp() const;
+
 #include <map>
 #include <cassert>
 

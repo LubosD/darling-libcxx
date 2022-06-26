@@ -24,9 +24,14 @@
 #pragma GCC system_header
 #endif
 
+_LIBCPP_PUSH_MACROS
+#include <__undef_macros>
+
 _LIBCPP_BEGIN_NAMESPACE_STD
 
-#if !defined(_LIBCPP_HAS_NO_CONCEPTS)
+#if !defined(_LIBCPP_HAS_NO_RANGES)
+
+// clang-format off
 
 // [iterator.concept.readable]
 template<class _In>
@@ -67,8 +72,6 @@ concept __signed_integer_like = signed_integral<_Tp>;
 
 template<class _Ip>
 concept weakly_incrementable =
-  // TODO: remove this once the clang bug is fixed (bugs.llvm.org/PR48173).
-  !same_as<_Ip, bool> && // Currently, clang does not handle bool correctly.
   movable<_Ip> &&
   requires(_Ip __i) {
     typename iter_difference_t<_Ip>;
@@ -169,6 +172,7 @@ concept contiguous_iterator =
   derived_from<_ITER_CONCEPT<_Ip>, contiguous_iterator_tag> &&
   is_lvalue_reference_v<iter_reference_t<_Ip>> &&
   same_as<iter_value_t<_Ip>, remove_cvref_t<iter_reference_t<_Ip>>> &&
+  (is_pointer_v<_Ip> || requires { sizeof(__pointer_traits_element_type<_Ip>); }) &&
   requires(const _Ip& __i) {
     { _VSTD::to_address(__i) } -> same_as<add_pointer_t<iter_reference_t<_Ip>>>;
   };
@@ -257,8 +261,12 @@ concept indirectly_movable_storable =
 // Note: indirectly_swappable is located in iter_swap.h to prevent a dependency cycle
 // (both iter_swap and indirectly_swappable require indirectly_readable).
 
-#endif // !defined(_LIBCPP_HAS_NO_CONCEPTS)
+// clang-format on
+
+#endif // !defined(_LIBCPP_HAS_NO_RANGES)
 
 _LIBCPP_END_NAMESPACE_STD
+
+_LIBCPP_POP_MACROS
 
 #endif // _LIBCPP___ITERATOR_CONCEPTS_H

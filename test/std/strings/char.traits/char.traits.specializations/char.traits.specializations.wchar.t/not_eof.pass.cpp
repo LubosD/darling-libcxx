@@ -12,8 +12,6 @@
 
 // static constexpr int_type not_eof(int_type c);
 
-// UNSUPPORTED: libcpp-has-no-wide-characters
-
 #include <string>
 #include <cassert>
 

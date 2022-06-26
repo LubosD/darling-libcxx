@@ -17,7 +17,6 @@
 
 #include "filesystem_include.h"
 #include <chrono>
-#include <ratio>
 #include <type_traits>
 
 #include "test_macros.h"

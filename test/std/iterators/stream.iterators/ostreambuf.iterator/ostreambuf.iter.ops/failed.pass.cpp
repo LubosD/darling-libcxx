@@ -35,14 +35,12 @@ int main(int, char**)
         i = 'a';
         assert(i.failed());
     }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         my_streambuf<wchar_t> buf;
         std::ostreambuf_iterator<wchar_t> i(&buf);
         i = L'a';
         assert(i.failed());
     }
-#endif
 
   return 0;
 }

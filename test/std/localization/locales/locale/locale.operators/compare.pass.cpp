@@ -7,7 +7,7 @@
 //===----------------------------------------------------------------------===//
 
 // https://llvm.org/PR41018
-// XFAIL: windows-dll && msvc
+// XFAIL: windows-dll
 
 // <locale>
 
@@ -29,13 +29,11 @@ int main(int, char**)
             std::string s3("BaaaaaA");
             assert(l(s3, s2));
         }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
         {
             std::wstring s2(L"aaaaaaA");
             std::wstring s3(L"BaaaaaA");
             assert(l(s3, s2));
         }
-#endif
     }
 
   return 0;

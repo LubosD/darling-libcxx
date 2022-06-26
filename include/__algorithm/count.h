@@ -17,6 +17,9 @@
 #pragma GCC system_header
 #endif
 
+_LIBCPP_PUSH_MACROS
+#include <__undef_macros>
+
 _LIBCPP_BEGIN_NAMESPACE_STD
 
 template <class _InputIterator, class _Tp>
@@ -31,5 +34,7 @@ _LIBCPP_NODISCARD_EXT inline _LIBCPP_INLINE_VISIBILITY _LIBCPP_CONSTEXPR_AFTER_C
 }
 
 _LIBCPP_END_NAMESPACE_STD
+
+_LIBCPP_POP_MACROS
 
 #endif // _LIBCPP___ALGORITHM_COUNT_H

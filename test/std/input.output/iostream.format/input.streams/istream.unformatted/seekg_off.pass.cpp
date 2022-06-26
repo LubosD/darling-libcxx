@@ -64,7 +64,6 @@ int main(int, char**)
         assert(is.fail());
         assert(seekoff_called == 2);
     }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         testbuf<wchar_t> sb(L" 123456789");
         std::wistream is(&sb);
@@ -75,7 +74,6 @@ int main(int, char**)
         assert(is.fail());
         assert(seekoff_called == 4);
     }
-#endif
     {
         testbuf<char> sb(" 123456789");
         std::istream is(&sb);

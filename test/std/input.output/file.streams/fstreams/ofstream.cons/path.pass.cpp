@@ -53,8 +53,6 @@ int main(int, char**) {
     assert(x == 3.25);
   }
   std::remove(p.string().c_str());
-
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
   {
     std::wofstream stream(p);
     stream << 3.25;
@@ -72,7 +70,6 @@ int main(int, char**) {
     assert(x == 3.25);
   }
   std::remove(p.string().c_str());
-#endif
 
   return 0;
 }

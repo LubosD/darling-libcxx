@@ -42,12 +42,6 @@ int main(int, char**)
     assert(d[2] == 5);
     assert(d[3] == 6);
     }
-    {
-    std::vector<int, min_allocator<int>> d({}, min_allocator<int>());
-    assert(d.size() == 0);
-    assert(d.empty());
-    assert(is_contiguous_container_asan_correct(d));
-    }
 
   return 0;
 }

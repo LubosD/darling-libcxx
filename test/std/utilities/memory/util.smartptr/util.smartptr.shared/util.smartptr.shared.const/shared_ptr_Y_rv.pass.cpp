@@ -16,7 +16,6 @@
 
 #include <memory>
 #include <type_traits>
-#include <utility>
 #include <cassert>
 
 #include "test_macros.h"
@@ -97,7 +96,7 @@ int main(int, char**)
         assert(B::count == 0);
         assert(A::count == 0);
         {
-            std::shared_ptr<B> pB(std::move(pA));
+            std::shared_ptr<B> pB(pA);
             assert(B::count == 0);
             assert(A::count == 0);
             assert(pB.use_count() == 0);
@@ -110,24 +109,6 @@ int main(int, char**)
     }
     assert(B::count == 0);
     assert(A::count == 0);
-
-#if TEST_STD_VER > 14
-    {
-        std::shared_ptr<A[]> p1;
-        assert(p1.use_count() == 0);
-        assert(A::count == 0);
-        {
-            std::shared_ptr<const A[]> p2(p1);
-            assert(A::count == 0);
-            assert(p2.use_count() == 0);
-            assert(p1.use_count() == 0);
-            assert(p1.get() == p2.get());
-        }
-        assert(p1.use_count() == 0);
-        assert(A::count == 0);
-    }
-    assert(A::count == 0);
-#endif
 
   return 0;
 }

@@ -14,7 +14,6 @@
 
 // REQUIRES: locale.en_US.UTF-8
 // XFAIL: LIBCXX-WINDOWS-FIXME
-// XFAIL: libcpp-has-no-wide-characters
 
 #include <locale>
 #include <type_traits>

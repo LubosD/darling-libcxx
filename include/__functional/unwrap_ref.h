@@ -15,16 +15,19 @@
 #pragma GCC system_header
 #endif
 
+_LIBCPP_PUSH_MACROS
+#include <__undef_macros>
+
 _LIBCPP_BEGIN_NAMESPACE_STD
 
 template <class _Tp>
-struct __unwrap_reference { typedef _LIBCPP_NODEBUG _Tp type; };
+struct __unwrap_reference { typedef _LIBCPP_NODEBUG_TYPE _Tp type; };
 
 template <class _Tp>
 class reference_wrapper;
 
 template <class _Tp>
-struct __unwrap_reference<reference_wrapper<_Tp> > { typedef _LIBCPP_NODEBUG _Tp& type; };
+struct __unwrap_reference<reference_wrapper<_Tp> > { typedef _LIBCPP_NODEBUG_TYPE _Tp& type; };
 
 template <class _Tp>
 struct decay;
@@ -53,5 +56,7 @@ struct __unwrap_ref_decay
 { };
 
 _LIBCPP_END_NAMESPACE_STD
+
+_LIBCPP_POP_MACROS
 
 #endif // _LIBCPP___FUNCTIONAL_UNWRAP_REF_H

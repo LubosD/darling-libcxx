@@ -12,8 +12,6 @@
 
 // const charT* tolower(charT* low, const charT* high) const;
 
-// XFAIL: libcpp-has-no-wide-characters
-
 #include <locale>
 #include <string>
 #include <cassert>

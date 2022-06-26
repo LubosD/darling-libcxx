@@ -61,7 +61,6 @@ int main(int, char**)
         assert(std::string(s) == "abc");
     }
 #endif
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         testbuf<wchar_t> sb(L"   abcdefghijk    ");
         std::wistream is(&sb);
@@ -94,7 +93,6 @@ int main(int, char**)
         assert(std::wstring(s) == L"abc");
     }
 #endif
-#endif // TEST_HAS_NO_WIDE_CHARACTERS
     {
         testbuf<char> sb("   abcdefghijk");
         std::istream is(&sb);
@@ -137,7 +135,6 @@ int main(int, char**)
         assert(is.eof());
         assert(threw);
     }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         testbuf<wchar_t> sb;
         std::wistream is(&sb);
@@ -157,7 +154,6 @@ int main(int, char**)
         assert(is.eof());
         assert(threw);
     }
-#endif
     {
         testbuf<char> sb;
         std::basic_istream<char> is(&sb);
@@ -177,7 +173,6 @@ int main(int, char**)
         assert(is.eof());
         assert(threw);
     }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         testbuf<wchar_t> sb;
         std::wistream is(&sb);
@@ -197,7 +192,6 @@ int main(int, char**)
         assert(is.eof());
         assert(threw);
     }
-#endif
 #endif // TEST_HAS_NO_EXCEPTIONS
 
     return 0;

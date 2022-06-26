@@ -21,23 +21,20 @@
 #pragma GCC system_header
 #endif
 
+_LIBCPP_PUSH_MACROS
+#include <__undef_macros>
+
 _LIBCPP_BEGIN_NAMESPACE_STD
 
-#if !defined(_LIBCPP_HAS_NO_CONCEPTS)
+#if !defined(_LIBCPP_HAS_NO_RANGES)
 
-// [iterator.cust.move]
-
-namespace ranges {
-namespace __iter_move {
-
+namespace ranges::__iter_move {
 void iter_move();
 
-template <class _Tp>
-concept __unqualified_iter_move =
-  __class_or_enum<remove_cvref_t<_Tp>> &&
-  requires (_Tp&& __t) {
-    iter_move(_VSTD::forward<_Tp>(__t));
-  };
+template<class _Ip>
+concept __unqualified_iter_move = requires(_Ip&& __i) {
+    iter_move(_VSTD::forward<_Ip>(__i));
+};
 
 // [iterator.cust.move]/1
 // The name ranges::iter_move denotes a customization point object.
@@ -75,19 +72,20 @@ struct __fn {
   // [iterator.cust.move]/1.3
   // Otherwise, ranges::iter_move(E) is ill-formed.
 };
-} // namespace __iter_move
+} // namespace ranges::__iter_move
 
-inline namespace __cpo {
+namespace ranges::inline __cpo {
   inline constexpr auto iter_move = __iter_move::__fn{};
-} // namespace __cpo
-} // namespace ranges
+}
 
 template<__dereferenceable _Tp>
-  requires requires(_Tp& __t) { { ranges::iter_move(__t) } -> __referenceable; }
+requires requires(_Tp& __t) { { ranges::iter_move(__t) } -> __referenceable; }
 using iter_rvalue_reference_t = decltype(ranges::iter_move(declval<_Tp&>()));
 
-#endif // !defined(_LIBCPP_HAS_NO_CONCEPTS)
+#endif // !_LIBCPP_HAS_NO_RANGES
 
 _LIBCPP_END_NAMESPACE_STD
+
+_LIBCPP_POP_MACROS
 
 #endif // _LIBCPP___ITERATOR_ITER_MOVE_H

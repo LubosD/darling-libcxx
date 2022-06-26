@@ -50,8 +50,6 @@ int main(int, char**)
         assert(my_facet<char>::count == 1);
     }
     assert(my_facet<char>::count == 0);
-
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         std::locale l(std::locale::classic(), new my_facet<wchar_t>);
         assert(my_facet<wchar_t>::count == 1);
@@ -67,7 +65,6 @@ int main(int, char**)
         assert(my_facet<wchar_t>::count == 1);
     }
     assert(my_facet<wchar_t>::count == 0);
-#endif
 
   return 0;
 }

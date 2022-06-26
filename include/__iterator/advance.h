@@ -12,18 +12,22 @@
 
 #include <__config>
 #include <__debug>
+#include <__function_like.h>
 #include <__iterator/concepts.h>
 #include <__iterator/incrementable_traits.h>
 #include <__iterator/iterator_traits.h>
 #include <__utility/move.h>
-#include <concepts>
 #include <cstdlib>
+#include <concepts>
 #include <limits>
 #include <type_traits>
 
 #if !defined(_LIBCPP_HAS_NO_PRAGMA_SYSTEM_HEADER)
 #pragma GCC system_header
 #endif
+
+_LIBCPP_PUSH_MACROS
+#include <__undef_macros>
 
 _LIBCPP_BEGIN_NAMESPACE_STD
 
@@ -54,7 +58,7 @@ void __advance(_RandIter& __i, typename iterator_traits<_RandIter>::difference_t
 template <
     class _InputIter, class _Distance,
     class _IntegralDistance = decltype(_VSTD::__convert_to_integral(declval<_Distance>())),
-    class = __enable_if_t<is_integral<_IntegralDistance>::value> >
+    class = _EnableIf<is_integral<_IntegralDistance>::value> >
 _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_AFTER_CXX14
 void advance(_InputIter& __i, _Distance __orig_n) {
   typedef typename iterator_traits<_InputIter>::difference_type _Difference;
@@ -64,15 +68,18 @@ void advance(_InputIter& __i, _Distance __orig_n) {
   _VSTD::__advance(__i, __n, typename iterator_traits<_InputIter>::iterator_category());
 }
 
-#if !defined(_LIBCPP_HAS_NO_CONCEPTS) && !defined(_LIBCPP_HAS_NO_INCOMPLETE_RANGES)
-
-// [range.iter.op.advance]
+#if !defined(_LIBCPP_HAS_NO_RANGES)
 
 namespace ranges {
-namespace __advance {
-
-struct __fn {
+// [range.iter.op.advance]
+struct __advance_fn final : private __function_like {
 private:
+  template <class _Tp>
+  _LIBCPP_HIDE_FROM_ABI
+  static constexpr _Tp __magnitude_geq(_Tp __a, _Tp __b) noexcept {
+    return __a < 0 ? (__a <= __b) : (__a >= __b);
+  }
+
   template <class _Ip>
   _LIBCPP_HIDE_FROM_ABI
   static constexpr void __advance_forward(_Ip& __i, iter_difference_t<_Ip> __n) {
@@ -92,6 +99,8 @@ private:
   }
 
 public:
+  constexpr explicit __advance_fn(__tag __x) noexcept : __function_like(__x) {}
+
   // Preconditions: If `I` does not model `bidirectional_iterator`, `n` is not negative.
   template <input_or_output_iterator _Ip>
   _LIBCPP_HIDE_FROM_ABI
@@ -149,12 +158,6 @@ public:
     // If `S` and `I` model `sized_sentinel_for<S, I>`:
     if constexpr (sized_sentinel_for<_Sp, _Ip>) {
       // If |n| >= |bound - i|, equivalent to `ranges::advance(i, bound)`.
-      // __magnitude_geq(a, b) returns |a| >= |b|, assuming they have the same sign.
-      auto __magnitude_geq = [](auto __a, auto __b) {
-        return __a == 0 ? __b == 0 :
-               __a > 0  ? __a >= __b :
-                          __a <= __b;
-      };
       if (const auto __M = __bound - __i; __magnitude_geq(__n, __M)) {
         (*this)(__i, __bound);
         return __n - __M;
@@ -185,15 +188,13 @@ public:
   }
 };
 
-} // namespace __advance
-
-inline namespace __cpo {
-  inline constexpr auto advance = __advance::__fn{};
-} // namespace __cpo
+inline constexpr auto advance = __advance_fn(__function_like::__tag());
 } // namespace ranges
 
-#endif // !defined(_LIBCPP_HAS_NO_CONCEPTS) && !defined(_LIBCPP_HAS_NO_INCOMPLETE_RANGES)
+#endif // !defined(_LIBCPP_HAS_NO_RANGES)
 
 _LIBCPP_END_NAMESPACE_STD
+
+_LIBCPP_POP_MACROS
 
 #endif // _LIBCPP___ITERATOR_ADVANCE_H

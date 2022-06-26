@@ -6,6 +6,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+// UNSUPPORTED: c++03
+
 // <functional>
 //
 // reference_wrapper
@@ -18,48 +20,44 @@
 
 #include "test_macros.h"
 
-struct B {};
+struct B {} b;
 
 struct A1 {
-  mutable B b_;
-  TEST_CONSTEXPR operator B&() const { return b_; }
+    operator B& () const { return b; }
 };
-
 struct A2 {
-  mutable B b_;
-  TEST_CONSTEXPR operator B&() const TEST_NOEXCEPT { return b_; }
+    operator B& () const noexcept { return b; }
 };
 
-void implicitly_convert(std::reference_wrapper<B>) TEST_NOEXCEPT;
-
-TEST_CONSTEXPR_CXX20 bool test()
+int main()
 {
-  {
-    A1 a;
-    ASSERT_NOT_NOEXCEPT(implicitly_convert(a));
-    std::reference_wrapper<B> b1 = a;
-    assert(&b1.get() == &a.b_);
-    ASSERT_NOT_NOEXCEPT(b1 = a);
-    b1 = a;
-    assert(&b1.get() == &a.b_);
-  }
-  {
-    A2 a;
-    ASSERT_NOEXCEPT(implicitly_convert(a));
-    std::reference_wrapper<B> b2 = a;
-    assert(&b2.get() == &a.b_);
-    ASSERT_NOEXCEPT(b2 = a);
-    b2 = a;
-    assert(&b2.get() == &a.b_);
-  }
-  return true;
-}
+    {
+    std::reference_wrapper<B> b1 = A1();
+    assert(&b1.get() == &b);
+    b1 = A1();
+    assert(&b1.get() == &b);
 
-int main(int, char**) {
-  test();
-#if TEST_STD_VER > 17
-  static_assert(test());
+    static_assert(std::is_convertible<A1, std::reference_wrapper<B>>::value, "");
+    static_assert(!std::is_nothrow_constructible<std::reference_wrapper<B>, A1>::value, "");
+#if TEST_STD_VER >= 20
+    static_assert(!std::is_nothrow_convertible_v<A1, std::reference_wrapper<B>>);
 #endif
+    static_assert(std::is_assignable<std::reference_wrapper<B>, A1>::value, "");
+    static_assert(!std::is_nothrow_assignable<std::reference_wrapper<B>, A1>::value, "");
+    }
 
-  return 0;
+    {
+    std::reference_wrapper<B> b2 = A2();
+    assert(&b2.get() == &b);
+    b2 = A2();
+    assert(&b2.get() == &b);
+
+    static_assert(std::is_convertible<A2, std::reference_wrapper<B>>::value, "");
+    static_assert(std::is_nothrow_constructible<std::reference_wrapper<B>, A2>::value, "");
+#if TEST_STD_VER >= 20
+    static_assert(std::is_nothrow_convertible_v<A2, std::reference_wrapper<B>>);
+#endif
+    static_assert(std::is_assignable<std::reference_wrapper<B>, A2>::value, "");
+    static_assert(std::is_nothrow_assignable<std::reference_wrapper<B>, A2>::value, "");
+    }
 }

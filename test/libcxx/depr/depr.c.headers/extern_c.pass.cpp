@@ -39,10 +39,8 @@ extern "C" {
 // tgmath.h is not supported in extern "C".
 #include <time.h>
 // FIXME: #include <uchar.h>
-#ifndef _LIBCPP_HAS_NO_WIDE_CHARACTERS
-#   include <wchar.h>
-#   include <wctype.h>
-#endif
+#include <wchar.h>
+#include <wctype.h>
 }
 
 int main(int, char**) {

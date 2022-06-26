@@ -10,8 +10,6 @@
 
 // wbuffer_convert<Codecvt, Elem, Tr>
 
-// XFAIL: libcpp-has-no-wide-characters
-
 #include <fstream>
 #include <locale>
 #include <codecvt>

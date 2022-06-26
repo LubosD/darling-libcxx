@@ -7,9 +7,11 @@
 //===----------------------------------------------------------------------===//
 
 // UNSUPPORTED: c++03, c++11, c++14, c++17
+// constexpr destructors are only supported starting with clang 10
+// UNSUPPORTED: clang-5, clang-6, clang-7, clang-8, clang-9
 
 // Investigation needed
-// XFAIL: gcc
+// UNSUPPORTED: gcc
 
 // <memory>
 
@@ -18,9 +20,7 @@
 
 #include <memory>
 #include <cassert>
-#include <utility>
 
-#include "test_iterators.h"
 
 struct Foo {
     int a;
@@ -99,23 +99,15 @@ constexpr bool test()
     return true;
 }
 
-template <class ...Args, class = decltype(std::construct_at(std::declval<Args>()...))>
-constexpr bool can_construct_at(Args&&...) { return true; }
-
-template <class ...Args>
-constexpr bool can_construct_at(...) { return false; }
-
-// Check that SFINAE works.
-static_assert( can_construct_at((int*)nullptr, 42));
-static_assert( can_construct_at((Foo*)nullptr, 1, '2', 3.0));
-static_assert(!can_construct_at((Foo*)nullptr, 1, '2'));
-static_assert(!can_construct_at((Foo*)nullptr, 1, '2', 3.0, 4));
-static_assert(!can_construct_at(nullptr, 1, '2', 3.0));
-static_assert(!can_construct_at((int*)nullptr, 1, '2', 3.0));
-static_assert(!can_construct_at(contiguous_iterator<Foo*>(), 1, '2', 3.0));
-// Can't construct function pointers.
-static_assert(!can_construct_at((int(*)())nullptr));
-static_assert(!can_construct_at((int(*)())nullptr, nullptr));
+// Make sure std::construct_at SFINAEs out based on the validity of calling
+// the constructor, instead of hard-erroring.
+template <typename T, typename = decltype(
+    std::construct_at((T*)nullptr, 1, 2) // missing arguments for Foo(...)
+)>
+constexpr bool test_sfinae(int) { return false; }
+template <typename T>
+constexpr bool test_sfinae(...) { return true; }
+static_assert(test_sfinae<Foo>(int()));
 
 int main(int, char**)
 {

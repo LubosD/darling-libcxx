@@ -37,7 +37,6 @@ int main(int, char**)
         ss0 >> i;
         assert(i == 321);
     }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         std::wistringstream ss0(L" 123 456");
         std::wistringstream ss(L" 789 321");
@@ -55,7 +54,6 @@ int main(int, char**)
         ss0 >> i;
         assert(i == 321);
     }
-#endif
 
   return 0;
 }

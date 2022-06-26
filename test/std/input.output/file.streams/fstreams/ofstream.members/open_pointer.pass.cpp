@@ -38,8 +38,6 @@ int main(int, char**)
         assert(c == 'a');
     }
     std::remove(temp.c_str());
-
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         std::wofstream fs;
         assert(!fs.is_open());
@@ -57,7 +55,6 @@ int main(int, char**)
         assert(c == L'a');
     }
     std::remove(temp.c_str());
-#endif
 
   return 0;
 }

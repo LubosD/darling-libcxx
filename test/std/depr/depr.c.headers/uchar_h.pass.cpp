@@ -9,7 +9,6 @@
 // XFAIL: suse-linux-enterprise-server-11
 // XFAIL: darwin
 // XFAIL: netbsd
-// XFAIL: LIBCXX-AIX-FIXME
 
 // <uchar.h>
 

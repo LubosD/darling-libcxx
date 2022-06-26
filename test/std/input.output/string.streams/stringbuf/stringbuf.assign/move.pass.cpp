@@ -38,7 +38,6 @@ int main(int, char**)
         buf = move(buf1);
         assert(buf.str() == "testing");
     }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         std::wstringbuf buf1(L"testing");
         std::wstringbuf buf;
@@ -57,7 +56,6 @@ int main(int, char**)
         buf = move(buf1);
         assert(buf.str() == L"testing");
     }
-#endif // TEST_HAS_NO_WIDE_CHARACTERS
 
   return 0;
 }

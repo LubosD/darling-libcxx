@@ -11,7 +11,6 @@
 // quoted
 
 // UNSUPPORTED: c++03, c++11
-// XFAIL: libcpp-has-no-wide-characters
 
 #include <iomanip>
 #include <sstream>

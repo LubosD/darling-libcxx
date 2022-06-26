@@ -14,6 +14,8 @@
 
 // Don't allow binding to a temp
 
+// XFAIL: c++03
+
 #include <functional>
 
 struct A {};

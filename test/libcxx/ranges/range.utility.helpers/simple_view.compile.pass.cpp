@@ -10,6 +10,7 @@
 
 // UNSUPPORTED: c++03, c++11, c++14, c++17
 // UNSUPPORTED: libcpp-no-concepts
+// UNSUPPORTED: gcc-10
 // UNSUPPORTED: libcpp-has-no-incomplete-ranges
 
 #include <ranges>
@@ -18,35 +19,32 @@
 #include "test_iterators.h"
 
 struct SimpleView : std::ranges::view_base {
-  int *begin() const;
-  int *end() const;
+  friend int* begin(SimpleView&);
+  friend int* begin(SimpleView const&);
+  friend int* end(SimpleView&);
+  friend int* end(SimpleView const&);
 };
 
 struct WrongConstView : std::ranges::view_base {
-  int *begin();
-  const int *begin() const;
-  int *end();
-  const int *end() const;
+  friend       int* begin(WrongConstView&);
+  friend const int* begin(WrongConstView const&);
+  friend       int* end(WrongConstView&);
+  friend const int* end(WrongConstView const&);
 };
 
 struct NoConstView : std::ranges::view_base {
-  int *begin();
-  int *end();
+  friend int* begin(NoConstView&);
+  friend int* end(NoConstView&);
 };
 
 struct DifferentSentinel : std::ranges::view_base {
-  int *begin() const;
-  sentinel_wrapper<int*> end() const;
-};
-
-struct WrongConstSentinel : std::ranges::view_base {
-  int *begin() const;
-  sentinel_wrapper<int*> end();
-  sentinel_wrapper<const int*> end() const;
+  friend int* begin(DifferentSentinel&);
+  friend int* begin(DifferentSentinel const&);
+  friend sentinel_wrapper<int*> end(DifferentSentinel&);
+  friend sentinel_wrapper<int*> end(DifferentSentinel const&);
 };
 
 static_assert( std::ranges::__simple_view<SimpleView>);
 static_assert(!std::ranges::__simple_view<WrongConstView>);
 static_assert(!std::ranges::__simple_view<NoConstView>);
-static_assert( std::ranges::__simple_view<DifferentSentinel>);
-static_assert(!std::ranges::__simple_view<WrongConstSentinel>);
+static_assert(!std::ranges::__simple_view<DifferentSentinel>);

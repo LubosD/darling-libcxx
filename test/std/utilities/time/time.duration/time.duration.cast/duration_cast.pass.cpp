@@ -16,9 +16,8 @@
 //   duration_cast(const duration<Rep, Period>& d);
 
 #include <chrono>
-#include <cassert>
-#include <ratio>
 #include <type_traits>
+#include <cassert>
 
 #include "test_macros.h"
 

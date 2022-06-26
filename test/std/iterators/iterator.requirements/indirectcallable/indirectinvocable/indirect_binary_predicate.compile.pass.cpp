@@ -8,6 +8,7 @@
 
 // UNSUPPORTED: c++03, c++11, c++14, c++17
 // UNSUPPORTED: libcpp-no-concepts
+// UNSUPPORTED: gcc-10
 
 // template<class F, class I1, class I2>
 // concept indirect_binary_predicate;

@@ -11,11 +11,10 @@
 // weak_ptr
 
 // template<class Y> weak_ptr(const weak_ptr<Y>& r);
-// template<class Y> weak_ptr(weak_ptr<Y>&& r);
+// template<class Y> weak_ptr(weak_ptr<Y> &&r);
 
 #include <memory>
 #include <type_traits>
-#include <utility>
 #include <cassert>
 
 #include "test_macros.h"
@@ -107,24 +106,6 @@ int main(int, char**)
     }
     assert(B::count == 0);
     assert(A::count == 0);
-
-#if TEST_STD_VER > 14
-    {
-        std::shared_ptr<A[]> ps(new A[8]);
-        std::weak_ptr<A[]> p1 = source(ps);
-        std::weak_ptr<const A[]> p2(p1);
-        assert(p2.use_count() == 1);
-    }
-    assert(A::count == 0);
-
-    {
-        std::shared_ptr<A[]> ps(new A[8]);
-        std::weak_ptr<A[]> p1 = source(ps);
-        std::weak_ptr<const A[]> p2(std::move(p1));
-        assert(p2.use_count() == 1);
-    }
-    assert(A::count == 0);
-#endif
 
   return 0;
 }

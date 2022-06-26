@@ -1,3 +1,4 @@
+// -*- C++ -*-
 //===----------------------------------------------------------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
@@ -7,6 +8,9 @@
 //===----------------------------------------------------------------------===//
 
 // UNSUPPORTED: c++03
+
+// GCC 7 is the first version to introduce [[nodiscard]]
+// UNSUPPORTED: gcc-5, gcc-6
 
 // Test that _LIBCPP_DISABLE_NODISCARD_EXT only disables _LIBCPP_NODISCARD_EXT
 // and not _LIBCPP_NODISCARD_AFTER_CXX17.

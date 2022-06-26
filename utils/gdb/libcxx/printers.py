@@ -147,7 +147,9 @@ class StdTuplePrinter(object):
             self.count += 1
             return ("[%d]" % self.count, child)
 
-        next = __next__  # Needed for GDB built against Python 2.7.
+        # TODO Delete when we drop Python 2.
+        def next(self):
+            return self.__next__()
 
     def __init__(self, val):
         self.val = val
@@ -236,7 +238,9 @@ class StdStringPrinter(object):
         else:
             data = short_field["__data_"]
             size = self._get_short_size(short_field, short_size)
-        return data.lazy_string(length=size)
+        if hasattr(data, "lazy_string"):
+            return data.lazy_string(length=size)
+        return data.string(length=size)
 
     def display_hint(self):
         return "string"
@@ -248,16 +252,24 @@ class StdStringViewPrinter(object):
     def __init__(self, val):
       self.val = val
 
-    def display_hint(self):
-      return "string"
-
     def to_string(self):  # pylint: disable=g-bad-name
       """GDB calls this to compute the pretty-printed form."""
 
       ptr = self.val["__data"]
-      ptr = ptr.cast(ptr.type.target().strip_typedefs().pointer())
-      size = self.val["__size"]
-      return ptr.lazy_string(length=size)
+      length = self.val["__size"]
+      print_length = length
+      # We print more than just a simple string (i.e. we also print
+      # "of length %d").  Thus we can't use the "string" display_hint,
+      # and thus we have to handle "print elements" ourselves.
+      # For reference sake, gdb ensures limit == None or limit > 0.
+      limit = gdb.parameter("print elements")
+      if limit is not None:
+        print_length = min(print_length, limit)
+      # FIXME: Passing ISO-8859-1 here isn't always correct.
+      string = ptr.string("ISO-8859-1", "ignore", print_length)
+      if length > print_length:
+        string += "..."
+      return "std::string_view of length %d: \"%s\"" % (length, string)
 
 
 class StdUniquePtrPrinter(object):
@@ -358,7 +370,9 @@ class StdVectorPrinter(object):
                 self.offset = 0
             return ("[%d]" % self.count, outbit)
 
-        next = __next__  # Needed for GDB built against Python 2.7.
+        # TODO Delete when we drop Python 2.
+        def next(self):
+            return self.__next__()
 
     class _VectorIterator(object):
         """Class to iterate over the non-bool vector's children."""
@@ -379,7 +393,9 @@ class StdVectorPrinter(object):
             self.item += 1
             return ("[%d]" % self.count, entry)
 
-        next = __next__  # Needed for GDB built against Python 2.7.
+        # TODO Delete when we drop Python 2.
+        def next(self):
+            return self.__next__()
 
     def __init__(self, val):
         """Set val, length, capacity, and iterator for bool and normal vectors."""

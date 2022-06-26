@@ -7,6 +7,7 @@
 //===----------------------------------------------------------------------===//
 //
 // UNSUPPORTED: libcpp-has-no-threads
+
 // ALLOW_RETRIES: 2
 
 // <mutex>
@@ -54,7 +55,7 @@ int main(int, char**)
     m.unlock();
     t.join();
 
-#if TEST_STD_VER >= 17
+#ifdef __cpp_deduction_guides
     std::unique_lock ul(m);
     static_assert((std::is_same<decltype(ul), std::unique_lock<decltype(m)>>::value), "" );
 #endif

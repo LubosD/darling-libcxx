@@ -28,7 +28,7 @@ test(U u)
 {
     const std::move_iterator<U> r2(u);
     std::move_iterator<It> r1 = r2;
-    assert(base(r1.base()) == base(u));
+    assert(r1.base() == u);
 }
 
 struct Base {};

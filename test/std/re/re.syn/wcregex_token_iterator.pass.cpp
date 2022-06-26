@@ -10,8 +10,6 @@
 
 // typedef regex_token_iterator<const wchar_t*>   wcregex_token_iterator;
 
-// XFAIL: libcpp-has-no-wide-characters
-
 #include <regex>
 #include <type_traits>
 #include "test_macros.h"

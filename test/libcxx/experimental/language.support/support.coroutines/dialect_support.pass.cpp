@@ -1,3 +1,4 @@
+// -*- C++ -*-
 //===----------------------------------------------------------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
@@ -7,7 +8,7 @@
 //===----------------------------------------------------------------------===//
 
 // REQUIRES: fcoroutines-ts
-// ADDITIONAL_COMPILE_FLAGS: -fcoroutines-ts -Wno-coroutine
+// ADDITIONAL_COMPILE_FLAGS: -fcoroutines-ts
 
 // A simple "breathing" test that checks that <experimental/coroutine>
 // can be parsed and used in all dialects, including C++03 in order to match

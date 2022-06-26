@@ -29,7 +29,6 @@ int main(int, char**)
         i = 'b';
         assert(outf.str() == "ab");
     }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         std::wostringstream outf;
         std::ostreambuf_iterator<wchar_t> i(outf);
@@ -38,7 +37,6 @@ int main(int, char**)
         i = L'b';
         assert(outf.str() == L"ab");
     }
-#endif
 
   return 0;
 }

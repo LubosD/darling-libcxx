@@ -9,9 +9,9 @@
 #ifndef USES_ALLOC_TYPES_H
 #define USES_ALLOC_TYPES_H
 
-#include <cassert>
+# include <memory>
+# include <cassert>
 #include <cstdlib>
-#include <memory>
 
 #include "test_macros.h"
 #include "test_workarounds.h"
@@ -41,6 +41,17 @@ inline const char* toString(UsesAllocatorType UA) {
     default:
     std::abort();
     }
+}
+
+#define COMPARE_ALLOC_TYPE(LHS, RHS) CompareVerbose(#LHS, LHS, #RHS, RHS)
+
+inline bool CompareVerbose(const char* LHSString, UsesAllocatorType LHS,
+                           const char* RHSString, UsesAllocatorType RHS) {
+    if (LHS == RHS)
+        return true;
+    std::printf("UsesAllocatorType's don't match:\n%s %s\n----------\n%s %s\n",
+                LHSString, toString(LHS), RHSString, toString(RHS));
+    return false;
 }
 
 template <class Alloc, std::size_t N>
@@ -179,36 +190,26 @@ public:
     template <class ...ArgTypes>
     bool checkConstruct(UsesAllocatorType expectType) const {
         auto expectArgs = &makeArgumentID<ArgTypes...>();
-        if (expectType != constructor_called)
-            return false;
-        if (args_id != expectArgs)
-            return false;
-        return true;
+        return COMPARE_ALLOC_TYPE(expectType, constructor_called) &&
+               COMPARE_TYPEID(args_id, expectArgs);
     }
 
     template <class ...ArgTypes>
     bool checkConstruct(UsesAllocatorType expectType,
                         CtorAlloc const& expectAlloc) const {
         auto ExpectID = &makeArgumentID<ArgTypes...>() ;
-        if (expectType != constructor_called)
-            return false;
-        if (args_id != ExpectID)
-            return false;
-        if (!has_alloc() || expectAlloc != *get_alloc())
-            return false;
-        return true;
+        return COMPARE_ALLOC_TYPE(expectType, constructor_called) &&
+               COMPARE_TYPEID(args_id, ExpectID) &&
+               has_alloc() && expectAlloc == *get_alloc();
+
     }
 
     bool checkConstructEquiv(UsesAllocatorTestBase& O) const {
         if (has_alloc() != O.has_alloc())
             return false;
-        if (constructor_called != O.constructor_called)
-            return false;
-        if (args_id != O.args_id)
-            return false;
-        if (has_alloc() && *get_alloc() != *O.get_alloc())
-            return false;
-        return true;
+        return COMPARE_ALLOC_TYPE(constructor_called, O.constructor_called)
+            && COMPARE_TYPEID(args_id, O.args_id)
+            && (!has_alloc() || *get_alloc() == *O.get_alloc());
     }
 
 protected:

@@ -6,6 +6,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+// UNSUPPORTED: clang-8
+
 // <algorithm>
 
 // template<BidirectionalIterator InIter, BidirectionalIterator OutIter>

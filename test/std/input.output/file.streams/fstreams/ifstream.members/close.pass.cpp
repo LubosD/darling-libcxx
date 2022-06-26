@@ -30,7 +30,6 @@ int main(int, char**)
         fs.close();
         assert(!fs.is_open());
     }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         std::wifstream fs;
         assert(!fs.is_open());
@@ -39,7 +38,6 @@ int main(int, char**)
         fs.close();
         assert(!fs.is_open());
     }
-#endif
 
   return 0;
 }

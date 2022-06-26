@@ -5,18 +5,26 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
+//
+// UNSUPPORTED: libcpp-has-no-threads
 
 // <atomic>
 
-// template<class T>
-//     T
-//     atomic_fetch_add_explicit(volatile atomic<T>*, atomic<T>::difference_type,
-//                               memory_order) noexcept;
-//
-// template<class T>
-//     T
-//     atomic_fetch_add_explicit(atomic<T>*, atomic<T>::difference_type,
-//                               memory_order) noexcept;
+// template <class Integral>
+//     Integral
+//     atomic_fetch_add_explicit(volatile atomic<Integral>* obj, Integral op,
+//                               memory_order m);
+// template <class Integral>
+//     Integral
+//     atomic_fetch_add_explicit(atomic<Integral>* obj, Integral op,
+//                               memory_order m);
+// template <class T>
+//     T*
+//     atomic_fetch_add_explicit(volatile atomic<T*>* obj, ptrdiff_t op,
+//                               memory_order m);
+// template <class T>
+//     T*
+//     atomic_fetch_add_explicit(atomic<T*>* obj, ptrdiff_t op, memory_order m);
 
 #include <atomic>
 #include <type_traits>
@@ -34,7 +42,6 @@ struct TestFn {
         assert(std::atomic_fetch_add_explicit(&t, T(2),
                                             std::memory_order_seq_cst) == T(1));
         assert(t == T(3));
-        ASSERT_NOEXCEPT(std::atomic_fetch_add_explicit(&t, 0, std::memory_order_relaxed));
     }
     {
         typedef std::atomic<T> A;
@@ -42,7 +49,6 @@ struct TestFn {
         assert(std::atomic_fetch_add_explicit(&t, T(2),
                                             std::memory_order_seq_cst) == T(1));
         assert(t == T(3));
-        ASSERT_NOEXCEPT(std::atomic_fetch_add_explicit(&t, 0, std::memory_order_relaxed));
     }
   }
 };
@@ -54,22 +60,28 @@ testp()
     {
         typedef std::atomic<T> A;
         typedef typename std::remove_pointer<T>::type X;
-        X a[3] = {0};
-        A t(&a[0]);
-        assert(std::atomic_fetch_add_explicit(&t, 2, std::memory_order_seq_cst) == &a[0]);
+        A t(T(1 * sizeof(X)));
+        assert(std::atomic_fetch_add_explicit(&t, 2,
+                                  std::memory_order_seq_cst) == T(1*sizeof(X)));
+#ifdef _LIBCPP_VERSION // libc++ is not conforming
+        std::atomic_fetch_add_explicit<X>(&t, 0, std::memory_order_relaxed);
+#else
         std::atomic_fetch_add_explicit<T>(&t, 0, std::memory_order_relaxed);
-        assert(t == &a[2]);
-        ASSERT_NOEXCEPT(std::atomic_fetch_add_explicit(&t, 0, std::memory_order_relaxed));
+#endif // _LIBCPP_VERSION
+        assert(t == T(3*sizeof(X)));
     }
     {
         typedef std::atomic<T> A;
         typedef typename std::remove_pointer<T>::type X;
-        X a[3] = {0};
-        volatile A t(&a[0]);
-        assert(std::atomic_fetch_add_explicit(&t, 2, std::memory_order_seq_cst) == &a[0]);
+        volatile A t(T(1 * sizeof(X)));
+        assert(std::atomic_fetch_add_explicit(&t, 2,
+                                  std::memory_order_seq_cst) == T(1*sizeof(X)));
+#ifdef _LIBCPP_VERSION // libc++ is not conforming
+        std::atomic_fetch_add_explicit<X>(&t, 0, std::memory_order_relaxed);
+#else
         std::atomic_fetch_add_explicit<T>(&t, 0, std::memory_order_relaxed);
-        assert(t == &a[2]);
-        ASSERT_NOEXCEPT(std::atomic_fetch_add_explicit(&t, 0, std::memory_order_relaxed));
+#endif // _LIBCPP_VERSION
+        assert(t == T(3*sizeof(X)));
     }
 }
 

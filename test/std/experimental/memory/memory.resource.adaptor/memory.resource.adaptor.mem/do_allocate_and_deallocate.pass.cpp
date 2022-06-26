@@ -99,7 +99,7 @@ void check_alloc_max_size() {
         try {
             m1.allocate(size);
             assert(false);
-        } catch (std::bad_array_new_length const&) {
+        } catch (std::exception const&) {
         }
     }
 #endif

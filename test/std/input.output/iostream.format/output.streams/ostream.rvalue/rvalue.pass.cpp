@@ -67,7 +67,6 @@ int main(int, char**)
         assert(&result == &os);
         assert(sb.str() == "123");
     }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         testbuf<wchar_t> sb;
         std::wostream os(&sb);
@@ -76,7 +75,6 @@ int main(int, char**)
         assert(&result == &os);
         assert(sb.str() == L"123");
     }
-#endif
 
     return 0;
 }

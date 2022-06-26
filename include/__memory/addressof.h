@@ -16,7 +16,12 @@
 #pragma GCC system_header
 #endif
 
+_LIBCPP_PUSH_MACROS
+#include <__undef_macros>
+
 _LIBCPP_BEGIN_NAMESPACE_STD
+
+#ifndef _LIBCPP_HAS_NO_BUILTIN_ADDRESSOF
 
 template <class _Tp>
 inline _LIBCPP_CONSTEXPR_AFTER_CXX14
@@ -26,6 +31,19 @@ addressof(_Tp& __x) _NOEXCEPT
 {
     return __builtin_addressof(__x);
 }
+
+#else
+
+template <class _Tp>
+inline _LIBCPP_NO_CFI _LIBCPP_INLINE_VISIBILITY
+_Tp*
+addressof(_Tp& __x) _NOEXCEPT
+{
+  return reinterpret_cast<_Tp *>(
+      const_cast<char *>(&reinterpret_cast<const volatile char &>(__x)));
+}
+
+#endif // _LIBCPP_HAS_NO_BUILTIN_ADDRESSOF
 
 #if defined(_LIBCPP_HAS_OBJC_ARC) && !defined(_LIBCPP_PREDEFINED_OBJC_ARC_ADDRESSOF)
 // Objective-C++ Automatic Reference Counting uses qualified pointers
@@ -72,5 +90,7 @@ template <class _Tp> _Tp* addressof(const _Tp&&) noexcept = delete;
 #endif
 
 _LIBCPP_END_NAMESPACE_STD
+
+_LIBCPP_POP_MACROS
 
 #endif // _LIBCPP___MEMORY_ADDRESSOF_H

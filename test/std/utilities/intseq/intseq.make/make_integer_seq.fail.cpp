@@ -14,7 +14,7 @@
 // UNSUPPORTED: c++03, c++11
 
 // This test hangs during recursive template instantiation with libstdc++
-// UNSUPPORTED: stdlib=libstdc++
+// UNSUPPORTED: libstdc++
 
 #include <utility>
 #include <type_traits>

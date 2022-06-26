@@ -18,9 +18,12 @@
 #pragma GCC system_header
 #endif
 
+_LIBCPP_PUSH_MACROS
+#include <__undef_macros>
+
 _LIBCPP_BEGIN_NAMESPACE_STD
 
-#if !defined(_LIBCPP_HAS_NO_CONCEPTS)
+#if !defined(_LIBCPP_HAS_NO_RANGES)
 
 // [incrementable.traits]
 template<class> struct incrementable_traits {};
@@ -65,8 +68,10 @@ using iter_difference_t = typename conditional_t<__is_primary_template<iterator_
                                                  incrementable_traits<remove_cvref_t<_Ip> >,
                                                  iterator_traits<remove_cvref_t<_Ip> > >::difference_type;
 
-#endif // !defined(_LIBCPP_HAS_NO_CONCEPTS)
+#endif // !defined(_LIBCPP_HAS_NO_RANGES)
 
 _LIBCPP_END_NAMESPACE_STD
+
+_LIBCPP_POP_MACROS
 
 #endif // _LIBCPP___ITERATOR_INCREMENTABLE_TRAITS_H

@@ -59,13 +59,6 @@ int main(int, char**)
       assert(A::count == 8);
     }
     assert(A::count == 0);
-
-    {
-      std::shared_ptr<const A[]> pA(new A[8]);
-      assert(pA.use_count() == 1);
-      assert(A::count == 8);
-    }
-    assert(A::count == 0);
 #endif
 
     return 0;

@@ -12,8 +12,6 @@
 
 // streambuf *rdbuf(streambuf *bytebuf);
 
-// XFAIL: libcpp-has-no-wide-characters
-
 #include <locale>
 #include <codecvt>
 #include <sstream>

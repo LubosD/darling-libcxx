@@ -14,8 +14,6 @@
 // template<class charT, class traits>
 //   basic_ostream<charT,traits>& operator<<(basic_ostream<charT,traits>& out, const charT* s);
 
-// XFAIL: libcpp-has-no-wide-characters
-
 #include <ostream>
 #include <cassert>
 

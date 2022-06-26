@@ -53,21 +53,6 @@ protected:
 int main(int, char**)
 {
     {
-        std::ostream os((std::streambuf*)0);
-        const char s[] = "123456790";
-        os.write(s, sizeof(s)/sizeof(s[0])-1);
-        assert(os.bad());
-    }
-    {
-        testbuf<char> sb;
-        std::ostream os(&sb);
-        const char s[] = "123456790";
-        os.write(s, sizeof(s)/sizeof(s[0])-1);
-        assert(sb.str() == s);
-        assert(os.good());
-    }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
-    {
         std::wostream os((std::wstreambuf*)0);
         const wchar_t s[] = L"123456790";
         os.write(s, sizeof(s)/sizeof(s[0])-1);
@@ -81,7 +66,14 @@ int main(int, char**)
         assert(os.good());
         assert(sb.str() == s);
     }
-#endif
+    {
+        testbuf<char> sb;
+        std::ostream os(&sb);
+        const char s[] = "123456790";
+        os.write(s, sizeof(s)/sizeof(s[0])-1);
+        assert(sb.str() == s);
+        assert(os.good());
+    }
 
   return 0;
 }

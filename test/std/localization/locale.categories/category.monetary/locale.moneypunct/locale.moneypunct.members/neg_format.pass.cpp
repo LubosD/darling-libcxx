@@ -36,7 +36,6 @@ public:
         : std::moneypunct<char, true>(refs) {}
 };
 
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
 class Fwf
     : public std::moneypunct<wchar_t, false>
 {
@@ -52,7 +51,6 @@ public:
     explicit Fwt(std::size_t refs = 0)
         : std::moneypunct<wchar_t, true>(refs) {}
 };
-#endif // TEST_HAS_NO_WIDE_CHARACTERS
 
 int main(int, char**)
 {
@@ -72,7 +70,6 @@ int main(int, char**)
         assert(p.field[2] == std::money_base::none);
         assert(p.field[3] == std::money_base::value);
     }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         Fwf f(1);
         std::money_base::pattern p = f.neg_format();
@@ -89,7 +86,6 @@ int main(int, char**)
         assert(p.field[2] == std::money_base::none);
         assert(p.field[3] == std::money_base::value);
     }
-#endif // TEST_HAS_NO_WIDE_CHARACTERS
 
   return 0;
 }

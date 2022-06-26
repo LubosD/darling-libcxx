@@ -10,8 +10,6 @@
 
 // typedef regex_iterator<wstring::const_iterator>   wsregex_iterator;
 
-// XFAIL: libcpp-has-no-wide-characters
-
 #include <regex>
 #include <type_traits>
 #include "test_macros.h"

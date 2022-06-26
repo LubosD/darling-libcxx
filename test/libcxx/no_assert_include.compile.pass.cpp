@@ -1,3 +1,4 @@
+// -*- C++ -*-
 //===----------------------------------------------------------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
@@ -8,6 +9,9 @@
 
 // Ensure that none of the standard C++ headers implicitly include cassert or
 // assert.h (because assert() is implemented as a macro).
+
+// GCC 5 has incomplete support for C++17, so some headers fail when included.
+// UNSUPPORTED: gcc-5 && c++17
 
 // Prevent <ext/hash_map> from generating deprecated warnings for this test.
 #if defined(__DEPRECATED)
@@ -27,7 +31,9 @@
 #include <algorithm>
 #include <any>
 #include <array>
-#include <atomic>
+#ifndef _LIBCPP_HAS_NO_THREADS
+#    include <atomic>
+#endif
 #ifndef _LIBCPP_HAS_NO_THREADS
 #    include <barrier>
 #endif
@@ -55,9 +61,6 @@
 #include <complex.h>
 #include <concepts>
 #include <condition_variable>
-#ifndef _LIBCPP_HAS_NO_CXX20_COROUTINES
-#    include <coroutine>
-#endif
 #include <csetjmp>
 #include <csignal>
 #include <cstdarg>
@@ -70,12 +73,8 @@
 #include <ctgmath>
 #include <ctime>
 #include <ctype.h>
-#ifndef _LIBCPP_HAS_NO_WIDE_CHARACTERS
-#    include <cwchar>
-#endif
-#ifndef _LIBCPP_HAS_NO_WIDE_CHARACTERS
-#    include <cwctype>
-#endif
+#include <cwchar>
+#include <cwctype>
 #include <deque>
 #include <errno.h>
 #include <exception>
@@ -191,17 +190,13 @@
 #include <variant>
 #include <vector>
 #include <version>
-#ifndef _LIBCPP_HAS_NO_WIDE_CHARACTERS
-#    include <wchar.h>
-#endif
-#ifndef _LIBCPP_HAS_NO_WIDE_CHARACTERS
-#    include <wctype.h>
-#endif
+#include <wchar.h>
+#include <wctype.h>
 
 // experimental headers
 #if __cplusplus >= 201103L
 #    include <experimental/algorithm>
-#    ifndef _LIBCPP_HAS_NO_EXPERIMENTAL_COROUTINES
+#    if defined(__cpp_coroutines)
 #        include <experimental/coroutine>
 #    endif
 #    include <experimental/deque>

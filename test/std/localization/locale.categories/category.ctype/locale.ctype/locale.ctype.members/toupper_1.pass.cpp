@@ -12,8 +12,6 @@
 
 // charT toupper(charT) const;
 
-// XFAIL: libcpp-has-no-wide-characters
-
 #include <locale>
 #include <cassert>
 

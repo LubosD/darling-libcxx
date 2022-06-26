@@ -7,6 +7,7 @@
 //===----------------------------------------------------------------------===//
 
 // UNSUPPORTED: c++03, c++11
+// UNSUPPORTED: gcc-5
 
 // <filesystem>
 
@@ -14,13 +15,12 @@
 
 // ADDITIONAL_COMPILE_FLAGS: -I %S/../../../../src/filesystem
 
-#include <cassert>
-#include <chrono>
-#include <cstddef>
 #include <filesystem>
-#include <limits>
-#include <string>
+#include <chrono>
 #include <type_traits>
+#include <limits>
+#include <cstddef>
+#include <cassert>
 
 #include "filesystem_common.h"
 

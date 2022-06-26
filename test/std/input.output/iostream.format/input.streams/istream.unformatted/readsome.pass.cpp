@@ -62,7 +62,6 @@ int main(int, char**)
         assert(std::string(s, 1) == "0");
         assert(is.readsome(s, 5) == 0);
     }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         testbuf<wchar_t> sb(L" 1234567890");
         std::wistream is(&sb);
@@ -84,7 +83,6 @@ int main(int, char**)
         assert(std::wstring(s, 1) == L"0");
         assert(is.readsome(s, 5) == 0);
     }
-#endif
 
   return 0;
 }

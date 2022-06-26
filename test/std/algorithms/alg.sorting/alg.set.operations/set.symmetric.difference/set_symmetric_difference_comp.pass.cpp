@@ -6,6 +6,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+// UNSUPPORTED: clang-8
+
 // <algorithm>
 
 // template<InputIterator InIter1, InputIterator InIter2, typename OutIter,

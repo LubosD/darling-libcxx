@@ -73,7 +73,6 @@ int main(int, char**)
         assert(!is.fail());
         assert(is.gcount() == 3);
     }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         testbuf<wchar_t> sb(L"testing\n...");
         std::wistream is(&sb);
@@ -89,7 +88,6 @@ int main(int, char**)
         assert(!is.fail());
         assert(is.gcount() == 3);
     }
-#endif
 #ifndef TEST_HAS_NO_EXCEPTIONS
     {
         testbuf<char> sb(" ");
@@ -107,7 +105,6 @@ int main(int, char**)
         assert( is.eof());
         assert(!is.fail());
     }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         testbuf<wchar_t> sb(L" ");
         std::basic_istream<wchar_t> is(&sb);
@@ -124,7 +121,6 @@ int main(int, char**)
         assert( is.eof());
         assert(!is.fail());
     }
-#endif
 
     {
         testbuf<char> sb;
@@ -142,7 +138,6 @@ int main(int, char**)
         assert( is.eof());
         assert( is.fail());
     }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         testbuf<wchar_t> sb;
         std::basic_istream<wchar_t> is(&sb);
@@ -160,7 +155,6 @@ int main(int, char**)
         assert( is.fail());
     }
 #endif
-#endif // TEST_HAS_NO_EXCEPTIONS
 
     return 0;
 }

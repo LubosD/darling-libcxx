@@ -7,6 +7,7 @@
 //===----------------------------------------------------------------------===//
 
 // UNSUPPORTED: c++03, c++11, c++14
+// UNSUPPORTED: libcpp-no-deduction-guides
 
 // <functional>
 
@@ -15,7 +16,8 @@
 
 #include <functional>
 
-int main(int, char**) {
+int main()
+{
     int i = 0;
     std::reference_wrapper ri(i);
     static_assert(std::is_same_v<decltype(ri), std::reference_wrapper<int>>);
@@ -26,6 +28,4 @@ int main(int, char**) {
     static_assert(std::is_same_v<decltype(rj), std::reference_wrapper<const int>>);
     std::reference_wrapper rj2(rj);
     static_assert(std::is_same_v<decltype(rj2), std::reference_wrapper<const int>>);
-
-    return 0;
 }

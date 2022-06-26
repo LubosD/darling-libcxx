@@ -38,7 +38,6 @@ int main(int, char**)
         static_assert((std::is_same<std::collate<char>::string_type, std::string>::value), "");
         static_assert((std::is_base_of<std::locale::facet, std::collate<char> >::value), "");
     }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         assert(std::has_facet<std::collate<wchar_t> >(l));
         const std::collate<wchar_t>& f = std::use_facet<std::collate<wchar_t> >(l);
@@ -50,7 +49,6 @@ int main(int, char**)
         static_assert((std::is_same<std::collate<wchar_t>::string_type, std::wstring>::value), "");
         static_assert((std::is_base_of<std::locale::facet, std::collate<wchar_t> >::value), "");
     }
-#endif
 
   return 0;
 }

@@ -20,10 +20,9 @@
 
 int main(int, char**)
 {
-    test_allocator_statistics alloc_stats;
     {
-        std::vector<bool, test_allocator<bool> > l(test_allocator<bool>(5, &alloc_stats));
-        std::vector<bool, test_allocator<bool> > lo(test_allocator<bool>(5, &alloc_stats));
+        std::vector<bool, test_allocator<bool> > l(test_allocator<bool>(5));
+        std::vector<bool, test_allocator<bool> > lo(test_allocator<bool>(5));
         for (int i = 1; i <= 3; ++i)
         {
             l.push_back(true);
@@ -61,24 +60,24 @@ int main(int, char**)
         assert(l2.get_allocator() == lo.get_allocator());
     }
     {
-      alloc_stats.clear();
+      test_alloc_base::clear();
       using Vect = std::vector<bool, test_allocator<bool> >;
       using AllocT = Vect::allocator_type;
-      Vect v(test_allocator<bool>(42, 101, &alloc_stats));
-      assert(alloc_stats.count == 1);
+      Vect v(test_allocator<bool>(42, 101));
+      assert(test_alloc_base::count == 1);
       {
         const AllocT& a = v.get_allocator();
-        assert(alloc_stats.count == 2);
+        assert(test_alloc_base::count == 2);
         assert(a.get_data() == 42);
         assert(a.get_id() == 101);
       }
-      assert(alloc_stats.count == 1);
-      alloc_stats.clear_ctor_counters();
+      assert(test_alloc_base::count == 1);
+      test_alloc_base::clear_ctor_counters();
 
       Vect v2 = std::move(v);
-      assert(alloc_stats.count == 2);
-      assert(alloc_stats.copied == 0);
-      assert(alloc_stats.moved == 1);
+      assert(test_alloc_base::count == 2);
+      assert(test_alloc_base::copied == 0);
+      assert(test_alloc_base::moved == 1);
       {
         const AllocT& a = v.get_allocator();
         assert(a.get_id() == test_alloc_base::moved_value);

@@ -17,7 +17,6 @@
 
 #include <chrono>
 #include <cassert>
-#include <utility>
 
 #include "test_macros.h"
 

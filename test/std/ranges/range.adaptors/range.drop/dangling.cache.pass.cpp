@@ -8,6 +8,7 @@
 
 // UNSUPPORTED: c++03, c++11, c++14, c++17
 // UNSUPPORTED: libcpp-no-concepts
+// UNSUPPORTED: gcc-10
 // UNSUPPORTED: libcpp-has-no-incomplete-ranges
 
 // If we have a copy-propagating cache, when we copy ZeroOnDestroy, we will get a
@@ -32,7 +33,7 @@ struct ZeroOnDestroy : std::ranges::view_base {
   constexpr ForwardIter end() const { return ForwardIter(); }
 
   ~ZeroOnDestroy() {
-    std::memset(buff, 0, sizeof(buff));
+    memset(buff, 0, sizeof(buff));
   }
 
   static auto dropFirstFour() {

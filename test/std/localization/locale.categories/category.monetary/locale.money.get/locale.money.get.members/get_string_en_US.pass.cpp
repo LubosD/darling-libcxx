@@ -35,7 +35,6 @@ public:
         : Fn(refs) {}
 };
 
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
 typedef std::money_get<wchar_t, cpp17_input_iterator<const wchar_t*> > Fw;
 
 class my_facetw
@@ -45,7 +44,6 @@ public:
     explicit my_facetw(std::size_t refs = 0)
         : Fw(refs) {}
 };
-#endif
 
 int main(int, char**)
 {
@@ -55,12 +53,10 @@ int main(int, char**)
                           new std::moneypunct_byname<char, false>(loc_name)));
     ios.imbue(std::locale(ios.getloc(),
                           new std::moneypunct_byname<char, true>(loc_name)));
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     ios.imbue(std::locale(ios.getloc(),
                           new std::moneypunct_byname<wchar_t, false>(loc_name)));
     ios.imbue(std::locale(ios.getloc(),
                           new std::moneypunct_byname<wchar_t, true>(loc_name)));
-#endif
     {
         const my_facet f(1);
         // char, national
@@ -397,7 +393,6 @@ int main(int, char**)
             assert(ex == "");
         }
     }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         const my_facetw f(1);
         // wchar_t, national
@@ -733,18 +728,6 @@ int main(int, char**)
             assert(err == std::ios_base::failbit);
             assert(ex == L"");
         }
-    }
-#endif // TEST_HAS_NO_WIDE_CHARACTERS
-    {
-      // test for err
-      const my_facet f(1);
-      std::string v = "1.23";
-      typedef cpp17_input_iterator<const char*> I;
-      std::string ex = "NULL";
-      std::ios_base::iostate err = std::ios_base::goodbit;
-      f.get(I(v.data()), I(v.data()), false, ios, err, ex);
-      assert(err == (std::ios_base::failbit | std::ios_base::eofbit));
-      assert(ex == "NULL");
     }
 
   return 0;

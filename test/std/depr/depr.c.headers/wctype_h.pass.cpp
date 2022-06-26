@@ -6,8 +6,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-// XFAIL: libcpp-has-no-wide-characters
-
 // <wctype.h>
 
 #include <wctype.h>

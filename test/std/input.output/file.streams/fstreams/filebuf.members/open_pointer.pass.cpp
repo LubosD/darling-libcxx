@@ -33,8 +33,6 @@ int main(int, char**)
         assert(f.sbumpc() == '3');
     }
     std::remove(temp.c_str());
-
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         std::wfilebuf f;
         assert(f.open(temp.c_str(), std::ios_base::out) != 0);
@@ -49,8 +47,7 @@ int main(int, char**)
         assert(f.sbumpc() == L'2');
         assert(f.sbumpc() == L'3');
     }
-    std::remove(temp.c_str());
-#endif
+    remove(temp.c_str());
 
   return 0;
 }

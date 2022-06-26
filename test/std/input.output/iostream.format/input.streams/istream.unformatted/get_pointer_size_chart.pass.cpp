@@ -79,7 +79,6 @@ int main(int, char**)
         assert(std::string(s) == "");
         assert(is.gcount() == 0);
     }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         testbuf<wchar_t> sb(L"  *    * ");
         std::wistream is(&sb);
@@ -114,7 +113,6 @@ int main(int, char**)
         assert(std::wstring(s) == L"");
         assert(is.gcount() == 0);
     }
-#endif // TEST_HAS_NO_WIDE_CHARACTERS
 #ifndef TEST_HAS_NO_EXCEPTIONS
     {
         testbuf<char> sb(" ");
@@ -134,7 +132,6 @@ int main(int, char**)
         assert(std::basic_string<char>(s) == " ");
         assert(is.gcount() == 1);
     }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         testbuf<wchar_t> sb(L" ");
         std::basic_istream<wchar_t> is(&sb);
@@ -153,7 +150,6 @@ int main(int, char**)
         assert(std::basic_string<wchar_t>(s) == L" ");
         assert(is.gcount() == 1);
     }
-#endif // TEST_HAS_NO_WIDE_CHARACTERS
 
     {
         testbuf<char> sb;
@@ -173,7 +169,6 @@ int main(int, char**)
         assert(std::basic_string<char>(s) == "");
         assert(is.gcount() == 0);
     }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         testbuf<wchar_t> sb;
         std::basic_istream<wchar_t> is(&sb);
@@ -192,8 +187,7 @@ int main(int, char**)
         assert(std::basic_string<wchar_t>(s) == L"");
         assert(is.gcount() == 0);
     }
-#endif // TEST_HAS_NO_WIDE_CHARACTERS
-#endif // TEST_HAS_NO_EXCEPTIONS
+#endif
 
   return 0;
 }

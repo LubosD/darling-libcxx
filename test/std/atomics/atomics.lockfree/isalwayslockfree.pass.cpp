@@ -6,10 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// UNSUPPORTED: c++03, c++11, c++14
-
-// Fails for 32-bit builds.
-// UNSUPPORTED: LIBCXX-AIX-FIXME
+// UNSUPPORTED: libcpp-has-no-threads, c++03, c++11, c++14
 
 // <atomic>
 

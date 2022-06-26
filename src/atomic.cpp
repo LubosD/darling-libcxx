@@ -1,4 +1,4 @@
-//===----------------------------------------------------------------------===//
+//===------------------------- atomic.cpp ---------------------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
@@ -9,10 +9,9 @@
 #include <__config>
 #ifndef _LIBCPP_HAS_NO_THREADS
 
-#include <atomic>
 #include <climits>
+#include <atomic>
 #include <functional>
-#include <thread>
 
 #ifdef __linux__
 

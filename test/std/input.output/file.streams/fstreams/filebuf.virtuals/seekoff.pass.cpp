@@ -43,8 +43,6 @@ int main(int, char**)
         assert(f.sgetc() == 'l');
     }
     std::remove("seekoff.dat");
-
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         wchar_t buf[10];
         typedef std::filebuf::pos_type pos_type;
@@ -66,7 +64,6 @@ int main(int, char**)
         assert(f.sgetc() == L'l');
     }
     std::remove("seekoff.dat");
-#endif
 
   return 0;
 }

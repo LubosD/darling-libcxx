@@ -12,9 +12,8 @@
 // using years = duration<signed integer type of at least 17 bits, ratio_multiply<ratio<146097, 400>, days::period>>
 
 #include <chrono>
-#include <limits>
-#include <ratio>
 #include <type_traits>
+#include <limits>
 
 #include "test_macros.h"
 

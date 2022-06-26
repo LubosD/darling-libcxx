@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// UNSUPPORTED: c++03
+// UNSUPPORTED: libcpp-has-no-threads, c++03
 // REQUIRES: is-lockfree-runtime-function
 // ADDITIONAL_COMPILE_FLAGS: -Wno-psabi
 // ... since C++20 std::__atomic_base initializes, so we get a warning about an
@@ -65,9 +65,7 @@ int main(int, char**) {
   CHECK_ALIGNMENT(unsigned char);
   CHECK_ALIGNMENT(char16_t);
   CHECK_ALIGNMENT(char32_t);
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
   CHECK_ALIGNMENT(wchar_t);
-#endif
   CHECK_ALIGNMENT(short);
   CHECK_ALIGNMENT(unsigned short);
   CHECK_ALIGNMENT(int);

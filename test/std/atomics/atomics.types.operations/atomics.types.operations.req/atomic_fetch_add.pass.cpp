@@ -5,16 +5,26 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
+//
+// UNSUPPORTED: libcpp-has-no-threads
 
 // <atomic>
 
-// template<class T>
-//     T
-//     atomic_fetch_add(volatile atomic<T>* obj, atomic<T>::difference_type) noexcept;
+// template <class Integral>
+//     Integral
+//     atomic_fetch_add(volatile atomic<Integral>* obj, Integral op);
 //
-// template<class T>
-//     T
-//     atomic_fetch_add(atomic<T>* obj, atomic<T>::difference_type) noexcept;
+// template <class Integral>
+//     Integral
+//     atomic_fetch_add(atomic<Integral>* obj, Integral op);
+//
+// template <class T>
+//     T*
+//     atomic_fetch_add(volatile atomic<T*>* obj, ptrdiff_t op);
+//
+// template <class T>
+//     T*
+//     atomic_fetch_add(atomic<T*>* obj, ptrdiff_t op);
 
 #include <atomic>
 #include <type_traits>
@@ -31,14 +41,12 @@ struct TestFn {
         A t(T(1));
         assert(std::atomic_fetch_add(&t, T(2)) == T(1));
         assert(t == T(3));
-        ASSERT_NOEXCEPT(std::atomic_fetch_add(&t, 0));
     }
     {
         typedef std::atomic<T> A;
         volatile A t(T(1));
         assert(std::atomic_fetch_add(&t, T(2)) == T(1));
         assert(t == T(3));
-        ASSERT_NOEXCEPT(std::atomic_fetch_add(&t, 0));
     }
   }
 };
@@ -49,22 +57,26 @@ void testp()
     {
         typedef std::atomic<T> A;
         typedef typename std::remove_pointer<T>::type X;
-        X a[3] = {0};
-        A t(&a[0]);
-        assert(std::atomic_fetch_add(&t, 2) == &a[0]);
+        A t(T(1 * sizeof(X)));
+        assert(std::atomic_fetch_add(&t, 2) == T(1*sizeof(X)));
+#ifdef _LIBCPP_VERSION // libc++ is nonconforming
+        std::atomic_fetch_add<X>(&t, 0);
+#else
         std::atomic_fetch_add<T>(&t, 0);
-        assert(t == &a[2]);
-        ASSERT_NOEXCEPT(std::atomic_fetch_add(&t, 0));
+#endif // _LIBCPP_VERSION
+        assert(t == T(3*sizeof(X)));
     }
     {
         typedef std::atomic<T> A;
         typedef typename std::remove_pointer<T>::type X;
-        X a[3] = {0};
-        volatile A t(&a[0]);
-        assert(std::atomic_fetch_add(&t, 2) == &a[0]);
+        volatile A t(T(1 * sizeof(X)));
+        assert(std::atomic_fetch_add(&t, 2) == T(1*sizeof(X)));
+#ifdef _LIBCPP_VERSION // libc++ is nonconforming
+        std::atomic_fetch_add<X>(&t, 0);
+#else
         std::atomic_fetch_add<T>(&t, 0);
-        assert(t == &a[2]);
-        ASSERT_NOEXCEPT(std::atomic_fetch_add(&t, 0));
+#endif // _LIBCPP_VERSION
+        assert(t == T(3*sizeof(X)));
     }
 }
 

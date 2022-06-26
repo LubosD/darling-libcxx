@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-// <string_view>
+// <string>
 
 // size_type find_first_of(const basic_string_view& str, size_type pos = 0) const;
 

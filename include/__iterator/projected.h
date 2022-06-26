@@ -18,9 +18,12 @@
 #pragma GCC system_header
 #endif
 
+_LIBCPP_PUSH_MACROS
+#include <__undef_macros>
+
 _LIBCPP_BEGIN_NAMESPACE_STD
 
-#if !defined(_LIBCPP_HAS_NO_CONCEPTS)
+#if !defined(_LIBCPP_HAS_NO_RANGES)
 
 template<indirectly_readable _It, indirectly_regular_unary_invocable<_It> _Proj>
 struct projected {
@@ -33,8 +36,10 @@ struct incrementable_traits<projected<_It, _Proj>> {
   using difference_type = iter_difference_t<_It>;
 };
 
-#endif // !defined(_LIBCPP_HAS_NO_CONCEPTS)
+#endif // !defined(_LIBCPP_HAS_NO_RANGES)
 
 _LIBCPP_END_NAMESPACE_STD
+
+_LIBCPP_POP_MACROS
 
 #endif // _LIBCPP___ITERATOR_PROJECTED_H

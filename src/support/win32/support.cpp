@@ -1,3 +1,4 @@
+// -*- C++ -*-
 //===----------------------------------------------------------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
@@ -23,10 +24,7 @@ int __libcpp_vasprintf( char **sptr, const char *__restrict format, va_list ap )
     // Query the count required.
     va_list ap_copy;
     va_copy(ap_copy, ap);
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wformat-nonliteral"
-    int count = vsnprintf( NULL, 0, format, ap_copy );
-#pragma clang diagnostic pop
+    int count = _vsnprintf( NULL, 0, format, ap_copy );
     va_end(ap_copy);
     if (count < 0)
         return count;
@@ -36,10 +34,7 @@ int __libcpp_vasprintf( char **sptr, const char *__restrict format, va_list ap )
         return -1;
     // If we haven't used exactly what was required, something is wrong.
     // Maybe bug in vsnprintf. Report the error and return.
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wformat-nonliteral"
-    if (vsnprintf(p, buffer_size, format, ap) != count) {
-#pragma clang diagnostic pop
+    if (_vsnprintf(p, buffer_size, format, ap) != count) {
         free(p);
         return -1;
     }

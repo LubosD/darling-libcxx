@@ -18,6 +18,9 @@
 #pragma GCC system_header
 #endif
 
+_LIBCPP_PUSH_MACROS
+#include <__undef_macros>
+
 _LIBCPP_BEGIN_NAMESPACE_STD
 
 namespace rel_ops
@@ -55,8 +58,10 @@ operator>=(const _Tp& __x, const _Tp& __y)
     return !(__x < __y);
 }
 
-} // namespace rel_ops
+}  // rel_ops
 
 _LIBCPP_END_NAMESPACE_STD
+
+_LIBCPP_POP_MACROS
 
 #endif // _LIBCPP___UTILITY_REL_OPS_H

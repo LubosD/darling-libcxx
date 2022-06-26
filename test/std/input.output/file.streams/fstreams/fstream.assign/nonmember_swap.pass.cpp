@@ -67,8 +67,6 @@ int main(int, char**)
     }
     std::remove(temp1.c_str());
     std::remove(temp2.c_str());
-
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         std::wfstream fs1(temp1.c_str(), std::ios_base::in | std::ios_base::out
                                                    | std::ios_base::trunc);
@@ -92,7 +90,6 @@ int main(int, char**)
     }
     std::remove(temp1.c_str());
     std::remove(temp2.c_str());
-#endif
 
   return 0;
 }

@@ -7,6 +7,7 @@
 //===----------------------------------------------------------------------===//
 
 // UNSUPPORTED: c++03, c++11, c++14
+// UNSUPPORTED: libcpp-no-deduction-guides
 
 // <string>
 
@@ -62,22 +63,18 @@ int main(int, char**)
     ASSERT_SAME_TYPE(decltype(s), std::string);
     assert(s == "aaaaaa");
 
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     std::basic_string w(2ull, L'b');
     ASSERT_SAME_TYPE(decltype(w), std::wstring);
     assert(w == L"bb");
-#endif
   }
   { // Testing (3) w/ allocator
     std::basic_string s(6ull, 'a', test_allocator<char>{});
     ASSERT_SAME_TYPE(decltype(s), BStr<char,test_allocator<char>>);
     assert(s == "aaaaaa");
 
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     std::basic_string w(2ull, L'b', test_allocator<wchar_t>{});
     ASSERT_SAME_TYPE(decltype(w), BStr<wchar_t, test_allocator<wchar_t>>);
     assert(w == L"bb");
-#endif
   }
   { // Testing (4) w/o allocator
     const std::string sin("abc");
@@ -85,7 +82,6 @@ int main(int, char**)
     ASSERT_SAME_TYPE(decltype(s), std::string);
     assert(s == "bc");
 
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     using WStr = std::basic_string<wchar_t,
                                   constexpr_char_traits<wchar_t>,
                                   test_allocator<wchar_t>>;
@@ -93,7 +89,6 @@ int main(int, char**)
     std::basic_string w(win, (TestSizeT)3);
     ASSERT_SAME_TYPE(decltype(w), WStr);
     assert(w == L"def");
-#endif
   }
   { // Testing (4) w/ allocator
     const std::string sin("abc");
@@ -101,7 +96,6 @@ int main(int, char**)
     ASSERT_SAME_TYPE(decltype(s), std::string);
     assert(s == "bc");
 
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     using WStr = std::basic_string<wchar_t,
                                   constexpr_char_traits<wchar_t>,
                                   test_allocator<wchar_t>>;
@@ -109,7 +103,6 @@ int main(int, char**)
     std::basic_string w(win, (TestSizeT)3, test_allocator<wchar_t>{});
     ASSERT_SAME_TYPE(decltype(w), WStr);
     assert(w == L"def");
-#endif
   }
   { // Testing (5) w/o allocator
     const std::string sin("abc");
@@ -117,7 +110,6 @@ int main(int, char**)
     ASSERT_SAME_TYPE(decltype(s), std::string);
     assert(s == "bc");
 
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     using WStr = std::basic_string<wchar_t,
                                   constexpr_char_traits<wchar_t>,
                                   test_allocator<wchar_t>>;
@@ -125,7 +117,6 @@ int main(int, char**)
     std::basic_string w(win, (TestSizeT)2, (TestSizeT)3);
     ASSERT_SAME_TYPE(decltype(w), WStr);
     assert(w == L"cde");
-#endif
   }
   { // Testing (5) w/ allocator
     const std::string sin("abc");
@@ -133,7 +124,6 @@ int main(int, char**)
     ASSERT_SAME_TYPE(decltype(s), std::string);
     assert(s == "bc");
 
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     using WStr = std::basic_string<wchar_t,
                                   constexpr_char_traits<wchar_t>,
                                   test_allocator<wchar_t>>;
@@ -141,57 +131,48 @@ int main(int, char**)
     std::basic_string w(win, (TestSizeT)2, (TestSizeT)3, test_allocator<wchar_t>{});
     ASSERT_SAME_TYPE(decltype(w), WStr);
     assert(w == L"cde");
-#endif
   }
   { // Testing (6) w/o allocator
     std::basic_string s("abc", (size_t)2);
     ASSERT_SAME_TYPE(decltype(s), std::string);
     assert(s == "ab");
 
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     std::basic_string w(L"abcdef", (size_t)3);
     ASSERT_SAME_TYPE(decltype(w), std::wstring);
     assert(w == L"abc");
-#endif
   }
   { // Testing (6) w/ allocator
     std::basic_string s("abc", (size_t)2, std::allocator<char>{});
     ASSERT_SAME_TYPE(decltype(s), std::string);
     assert(s == "ab");
 
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     using WStr = std::basic_string<wchar_t,
                                   std::char_traits<wchar_t>,
                                   test_allocator<wchar_t>>;
     std::basic_string w(L"abcdef", (TestSizeT)3, test_allocator<wchar_t>{});
     ASSERT_SAME_TYPE(decltype(w), WStr);
     assert(w == L"abc");
-#endif
   }
   { // Testing (7) w/o allocator
     std::basic_string s("abc");
     ASSERT_SAME_TYPE(decltype(s), std::string);
     assert(s == "abc");
 
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     std::basic_string w(L"abcdef");
     ASSERT_SAME_TYPE(decltype(w), std::wstring);
     assert(w == L"abcdef");
-#endif
   }
   { // Testing (7) w/ allocator
     std::basic_string s("abc", std::allocator<char>{});
     ASSERT_SAME_TYPE(decltype(s), std::string);
     assert(s == "abc");
 
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     using WStr = std::basic_string<wchar_t,
                                   std::char_traits<wchar_t>,
                                   test_allocator<wchar_t>>;
     std::basic_string w(L"abcdef", test_allocator<wchar_t>{});
     ASSERT_SAME_TYPE(decltype(w), WStr);
     assert(w == L"abcdef");
-#endif
   }
   { // (8) w/o allocator
     using It = cpp17_input_iterator<const char*>;
@@ -201,24 +182,12 @@ int main(int, char**)
     assert(s == "abc");
   }
   { // (8) w/ allocator
-    {
-      using Expect = std::basic_string<char, std::char_traits<char>, test_allocator<char>>;
-      using It = cpp17_input_iterator<const char*>;
-      const char* input = "abcdef";
-      std::basic_string s(It(input), It(input + 3), test_allocator<char>{});
-      ASSERT_SAME_TYPE(decltype(s), Expect);
-      assert(s == "abc");
-    }
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
-    {
-      using ExpectW = std::basic_string<wchar_t, std::char_traits<wchar_t>, test_allocator<wchar_t>>;
-      using It = cpp17_input_iterator<const wchar_t*>;
-      const wchar_t* input = L"abcdef";
-      std::basic_string s(It(input), It(input + 3), test_allocator<wchar_t>{});
-      ASSERT_SAME_TYPE(decltype(s), ExpectW);
-      assert(s == L"abc");
-    }
-#endif
+    using ExpectW = std::basic_string<wchar_t, std::char_traits<wchar_t>, test_allocator<wchar_t>>;
+    using It = cpp17_input_iterator<const wchar_t*>;
+    const wchar_t* input = L"abcdef";
+    std::basic_string s(It(input), It(input + 3), test_allocator<wchar_t>{});
+    ASSERT_SAME_TYPE(decltype(s), ExpectW);
+    assert(s == L"abc");
   }
   { // Testing (9)
     const std::string sin("abc");
@@ -226,7 +195,6 @@ int main(int, char**)
     ASSERT_SAME_TYPE(decltype(s), std::string);
     assert(s == "abc");
 
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     using WStr = std::basic_string<wchar_t,
                                   constexpr_char_traits<wchar_t>,
                                   test_allocator<wchar_t>>;
@@ -234,7 +202,6 @@ int main(int, char**)
     std::basic_string w(win);
     ASSERT_SAME_TYPE(decltype(w), WStr);
     assert(w == L"abcdef");
-#endif
   }
   { // Testing (10)
     const std::string sin("abc");
@@ -242,7 +209,6 @@ int main(int, char**)
     ASSERT_SAME_TYPE(decltype(s), std::string);
     assert(s == "abc");
 
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     using WStr = std::basic_string<wchar_t,
                                   constexpr_char_traits<wchar_t>,
                                   test_allocator<wchar_t>>;
@@ -250,7 +216,6 @@ int main(int, char**)
     std::basic_string w(win, test_allocator<wchar_t>{});
     ASSERT_SAME_TYPE(decltype(w), WStr);
     assert(w == L"abcdef");
-#endif
   }
   { // Testing (11)
     std::string sin("abc");
@@ -258,7 +223,6 @@ int main(int, char**)
     ASSERT_SAME_TYPE(decltype(s), std::string);
     assert(s == "abc");
 
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     using WStr = std::basic_string<wchar_t,
                                   constexpr_char_traits<wchar_t>,
                                   test_allocator<wchar_t>>;
@@ -266,7 +230,6 @@ int main(int, char**)
     std::basic_string w(std::move(win));
     ASSERT_SAME_TYPE(decltype(w), WStr);
     assert(w == L"abcdef");
-#endif
   }
   { // Testing (12)
     std::string sin("abc");
@@ -274,7 +237,6 @@ int main(int, char**)
     ASSERT_SAME_TYPE(decltype(s), std::string);
     assert(s == "abc");
 
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     using WStr = std::basic_string<wchar_t,
                                   constexpr_char_traits<wchar_t>,
                                   test_allocator<wchar_t>>;
@@ -282,29 +244,24 @@ int main(int, char**)
     std::basic_string w(std::move(win), test_allocator<wchar_t>{});
     ASSERT_SAME_TYPE(decltype(w), WStr);
     assert(w == L"abcdef");
-#endif
   }
   { // Testing (13) w/o allocator
     std::basic_string s({'a', 'b', 'c'});
     ASSERT_SAME_TYPE(decltype(s), std::string);
     assert(s == "abc");
 
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     std::basic_string w({L'a', L'b', L'c'});
     ASSERT_SAME_TYPE(decltype(w), std::wstring);
     assert(w == L"abc");
-#endif
   }
   { // Testing (13) w/ allocator
     std::basic_string s({'a', 'b', 'c'}, test_allocator<char>{});
     ASSERT_SAME_TYPE(decltype(s), BStr<char, test_allocator<char>>);
     assert(s == "abc");
 
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     std::basic_string w({L'a', L'b', L'c'}, test_allocator<wchar_t>{});
     ASSERT_SAME_TYPE(decltype(w), BStr<wchar_t, test_allocator<wchar_t>>);
     assert(w == L"abc");
-#endif
   }
   { // Testing (14) w/o allocator
     std::string_view sv("abc");
@@ -312,13 +269,11 @@ int main(int, char**)
     ASSERT_SAME_TYPE(decltype(s), std::string);
     assert(s == "abc");
 
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     using Expect = std::basic_string<wchar_t, constexpr_char_traits<wchar_t>>;
     std::basic_string_view<wchar_t, constexpr_char_traits<wchar_t>> BSV(L"abcdef");
     std::basic_string w(BSV);
     ASSERT_SAME_TYPE(decltype(w), Expect);
     assert(w == L"abcdef");
-#endif
   }
   { // Testing (14) w/ allocator
     using ExpectS = std::basic_string<char, std::char_traits<char>, test_allocator<char>>;
@@ -327,14 +282,12 @@ int main(int, char**)
     ASSERT_SAME_TYPE(decltype(s), ExpectS);
     assert(s == "abc");
 
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     using ExpectW = std::basic_string<wchar_t, constexpr_char_traits<wchar_t>,
                                       test_allocator<wchar_t>>;
     std::basic_string_view<wchar_t, constexpr_char_traits<wchar_t>> BSV(L"abcdef");
     std::basic_string w(BSV, test_allocator<wchar_t>{});
     ASSERT_SAME_TYPE(decltype(w), ExpectW);
     assert(w == L"abcdef");
-#endif
   }
   { // Testing (15) w/o allocator
     std::string s0("abc");
@@ -342,12 +295,10 @@ int main(int, char**)
     ASSERT_SAME_TYPE(decltype(s), std::string);
     assert(s == "b");
 
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     std::wstring w0(L"abcdef");
     std::basic_string w(w0, 2, 2);
     ASSERT_SAME_TYPE(decltype(w), std::wstring);
     assert(w == L"cd");
-#endif
   }
   { // Testing (15) w/ allocator
     using ExpectS = std::basic_string<char, std::char_traits<char>, test_allocator<char>>;
@@ -356,13 +307,11 @@ int main(int, char**)
     ASSERT_SAME_TYPE(decltype(s), ExpectS);
     assert(s == "b");
 
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     using ExpectW = std::basic_string<wchar_t, std::char_traits<wchar_t>, test_allocator<wchar_t>>;
     ExpectW w0(L"abcdef");
     std::basic_string w(w0, 2, 2, test_allocator<wchar_t>{6});
     ASSERT_SAME_TYPE(decltype(w), ExpectW);
     assert(w == L"cd");
-#endif
   }
 
   return 0;

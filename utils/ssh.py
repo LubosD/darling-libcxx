@@ -23,7 +23,11 @@ import sys
 import tarfile
 import tempfile
 
-from shlex import quote as cmd_quote
+try:
+   from shlex import quote as cmd_quote
+except ImportError:
+   # for Python 2 compatibility
+   from pipes import quote as cmd_quote
 
 def ssh(args, command):
     cmd = ['ssh', '-oBatchMode=yes']
