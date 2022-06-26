@@ -11,6 +11,8 @@ add_definitions(-D_LIBCPP_BUILDING_LIBRARY=1 -D_LIBCPPABI_VERSION=1 -DLIBCXX_BUI
 set(cxx_sources
 	src/algorithm.cpp
 	src/any.cpp
+	src/atomic.cpp
+	src/barrier.cpp
 	src/bind.cpp
 	src/charconv.cpp
 	src/chrono.cpp
@@ -18,10 +20,12 @@ set(cxx_sources
 	src/condition_variable_destructor.cpp
 	src/debug.cpp
 	src/exception.cpp
+	src/format.cpp
 	src/functional.cpp
 	src/future.cpp
 	src/hash.cpp
 	src/ios.cpp
+	src/ios.instantiations.cpp
 	src/iostream.cpp
 	src/locale.cpp
 	src/memory.cpp
@@ -30,6 +34,7 @@ set(cxx_sources
 	src/new.cpp
 	src/optional.cpp
 	src/random.cpp
+	src/random_shuffle.cpp
 	src/regex.cpp
 	src/shared_mutex.cpp
 	src/stdexcept.cpp
