@@ -347,10 +347,17 @@ public:
   const bool MemCounter::disable_checking = false;
 #endif
 
+#ifdef TEST_COMPILER_MSVC
+#pragma warning(push)
+#pragma warning(disable: 4640) // '%s' construction of local static object is not thread safe (/Zc:threadSafeInit-)
+#endif // TEST_COMPILER_MSVC
 inline MemCounter* getGlobalMemCounter() {
   static MemCounter counter((MemCounter::MemCounterCtorArg_()));
   return &counter;
 }
+#ifdef TEST_COMPILER_MSVC
+#pragma warning(pop)
+#endif
 
 MemCounter &globalMemCounter = *getGlobalMemCounter();
 

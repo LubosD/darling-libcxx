@@ -1,4 +1,3 @@
-// -*- C++ -*-
 //===----------------------------------------------------------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
@@ -7,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-// UNSUPPORTED: c++98, c++03
+// UNSUPPORTED: c++03
 
 // <tuple>
 
@@ -73,7 +72,7 @@ int main(int, char**) {
     std::tuple<Base const&, int> t(ct, 42); // expected-note {{requested here}}
   }
   {
-    std::allocator<void> alloc;
+    std::allocator<int> alloc;
     std::tuple<std::string &&> t2("hello"); // expected-note {{requested here}}
     std::tuple<std::string &&> t3(std::allocator_arg, alloc, "hello"); // expected-note {{requested here}}
   }

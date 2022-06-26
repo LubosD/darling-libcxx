@@ -6,6 +6,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+// FILE_DEPENDENCIES: test.dat
+
 // <fstream>
 
 // template <class charT, class traits = char_traits<charT> >
@@ -28,6 +30,7 @@ int main(int, char**)
         fs.close();
         assert(!fs.is_open());
     }
+#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         std::wifstream fs;
         assert(!fs.is_open());
@@ -36,6 +39,7 @@ int main(int, char**)
         fs.close();
         assert(!fs.is_open());
     }
+#endif
 
   return 0;
 }

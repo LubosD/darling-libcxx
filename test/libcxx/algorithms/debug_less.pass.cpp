@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-// UNSUPPORTED: libcpp-no-exceptions
+// UNSUPPORTED: no-exceptions
 
 // <algorithm>
 
@@ -183,6 +183,7 @@ inline bool operator<(FooImp<T> const& x, Tag<0> y) {
 template <class T>
 inline bool operator<(Tag<0>, FooImp<T> const&) {
     static_assert(sizeof(FooImp<T>) != sizeof(FooImp<T>), "should not be instantiated");
+    return false;
 }
 
 template <class T>
@@ -193,6 +194,7 @@ inline bool operator<(Tag<1> x, FooImp<T> const& y) {
 template <class T>
 inline bool operator<(FooImp<T> const&, Tag<1>) {
     static_assert(sizeof(FooImp<T>) != sizeof(FooImp<T>), "should not be instantiated");
+    return false;
 }
 
 typedef FooImp<> Foo;
@@ -268,7 +270,7 @@ void test_value_categories() {
     assert(dl(static_cast<int&&>(1), static_cast<const int&&>(2)));
 }
 
-#if TEST_STD_VER > 17
+#if TEST_STD_VER > 11
 constexpr bool test_constexpr() {
     std::less<> cmp{};
     __debug_less<std::less<> > dcmp(cmp);
@@ -285,7 +287,7 @@ int main(int, char**) {
     test_non_const_arg_cmp();
     test_value_iterator();
     test_value_categories();
-#if TEST_STD_VER > 17
+#if TEST_STD_VER > 11
     static_assert(test_constexpr(), "");
 #endif
     return 0;

@@ -30,24 +30,27 @@ int A::count = 0;
 
 int main(int, char**)
 {
+    test_allocator_statistics alloc_stats;
     {
-    std::shared_ptr<A> p(nullptr, test_deleter<A>(3), test_allocator<A>(5));
+    std::shared_ptr<A> p(nullptr, test_deleter<A>(3), test_allocator<A>(5, &alloc_stats));
     assert(A::count == 0);
     assert(p.use_count() == 1);
     assert(p.get() == 0);
-    test_deleter<A>* d = std::get_deleter<test_deleter<A> >(p);
     assert(test_deleter<A>::count == 1);
     assert(test_deleter<A>::dealloc_count == 0);
+#ifndef TEST_HAS_NO_RTTI
+    test_deleter<A>* d = std::get_deleter<test_deleter<A> >(p);
     assert(d);
     assert(d->state() == 3);
-    assert(test_allocator<A>::count == 1);
-    assert(test_allocator<A>::alloc_count == 1);
+#endif
+    assert(alloc_stats.count == 1);
+    assert(alloc_stats.alloc_count == 1);
     }
     assert(A::count == 0);
     assert(test_deleter<A>::count == 0);
     assert(test_deleter<A>::dealloc_count == 1);
-    assert(test_allocator<A>::count == 0);
-    assert(test_allocator<A>::alloc_count == 0);
+    assert(alloc_stats.count == 0);
+    assert(alloc_stats.alloc_count == 0);
     test_deleter<A>::dealloc_count = 0;
     // Test an allocator with a minimal interface
     {
@@ -55,11 +58,13 @@ int main(int, char**)
     assert(A::count == 0);
     assert(p.use_count() == 1);
     assert(p.get() == 0);
-    test_deleter<A>* d = std::get_deleter<test_deleter<A> >(p);
     assert(test_deleter<A>::count ==1);
     assert(test_deleter<A>::dealloc_count == 0);
+#ifndef TEST_HAS_NO_RTTI
+    test_deleter<A>* d = std::get_deleter<test_deleter<A> >(p);
     assert(d);
     assert(d->state() == 1);
+#endif
     }
     assert(A::count == 0);
     assert(test_deleter<A>::count == 0);
@@ -72,11 +77,13 @@ int main(int, char**)
     assert(A::count == 0);
     assert(p.use_count() == 1);
     assert(p.get() == 0);
-    test_deleter<A>* d = std::get_deleter<test_deleter<A> >(p);
     assert(test_deleter<A>::count ==1);
     assert(test_deleter<A>::dealloc_count == 0);
+#ifndef TEST_HAS_NO_RTTI
+    test_deleter<A>* d = std::get_deleter<test_deleter<A> >(p);
     assert(d);
     assert(d->state() == 1);
+#endif
     }
     assert(A::count == 0);
     assert(test_deleter<A>::count == 0);

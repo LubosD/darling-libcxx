@@ -132,29 +132,30 @@ int main(int, char**)
     static_assert((std::is_same<decltype(rand()), int>::value), "");
     static_assert((std::is_same<decltype(srand(0)), void>::value), "");
 
-//  Microsoft does not implement aligned_alloc in their C library
-#if TEST_STD_VER > 14 && defined(TEST_HAS_C11_FEATURES) && !defined(_WIN32)
-    static_assert((std::is_same<decltype(aligned_alloc(0,0)), void*>::value), "");
-#endif
+    // aligned_alloc tested in stdlib_h.aligned_alloc.compile.pass.cpp
 
+    void* pv = 0;
+    void (*handler)() = 0;
+    int (*comp)(void const*, void const*) = 0;
     static_assert((std::is_same<decltype(calloc(0,0)), void*>::value), "");
     static_assert((std::is_same<decltype(free(0)), void>::value), "");
     static_assert((std::is_same<decltype(malloc(0)), void*>::value), "");
     static_assert((std::is_same<decltype(realloc(0,0)), void*>::value), "");
     static_assert((std::is_same<decltype(abort()), void>::value), "");
-    static_assert((std::is_same<decltype(atexit(0)), int>::value), "");
+    static_assert((std::is_same<decltype(atexit(handler)), int>::value), "");
     static_assert((std::is_same<decltype(exit(0)), void>::value), "");
     static_assert((std::is_same<decltype(_Exit(0)), void>::value), "");
     static_assert((std::is_same<decltype(getenv("")), char*>::value), "");
     static_assert((std::is_same<decltype(system("")), int>::value), "");
-    static_assert((std::is_same<decltype(bsearch(0,0,0,0,0)), void*>::value), "");
-    static_assert((std::is_same<decltype(qsort(0,0,0,0)), void>::value), "");
+    static_assert((std::is_same<decltype(bsearch(pv,pv,0,0,comp)), void*>::value), "");
+    static_assert((std::is_same<decltype(qsort(pv,0,0,comp)), void>::value), "");
     static_assert((std::is_same<decltype(abs(0)), int>::value), "");
     static_assert((std::is_same<decltype(labs((long)0)), long>::value), "");
     static_assert((std::is_same<decltype(llabs((long long)0)), long long>::value), "");
     static_assert((std::is_same<decltype(div(0,0)), div_t>::value), "");
     static_assert((std::is_same<decltype(ldiv(0L,0L)), ldiv_t>::value), "");
     static_assert((std::is_same<decltype(lldiv(0LL,0LL)), lldiv_t>::value), "");
+#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     wchar_t* pw = 0;
     const wchar_t* pwc = 0;
     char* pc = 0;
@@ -163,6 +164,7 @@ int main(int, char**)
     static_assert((std::is_same<decltype(wctomb(pc,L' ')), int>::value), "");
     static_assert((std::is_same<decltype(mbstowcs(pw,"",0)), size_t>::value), "");
     static_assert((std::is_same<decltype(wcstombs(pc,pwc,0)), size_t>::value), "");
+#endif
 
     test_abs();
 

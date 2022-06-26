@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-// UNSUPPORTED: c++98, c++03, c++11, c++14
+// UNSUPPORTED: c++03, c++11, c++14
 
 // <chrono>
 
@@ -16,8 +16,9 @@
 //   constexpr duration<Rep, Period> abs(duration<Rep, Period> d)
 
 #include <chrono>
-#include <type_traits>
 #include <cassert>
+#include <ratio>
+#include <type_traits>
 
 #include "test_macros.h"
 

@@ -6,6 +6,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+// FILE_DEPENDENCIES: test.dat
+
 // <fstream>
 
 // template <class charT, class traits = char_traits<charT> >
@@ -29,6 +31,8 @@ int main(int, char**)
     // std::ifstream(const char*, std::ios_base::openmode) is tested in
     // test/std/input.output/file.streams/fstreams/ofstream.cons/pointer.pass.cpp
     // which creates writable files.
+
+#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         std::wifstream fs("test.dat");
         double x = 0;
@@ -38,6 +42,7 @@ int main(int, char**)
     // std::wifstream(const char*, std::ios_base::openmode) is tested in
     // test/std/input.output/file.streams/fstreams/ofstream.cons/pointer.pass.cpp
     // which creates writable files.
+#endif
 
   return 0;
 }

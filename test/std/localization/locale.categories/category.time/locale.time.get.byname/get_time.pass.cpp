@@ -21,12 +21,13 @@
 
 #include <locale>
 #include <cassert>
+#include <ios>
 #include "test_macros.h"
 #include "test_iterators.h"
 
 #include "platform_support.h" // locale name macros
 
-typedef input_iterator<const char*> I;
+typedef cpp17_input_iterator<const char*> I;
 
 typedef std::time_get_byname<char, I> F;
 

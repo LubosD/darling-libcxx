@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
-// UNSUPPORTED: c++98, c++03, c++11, c++14, c++17
+// UNSUPPORTED: c++03, c++11, c++14, c++17
 
 // <chrono>
 // class weekday;
@@ -46,7 +46,7 @@ int main(int, char**)
         assert(m.c_encoding() == (i == 7 ? 0 : i));
     }
 
-// TODO - sys_days and local_days ctor tests
+    // TODO - sys_days and local_days ctor tests
 
-  return 0;
+    return 0;
 }

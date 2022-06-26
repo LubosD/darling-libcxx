@@ -6,6 +6,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+// FILE_DEPENDENCIES: underflow.dat, underflow_utf8.dat
+
 // <locale>
 
 // wbuffer_convert<Codecvt, Elem, Tr>
@@ -13,6 +15,8 @@
 // int_type underflow();
 
 // This test is not entirely portable
+
+// XFAIL: libcpp-has-no-wide-characters
 
 #include <locale>
 #include <codecvt>

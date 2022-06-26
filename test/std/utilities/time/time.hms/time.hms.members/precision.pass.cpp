@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
-// UNSUPPORTED: c++98, c++03, c++11, c++14, c++17
+// UNSUPPORTED: c++03, c++11, c++14, c++17
 // <chrono>
 
 // template <class Duration>
@@ -15,11 +15,13 @@
 //     static unsigned constexpr fractional_width = see below;
 //     using precision                            = see below;
 //
-//   precision is duration<common_type_t<Duration::rep, seconds::rep>, 
+//   precision is duration<common_type_t<Duration::rep, seconds::rep>,
 //                                 ratio<1, 10^^fractional_width>>
-   
+
 #include <chrono>
 #include <cassert>
+#include <ratio>
+#include <type_traits>
 
 #include "test_macros.h"
 
@@ -44,8 +46,8 @@ constexpr unsigned long long powers[] = {
 	100000000000000000ULL,
 	1000000000000000000ULL,
 	10000000000000000000ULL
-	};
-	
+};
+
 template <typename Duration, unsigned width>
 constexpr bool check_precision()
 {

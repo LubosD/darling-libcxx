@@ -8,7 +8,7 @@
 
 // These constructors are still unavailable in C++03, but this test depends
 // on access control SFINAE and fails without it.
-// UNSUPPORTED: c++98, c++03
+// UNSUPPORTED: c++03
 
 // <locale>
 
@@ -16,6 +16,8 @@
 
 // wstring_convert(wstring_convert const&) = delete;
 // wstring_convert& operator=(wstring_convert const&) = delete;
+
+// XFAIL: libcpp-has-no-wide-characters
 
 #include <locale>
 #include <codecvt>

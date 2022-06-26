@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
-// UNSUPPORTED: c++98, c++03, c++11, c++14, c++17
+// UNSUPPORTED: c++03, c++11, c++14, c++17
 // <chrono>
 
 // constexpr bool is_am(const hours& h) noexcept;
@@ -13,6 +13,7 @@
 
 #include <chrono>
 #include <cassert>
+#include <utility>
 
 #include "test_macros.h"
 
@@ -26,7 +27,7 @@ int main(int, char**)
 	static_assert( std::chrono::is_am(hours(11)), "");
 	static_assert(!std::chrono::is_am(hours(12)), "");
 	static_assert(!std::chrono::is_am(hours(23)), "");
-	
+
 	for (int i = 0; i < 12; ++i)
 		assert( std::chrono::is_am(hours(i)));
 	for (int i = 12; i < 24; ++i)

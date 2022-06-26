@@ -1,5 +1,5 @@
 // -*- C++ -*-
-//===--------------------------- float.h ----------------------------------===//
+//===----------------------------------------------------------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
@@ -76,9 +76,7 @@ Macros:
 #pragma GCC system_header
 #endif
 
-#if __has_include_next(<float.h>)
 #include_next <float.h>
-#endif
 
 #ifdef __cplusplus
 
@@ -92,4 +90,4 @@ Macros:
 
 #endif // __cplusplus
 
-#endif  // _LIBCPP_FLOAT_H
+#endif // _LIBCPP_FLOAT_H

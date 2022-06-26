@@ -5,10 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
-//
-// This test is passing in an uncontrolled manner in some Apple environment.
-// UNSUPPORTED: apple-darwin
-//
+
 // NetBSD does not support LC_MONETARY at the moment
 // XFAIL: netbsd
 
@@ -18,7 +15,10 @@
 // Possibly related to https://gcc.gnu.org/bugzilla/show_bug.cgi?id=16006
 // XFAIL: linux
 
+// XFAIL: LIBCXX-WINDOWS-FIXME
+
 // REQUIRES: locale.ru_RU.UTF-8
+// XFAIL: LIBCXX-AIX-FIXME
 
 // <locale>
 
@@ -36,6 +36,19 @@
 
 #include "platform_support.h" // locale name macros
 
+// TODO:
+// Some of the assertions in this test are failing on Apple platforms.
+// Until we figure out the problem and fix it, disable these tests on
+// Apple platforms. Note that we're not using XFAIL or UNSUPPORTED markup
+// here, because this test would otherwise be disabled on all platforms
+// we test. To avoid this test becoming entirely stale, we just disable
+// the parts that fail.
+//
+// See https://llvm.org/PR45739 for the bug tracking this.
+#if defined(__APPLE__)
+#   define APPLE_FIXME
+#endif
+
 typedef std::money_put<char, output_iterator<char*> > Fn;
 
 class my_facet
@@ -46,6 +59,7 @@ public:
         : Fn(refs) {}
 };
 
+#ifndef TEST_HAS_NO_WIDE_CHARACTERS
 typedef std::money_put<wchar_t, output_iterator<wchar_t*> > Fw;
 
 class my_facetw
@@ -55,6 +69,7 @@ public:
     explicit my_facetw(std::size_t refs = 0)
         : Fw(refs) {}
 };
+#endif
 
 int main(int, char**)
 {
@@ -64,13 +79,16 @@ int main(int, char**)
                           new std::moneypunct_byname<char, false>(loc_name)));
     ios.imbue(std::locale(ios.getloc(),
                           new std::moneypunct_byname<char, true>(loc_name)));
+#ifndef TEST_HAS_NO_WIDE_CHARACTERS
     ios.imbue(std::locale(ios.getloc(),
                           new std::moneypunct_byname<wchar_t, false>(loc_name)));
     ios.imbue(std::locale(ios.getloc(),
                           new std::moneypunct_byname<wchar_t, true>(loc_name)));
+#endif
 {
     const my_facet f(1);
     // char, national
+#if !defined(APPLE_FIXME)
     {   // zero
         long double v = 0;
         char str[100];
@@ -103,6 +121,7 @@ int main(int, char**)
         std::string ex(str, iter.base());
         assert(ex == "-1 234 567,89 ");
     }
+#endif // APPLE_FIXME
     {   // zero, showbase
         long double v = 0;
         showbase(ios);
@@ -179,6 +198,7 @@ int main(int, char**)
     // char, international
     noshowbase(ios);
     ios.unsetf(std::ios_base::adjustfield);
+#if !defined(APPLE_FIXME)
     {   // zero
         long double v = 0;
         char str[100];
@@ -247,6 +267,7 @@ int main(int, char**)
         std::string ex(str, iter.base());
         assert(ex == "-1 234 567,89 RUB ");
     }
+#endif // APPLE_FIXME
     {   // negative, showbase, left
         long double v = -123456789;
         showbase(ios);
@@ -259,6 +280,7 @@ int main(int, char**)
         assert(ex == "-1 234 567,89 RUB   ");
         assert(ios.width() == 0);
     }
+#if !defined(APPLE_FIXME)
     {   // negative, showbase, internal
         long double v = -123456789;
         showbase(ios);
@@ -283,12 +305,15 @@ int main(int, char**)
         assert(ex == "  -1 234 567,89 RUB ");
         assert(ios.width() == 0);
     }
+#endif // APPLE_FIXME
 }
+#ifndef TEST_HAS_NO_WIDE_CHARACTERS
 {
     const my_facetw f(1);
     // wchar_t, national
     noshowbase(ios);
     ios.unsetf(std::ios_base::adjustfield);
+#if !defined(APPLE_FIXME)
     {   // zero
         long double v = 0;
         wchar_t str[100];
@@ -321,6 +346,7 @@ int main(int, char**)
         std::wstring ex(str, iter.base());
         assert(ex == L"-1 234 567,89 ");
     }
+#endif // APPLE_FIXME
     {   // zero, showbase
         long double v = 0;
         showbase(ios);
@@ -397,6 +423,7 @@ int main(int, char**)
     // wchar_t, international
     noshowbase(ios);
     ios.unsetf(std::ios_base::adjustfield);
+#if !defined(APPLE_FIXME)
     {   // zero
         long double v = 0;
         wchar_t str[100];
@@ -465,6 +492,7 @@ int main(int, char**)
         std::wstring ex(str, iter.base());
         assert(ex == L"-1 234 567,89 RUB ");
     }
+#endif // APPLE_FIXME
     {   // negative, showbase, left
         long double v = -123456789;
         showbase(ios);
@@ -477,6 +505,7 @@ int main(int, char**)
         assert(ex == L"-1 234 567,89 RUB   ");
         assert(ios.width() == 0);
     }
+#if !defined(APPLE_FIXME)
     {   // negative, showbase, internal
         long double v = -123456789;
         showbase(ios);
@@ -501,7 +530,9 @@ int main(int, char**)
         assert(ex == L"  -1 234 567,89 RUB ");
         assert(ios.width() == 0);
     }
+#endif // APPLE_FIXME
 }
+#endif // TEST_HAS_NO_WIDE_CHARACTERS
 
   return 0;
 }

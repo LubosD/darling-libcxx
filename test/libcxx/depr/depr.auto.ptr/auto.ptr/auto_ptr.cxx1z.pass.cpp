@@ -12,13 +12,11 @@
 // class auto_ptr;
 //
 //  In C++17, auto_ptr has been removed.
-//  However, for backwards compatibility, if _LIBCPP_NO_REMOVE_AUTOPTR
+//  However, for backwards compatibility, if _LIBCPP_ENABLE_CXX17_REMOVED_AUTO_PTR
 //  is defined before including <memory>, then auto_ptr will be restored.
 
-// MODULES_DEFINES: _LIBCPP_ENABLE_CXX17_REMOVED_AUTO_PTR
-// MODULES_DEFINES: _LIBCPP_DISABLE_DEPRECATION_WARNINGS
-#define _LIBCPP_ENABLE_CXX17_REMOVED_AUTO_PTR
-#define _LIBCPP_DISABLE_DEPRECATION_WARNINGS
+// ADDITIONAL_COMPILE_FLAGS: -D_LIBCPP_ENABLE_CXX17_REMOVED_AUTO_PTR
+// ADDITIONAL_COMPILE_FLAGS: -D_LIBCPP_DISABLE_DEPRECATION_WARNINGS
 
 #include <memory>
 #include <type_traits>

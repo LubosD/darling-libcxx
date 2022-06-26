@@ -6,9 +6,10 @@
 //
 //===----------------------------------------------------------------------===//
 
-// UNSUPPORTED: c++98, c++03, c++11, c++14
+// UNSUPPORTED: c++03, c++11, c++14
 
-// XFAIL: dylib-has-no-bad_any_cast && !libcpp-no-exceptions
+// Throwing bad_any_cast is supported starting in macosx10.13
+// XFAIL: use_system_cxx_lib && target={{.+}}-apple-macosx10.{{9|10|11|12}} && !no-exceptions
 
 // <any>
 
@@ -186,6 +187,7 @@ void test_copy_assign_throws()
 }
 
 int main(int, char**) {
+    globalMemCounter.reset();
     test_copy_assign<small1, small2>();
     test_copy_assign<large1, large2>();
     test_copy_assign<small, large>();

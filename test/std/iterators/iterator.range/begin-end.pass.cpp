@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-// XFAIL: c++98, c++03
+// XFAIL: c++03
 
 // <iterator>
 // template <class C> constexpr auto begin(C& c) -> decltype(c.begin());
@@ -37,10 +37,6 @@
 #include <array>
 #include <list>
 #include <initializer_list>
-
-// std::array is explicitly allowed to be initialized with A a = { init-list };.
-// Disable the missing braces warning for this reason.
-#include "disable_missing_braces_warning.h"
 
 template<typename C>
 void test_const_container( const C & c, typename C::value_type val ) {

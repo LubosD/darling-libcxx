@@ -6,12 +6,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-// UNSUPPORTED: libcpp-no-exceptions
-// XFAIL: with_system_cxx_lib=macosx10.11
-// XFAIL: with_system_cxx_lib=macosx10.10
-// XFAIL: with_system_cxx_lib=macosx10.9
-// XFAIL: with_system_cxx_lib=macosx10.8
-// XFAIL: with_system_cxx_lib=macosx10.7
+// UNSUPPORTED: no-exceptions
+// XFAIL: use_system_cxx_lib && target={{.+}}-apple-macosx10.{{9|10|11}}
 
 // <string>
 

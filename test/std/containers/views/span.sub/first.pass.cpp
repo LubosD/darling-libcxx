@@ -1,21 +1,23 @@
-// -*- C++ -*-
-//===------------------------------ span ---------------------------------===//
+//===----------------------------------------------------------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
-//===---------------------------------------------------------------------===//
-// UNSUPPORTED: c++98, c++03, c++11, c++14, c++17
+//===----------------------------------------------------------------------===//
+// UNSUPPORTED: c++03, c++11, c++14, c++17
+
+// AppleClang 12.0.0 doesn't fully support ranges/concepts
+// XFAIL: apple-clang-12.0.0
 
 // <span>
 
 // template<size_t Count>
 //  constexpr span<element_type, Count> first() const;
 //
-// constexpr span<element_type, dynamic_extent> first(index_type count) const;
+// constexpr span<element_type, dynamic_extent> first(size_type count) const;
 //
-//  Requires: 0 <= Count && Count <= size().
+//  Requires: Count <= size().
 
 
 #include <span>

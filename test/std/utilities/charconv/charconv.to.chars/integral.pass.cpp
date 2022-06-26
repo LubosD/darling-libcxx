@@ -6,24 +6,20 @@
 //
 //===----------------------------------------------------------------------===//
 
-// UNSUPPORTED: c++98, c++03
-// UNSUPPORTED: !libc++ && c++11
-// UNSUPPORTED: !libc++ && c++14
+// UNSUPPORTED: c++03
+// UNSUPPORTED: !stdlib=libc++ && c++11
+// UNSUPPORTED: !stdlib=libc++ && c++14
 
-// XFAIL: with_system_cxx_lib=macosx10.14
-// XFAIL: with_system_cxx_lib=macosx10.13
-// XFAIL: with_system_cxx_lib=macosx10.12
-// XFAIL: with_system_cxx_lib=macosx10.11
-// XFAIL: with_system_cxx_lib=macosx10.10
-// XFAIL: with_system_cxx_lib=macosx10.9
-// XFAIL: with_system_cxx_lib=macosx10.8
-// XFAIL: with_system_cxx_lib=macosx10.7
+// to_chars requires functions in the dylib that were introduced in Mac OS 10.15.
+//
+// XFAIL: use_system_cxx_lib && target={{.+}}-apple-macosx10.{{9|10|11|12|13|14}}
 
 // <charconv>
 
 // to_chars_result to_chars(char* first, char* last, Integral value,
 //                          int base = 10)
 
+#include <charconv>
 #include "test_macros.h"
 #include "charconv_test_helpers.h"
 
