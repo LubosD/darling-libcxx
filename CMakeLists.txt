@@ -70,6 +70,6 @@ install(TARGETS cxx DESTINATION libexec/darling/usr/lib)
 InstallSymlink("libc++.1.dylib" "${CMAKE_INSTALL_PREFIX}/libexec/darling/usr/lib/libc++.dylib")
 
 # For dyld only
-add_darling_static_library(cxx_static SOURCES src/stdexcept.cpp)
+add_darling_static_library(cxx_static SOURCES ${cxx_sources})
 make_fat(cxx_static)
 
