@@ -6,7 +6,7 @@ include_directories(
 	BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-add_definitions(-D_LIBCPP_BUILDING_LIBRARY=1 -D_LIBCPPABI_VERSION=1 -DLIBCXX_BUILDING_LIBCXXABI=1)
+add_definitions(-D_LIBCPP_BUILDING_LIBRARY=1 -DLIBCXX_BUILDING_LIBCXXABI=1)
 
 set(cxx_sources
 	src/algorithm.cpp
@@ -70,6 +70,6 @@ install(TARGETS cxx DESTINATION libexec/darling/usr/lib)
 InstallSymlink("libc++.1.dylib" "${CMAKE_INSTALL_PREFIX}/libexec/darling/usr/lib/libc++.dylib")
 
 # For dyld only
-add_darling_static_library(cxx_static SOURCES src/stdexcept.cpp)
+add_darling_static_library(cxx_static SOURCES ${cxx_sources})
 make_fat(cxx_static)
 
